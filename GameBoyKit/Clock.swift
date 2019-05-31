@@ -5,6 +5,7 @@ public final class Clock {
 	private(set) public var isRunning = false
 
 	private let queue: DispatchQueue
+	private let cyclesPerBatch: Cycles = 10_000
 	private let baseSpeed = 4_194_304 // 4.194 MHz
 	/// Clock Speed is Base Speed divided by 4
 	///
@@ -14,38 +15,47 @@ public final class Clock {
 	/// about 2 cycles @ 1 MHz vs 8 cycles @ 4 MHz.
 	private let clockSpeed: CyclesPerSecond
 	private let secondsPerCycle: TimeInterval
-	private let advanceBlock: () -> Cycles
 
 	/// - Parameters:
 	///   - queue: The dispatch queue where the clock will be advanced and the
 	///   block will be executed
 	///   - advanceBlock: The block which will be executed on each new clock
 	///   cycle. Returns the number of cycles to advance the clock.
-	init(queue: DispatchQueue, advanceBlock: @escaping () -> Cycles) {
+	init(queue: DispatchQueue) {
 		self.queue = queue
-		self.advanceBlock = advanceBlock
 		clockSpeed = baseSpeed / 4
 		secondsPerCycle = 1.0 / TimeInterval(clockSpeed)
 	}
 
-	func start() {
-		isRunning = true
+	func start(stepBlock: @escaping () -> Cycles) {
 		queue.sync {
 			isRunning = true
-			advanceClock()
+			advanceClock(stepBlock: stepBlock)
 		}
 	}
 
-	private func advanceClock() {
-		let startDate = Date()
-		let cycles = advanceBlock()
-		let timeElapsed = -startDate.timeIntervalSinceNow
-		let delay = TimeInterval(cycles) * secondsPerCycle - timeElapsed
-		scheduleAdvanceClockIfRunning(afterDelay: delay)
+	func stop() {
+		queue.sync {
+			isRunning = false
+		}
 	}
 
-	private func scheduleAdvanceClockIfRunning(afterDelay: TimeInterval) {
+	private func advanceClock(stepBlock: @escaping () -> Cycles) {
+		let startDate = Date()
+		var cycles = 0
+		while cycles < cyclesPerBatch {
+			cycles += stepBlock()
+		}
+		let timeElapsed = -startDate.timeIntervalSinceNow
+		let delay = TimeInterval(cycles) * secondsPerCycle - timeElapsed
+		print("advancing with delay: \(delay)")
+		scheduleAdvanceClockIfRunning(afterDelay: delay, stepBlock: stepBlock)
+	}
+
+	private func scheduleAdvanceClockIfRunning(afterDelay: TimeInterval, stepBlock: @escaping () -> Cycles) {
 		guard isRunning else { return }
-		queue.asyncAfter(deadline: .now() + afterDelay, execute: advanceClock)
+		queue.asyncAfter(deadline: .now() + max(afterDelay, 0)) { [weak self] in
+			self?.advanceClock(stepBlock: stepBlock)
+		}
 	}
 }

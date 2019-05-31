@@ -3,7 +3,7 @@ extension CPU {
 		// 0x0n
 		Opcode(mnemonic: "NOP", cycles: 1) { $0.nop() },
 		Opcode(mnemonic: "LD BC, nn", cycles: 2) { $0.loadOperand(into: &$0.bc) },
-		Opcode(mnemonic: "LD (BC), A", cycles: 2) { $0.load(byte: $0.a, into: $0.bc) },
+		Opcode(mnemonic: "LD (BC), A", cycles: 2) { $0.load(register: $0.a, into: $0.bc) },
 		Opcode(mnemonic: "INC BC", cycles: 1) { $0.increment(pair: &$0.bc) },
 		Opcode(mnemonic: "INC B", cycles: 1) { $0.increment(register: &$0.b) },
 		Opcode(mnemonic: "DEC B", cycles: 2) { $0.decrement(register: &$0.b) },
@@ -17,5 +17,22 @@ extension CPU {
 		Opcode(mnemonic: "DEC C", cycles: 2) { $0.decrement(register: &$0.c) },
 		Opcode(mnemonic: "LD C, n", cycles: 1) { $0.loadOperand(into: &$0.c) },
 		Opcode(mnemonic: "RRCA", cycles: 2) { $0.rotateRightCarryA() },
+		// 0x1n
+		Opcode(mnemonic: "STOP", cycles: 1) { $0.stop() },
+		Opcode(mnemonic: "LD DE, nn", cycles: 3) { $0.loadOperand(into: &$0.de) },
+		Opcode(mnemonic: "LD (DE), A", cycles: 2) { $0.load(register: $0.a, into: $0.de) },
+		Opcode(mnemonic: "INC DE", cycles: 2) { $0.increment(pair: &$0.de) },
+		Opcode(mnemonic: "INC D", cycles: 1) { $0.increment(register: &$0.d) },
+		Opcode(mnemonic: "DEC D", cycles: 1) { $0.decrement(register: &$0.d) },
+		Opcode(mnemonic: "LD D, n", cycles: 2) { $0.loadOperand(into: &$0.d) },
+		Opcode(mnemonic: "RLA", cycles: 1) { $0.rotateLeftA() },
+		Opcode(mnemonic: "JR n", cycles: 3) { $0.jumpRelative() },
+		Opcode(mnemonic: "ADD HL, DE", cycles: 2) { $0.add(value: $0.de, to: &$0.hl) },
+		Opcode(mnemonic: "LD A, (DE)", cycles: 2) { $0.load(address: $0.de, into: &$0.a) },
+		Opcode(mnemonic: "DEC DE", cycles: 2) { $0.decrement(pair: &$0.de) },
+		Opcode(mnemonic: "INC E", cycles: 1) { $0.increment(register: &$0.e) },
+		Opcode(mnemonic: "DEC E", cycles: 1) { $0.decrement(register: &$0.e) },
+		Opcode(mnemonic: "LD E, n", cycles: 2) { $0.loadOperand(into: &$0.e) },
+		Opcode(mnemonic: "RRA", cycles: 1) { $0.rotateRightA() },
 	]
 }

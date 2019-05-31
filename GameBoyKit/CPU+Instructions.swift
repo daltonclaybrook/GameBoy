@@ -8,8 +8,8 @@ extension CPU {
 		pc &+= 3
 	}
 
-	func load(byte: Byte, into address: Address) {
-		mmu.write(byte: byte, to: address)
+	func load(register: Byte, into address: Address) {
+		mmu.write(byte: register, to: address)
 		pc &+= 1
 	}
 
@@ -75,6 +75,38 @@ extension CPU {
 		let carry = a << 7
 		flags = carry != 0 ? .fullCarry : []
 		a = a >> 1 | carry
+		pc &+= 1
+	}
+
+	func stop() {
+		pc &+= 1
+	}
+
+	/// Rotate `a` left moving bit 7 into the carry flag and the carry flag into bit 0.
+	/// Updates carry flag, resets others.
+	func rotateLeftA() {
+		let carry = a & 0x08
+		a = a << 1
+		if flags.contains(.fullCarry) { a += 1 }
+		flags = carry > 0 ? .fullCarry : []
+		pc &+= 1
+	}
+
+	/// Jump relative to the current `pc` rather than to an absolute address.
+	/// Slightly more efficient than a normal jump.
+	func jumpRelative() {
+		let distance = Int16(Int8(bitPattern: mmu.read(address: pc + 1)))
+		pc &+= 2
+		pc = UInt16(bitPattern: Int16(pc) &+ distance)
+	}
+
+	/// Rotate `a` right moving bit 0 into the carry flag and the carry flag into bit 7.
+	/// Updates carry flag, resets others.
+	func rotateRightA() {
+		let carry = a & 1
+		a = a >> 1
+		if flags.contains(.fullCarry) { a += 0x80 }
+		flags = carry > 0 ? .fullCarry : []
 		pc &+= 1
 	}
 }

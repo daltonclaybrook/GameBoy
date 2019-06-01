@@ -129,12 +129,58 @@ extension CPU {
 		return 2
 	}
 
-	// MARK: Uncategorized
-
-	func increment(pair: inout Word) -> Cycles {
-		pair &+= 1
+	func pop(pair: inout Word) -> Cycles {
+		pair = mmu.readWord(address: sp)
+		sp &+= 2
 		pc &+= 1
-		return 2
+		return 3
+	}
+
+	func push(pair: Word) -> Cycles {
+		mmu.write(word: pair, to: sp - 2)
+		sp &-= 2
+		pc &+= 1
+		return 4
+	}
+
+	/// Add signed operand to SP and store the result in HL
+	func addSignedOperandToStackPointer(storeIn pair: inout Word) -> Cycles {
+		flags = []
+		let toAdd = Int32(Int8(bitPattern: mmu.read(address: pc &+ 1)))
+		let sp32 = Int32(sp)
+		pair = Word(truncatingIfNeeded: sp32 + toAdd)
+
+		if sp32 & 0xff + toAdd & 0xff > 0xff {
+			flags.formUnion(.fullCarry)
+		}
+		if sp32 & 0x0f + toAdd & 0x0f > 0x0f {
+			flags.formUnion(.halfCarry)
+		}
+		pc &+= 2
+		return 3
+	}
+
+	// MARK: 8-bit Arthithmetic/Logical
+
+	/// Assuming the last arithmetic operation was between two BCD numbers, converts
+	/// the result in `a` to BCD
+	func decimalAdjustAccumulator() -> Cycles {
+		if flags.contains(.subtract) {
+			if flags.contains(.fullCarry) { a &-= 0x60 }
+			if flags.contains(.halfCarry) { a &-= 0x06 }
+		} else {
+			if flags.contains(.fullCarry) || a & 0xff > 0x99 {
+				a &+= 0x60
+				flags.formUnion(.fullCarry)
+			}
+			if flags.contains(.halfCarry) || a & 0x0f > 0x09 {
+				a &+= 0x06
+			}
+		}
+		if a == 0 { flags.formUnion(.zero) }
+		flags.subtract(.halfCarry)
+		pc &+= 1
+		return 1
 	}
 
 	func increment(register: inout Byte) -> Cycles {
@@ -144,6 +190,16 @@ extension CPU {
 		register &+= 1
 		pc &+= 1
 		return 1
+	}
+
+	func incrementValue(at address: Address) -> Cycles {
+		flags.formIntersection(.fullCarry) // preserve the carry flag
+		let value = mmu.read(address: address)
+		if value & 0x0f == 0x0f { flags.formUnion(.halfCarry) }
+		if value == 0xff { flags.formUnion(.zero) }
+		mmu.write(byte: value &+ 1, to: address)
+		pc &+= 1
+		return 3
 	}
 
 	func decrement(register: inout Byte) -> Cycles {
@@ -156,12 +212,235 @@ extension CPU {
 		return 1
 	}
 
-	func rotateLeftCarryA() -> Cycles {
-		let carry = a >> 7
-		flags = carry != 0 ? .fullCarry : []
-		a = a << 1 | carry
+	func decrementValue(at address: Address) -> Cycles {
+		flags.formIntersection(.fullCarry)
+		flags.formUnion(.subtract)
+		let value = mmu.read(address: address)
+		if value & 0x0f == 0 { flags.formUnion(.halfCarry) }
+		if value == 1 { flags.formUnion(.zero) }
+		mmu.write(byte: value &- 1, to: address)
 		pc &+= 1
-		return 5
+		return 3
+	}
+
+	func setCarryFlag() -> Cycles {
+		flags.formIntersection(.zero) // preserve zero flag
+		flags.formUnion(.fullCarry)
+		pc &+= 1
+		return 1
+	}
+
+	func complementAccumulator() -> Cycles {
+		a = ~a
+		flags.formUnion([.halfCarry, .subtract])
+		pc &+= 1
+		return 1
+	}
+
+	func complementCarryFlag() -> Cycles {
+		flags.formSymmetricDifference(.fullCarry)
+		flags.formIntersection([.zero, .fullCarry]) // preserve zero flag
+		pc &+= 1
+		return 1
+	}
+
+	func add(value: Byte, to register: inout Byte) -> Cycles {
+		flags = []
+		if register > register &+ value { flags.formUnion(.fullCarry) }
+		if register & 0x0f + value & 0x0f > 0x0f { flags.formUnion(.halfCarry) }
+		register &+= value
+		if register == 0 { flags.formUnion(.zero) }
+		pc &+= 1
+		return 1
+	}
+
+	func add(address: Address, to register: inout Byte) -> Cycles {
+		let value = mmu.read(address: address)
+		_ = add(value: value, to: &register)
+		return 2
+	}
+
+	func addWithCarry(value: Byte, to register: inout Byte) -> Cycles {
+		let carry: Byte = flags.contains(.fullCarry) ? 1 : 0
+		flags = []
+		if register > register &+ value { flags.formUnion(.fullCarry) }
+		if register & 0x0f + value & 0x0f > 0x0f { flags.formUnion(.halfCarry) }
+		register &+= value
+		if register > register &+ carry { flags.formUnion(.fullCarry) }
+		if register & 0x0f + carry > 0x0f { flags.formUnion(.halfCarry) }
+		register &+= carry
+		if register == 0 { flags.formUnion(.zero) }
+		pc &+= 1
+		return 1
+	}
+
+	func addWithCarry(address: Address, to register: inout Byte) -> Cycles {
+		let value = mmu.read(address: address)
+		_ = addWithCarry(value: value, to: &register)
+		return 2
+	}
+
+	func addOperand(to register: inout Byte) -> Cycles {
+		let value = mmu.read(address: pc &+ 1)
+		_ = add(value: value, to: &register)
+		pc &+= 1
+		return 2
+	}
+
+	func addOperandWithCarry(to register: inout Byte) -> Cycles {
+		let value = mmu.read(address: pc &+ 1)
+		_ = addWithCarry(value: value, to: &register)
+		pc &+= 1
+		return 2
+	}
+
+	func subtract(value: Byte, from register: inout Byte) -> Cycles {
+		flags = .subtract
+		if register < value { flags.formUnion(.fullCarry) }
+		if register & 0x0f < value & 0x0f { flags.formUnion(.halfCarry) }
+		if register == value { flags.formUnion(.zero) }
+		register &-= value
+		pc &+= 1
+		return 1
+	}
+
+	func subtract(address: Address, from register: inout Byte) -> Cycles {
+		let value = mmu.read(address: address)
+		_ = subtract(value: value, from: &register)
+		return 2
+	}
+
+	func subtractWithCarry(value: Byte, from register: inout Byte) -> Cycles {
+		let carry: Byte = flags.contains(.fullCarry) ? 1 : 0
+		flags = .subtract
+		if register < value { flags.formUnion(.fullCarry) }
+		if register & 0x0f < value & 0x0f { flags.formUnion(.halfCarry) }
+		register &-= value
+		if register < carry { flags.formUnion(.fullCarry) }
+		if register & 0x0f < carry { flags.formUnion(.halfCarry) }
+		register &-= carry
+		if register == 0 { flags.formUnion(.zero) }
+		pc &+= 1
+		return 1
+	}
+
+	func subtractWithCarry(address: Address, from register: inout Byte) -> Cycles {
+		let value = mmu.read(address: address)
+		_ = subtractWithCarry(value: value, from: &register)
+		return 2
+	}
+
+	func subtractOperand(from register: inout Byte) -> Cycles {
+		let value = mmu.read(address: pc &+ 1)
+		_ = subtract(value: value, from: &register)
+		pc &+= 1
+		return 2
+	}
+
+	func subtractOperandWithCarry(from register: inout Byte) -> Cycles {
+		let value = mmu.read(address: pc &+ 1)
+		_ = subtractWithCarry(value: value, from: &register)
+		pc &+= 1
+		return 2
+	}
+
+	func and(value: Byte, into register: inout Byte) -> Cycles {
+		register &= value
+		flags = register == 0 ? [.zero, .halfCarry] : .halfCarry
+		pc &+= 1
+		return 1
+	}
+
+	func and(address: Address, into register: inout Byte) -> Cycles {
+		let value = mmu.read(address: address)
+		_ = and(value: value, into: &register)
+		return 2
+	}
+
+	func andOperand(into register: inout Byte) -> Cycles {
+		flags = .halfCarry
+		register &= mmu.read(address: pc &+ 1)
+		if register == 0 { flags.formUnion(.zero) }
+		pc &+= 2
+		return 2
+	}
+
+	func or(value: Byte, into register: inout Byte) -> Cycles {
+		register |= value
+		flags = register == 0 ? .zero : []
+		pc &+= 1
+		return 1
+	}
+
+	func or(address: Address, into register: inout Byte) -> Cycles {
+		let value = mmu.read(address: address)
+		_ = or(value: value, into: &register)
+		return 2
+	}
+
+	func orOperand(into register: inout Byte) -> Cycles {
+		let value = mmu.read(address: pc &+ 1)
+		register |= value
+		flags = register == 0 ? .zero : []
+		pc &+= 2
+		return 2
+	}
+
+	func xor(value: Byte, into register: inout Byte) -> Cycles {
+		register ^= value
+		flags = register == 0 ? .zero : []
+		pc &+= 1
+		return 1
+	}
+
+	func xor(address: Address, into register: inout Byte) -> Cycles {
+		let value = mmu.read(address: address)
+		_ = xor(value: value, into: &register)
+		return 2
+	}
+
+	func xorOperand(into register: inout Byte) -> Cycles {
+		let value = mmu.read(address: pc &+ 1)
+		register ^= value
+		flags = register == 0 ? .zero : []
+		pc &+= 2
+		return 2
+	}
+
+	func compare(address: Address, with register: Byte) -> Cycles {
+		let value = mmu.read(address: address)
+		_ = compare(value: value, with: register)
+		return 2
+	}
+
+	func compare(value: Byte, with register: Byte) -> Cycles {
+		flags = .subtract
+		if register < value { flags.formUnion(.fullCarry) }
+		if register & 0x0f < value & 0x0f { flags.formUnion(.halfCarry) }
+		if register == value { flags.formUnion(.zero) }
+		pc &+= 1
+		return 1
+	}
+
+	func compareOperand(with register: Byte) -> Cycles {
+		let value = mmu.read(address: pc &+ 1)
+		_ = compare(value: value, with: register)
+		pc &+= 1
+		return 2
+	}
+
+	// MARK: 16-bit Arithmetic/Logical
+
+	func increment(pair: inout Word) -> Cycles {
+		pair &+= 1
+		pc &+= 1
+		return 2
+	}
+
+	func decrement(pair: inout Word) -> Cycles {
+		pair &-= 1
+		pc &+= 1
+		return 2
 	}
 
 	func add(value: Word, to pair: inout Word) -> Cycles {
@@ -173,10 +452,31 @@ extension CPU {
 		return 2
 	}
 
-	func decrement(pair: inout Word) -> Cycles {
-		pair &-= 1
+	func addSignedOperandToStackPointer() -> Cycles {
+		flags = []
+		let toAdd = Int32(Int8(bitPattern: mmu.read(address: pc &+ 1)))
+		let oldSP = Int32(sp)
+		let newSP = oldSP + toAdd
+
+		if oldSP & 0xff + toAdd & 0xff > 0xff {
+			flags.formUnion(.fullCarry)
+		}
+		if oldSP & 0x0f + toAdd & 0x0f > 0x0f {
+			flags.formUnion(.halfCarry)
+		}
+		sp = Word(truncatingIfNeeded: newSP)
+		pc &+= 2
+		return 4
+	}
+
+	// MARK: Uncategorized
+
+	func rotateLeftCarryA() -> Cycles {
+		let carry = a >> 7
+		flags = carry != 0 ? .fullCarry : []
+		a = a << 1 | carry
 		pc &+= 1
-		return 2
+		return 5
 	}
 
 	func rotateRightCarryA() -> Cycles {
@@ -232,198 +532,9 @@ extension CPU {
 		}
 	}
 
-	/// Assuming the last arithmetic operation was between two BCD numbers, converts
-	/// the result in `a` to BCD
-	func decimalAdjustAccumulator() -> Cycles {
-		if flags.contains(.subtract) {
-			if flags.contains(.fullCarry) { a &-= 0x60 }
-			if flags.contains(.halfCarry) { a &-= 0x06 }
-		} else {
-			if flags.contains(.fullCarry) || a & 0xff > 0x99 {
-				a &+= 0x60
-				flags.formUnion(.fullCarry)
-			}
-			if flags.contains(.halfCarry) || a & 0x0f > 0x09 {
-				a &+= 0x06
-			}
-		}
-		if a == 0 { flags.formUnion(.zero) }
-		flags.subtract(.halfCarry)
-		pc &+= 1
-		return 1
-	}
-
-	func complementAccumulator() -> Cycles {
-		a = ~a
-		flags.formUnion([.halfCarry, .subtract])
-		pc &+= 1
-		return 1
-	}
-
-	func incrementValue(at address: Address) -> Cycles {
-		flags.formIntersection(.fullCarry) // preserve the carry flag
-		let value = mmu.read(address: address)
-		if value & 0x0f == 0x0f { flags.formUnion(.halfCarry) }
-		if value == 0xff { flags.formUnion(.zero) }
-		mmu.write(byte: value &+ 1, to: address)
-		pc &+= 1
-		return 3
-	}
-
-	func decrementValue(at address: Address) -> Cycles {
-		flags.formIntersection(.fullCarry)
-		flags.formUnion(.subtract)
-		let value = mmu.read(address: address)
-		if value & 0x0f == 0 { flags.formUnion(.halfCarry) }
-		if value == 1 { flags.formUnion(.zero) }
-		mmu.write(byte: value &- 1, to: address)
-		pc &+= 1
-		return 3
-	}
-
-	func setCarryFlag() -> Cycles {
-		flags.formIntersection(.zero) // preserve zero flag
-		flags.formUnion(.fullCarry)
-		pc &+= 1
-		return 1
-	}
-
-	func complementCarryFlag() -> Cycles {
-		flags.formSymmetricDifference(.fullCarry)
-		flags.formIntersection([.zero, .fullCarry]) // preserve zero flag
-		pc &+= 1
-		return 1
-	}
-
 	func halt() -> Cycles {
 		pc &+= 1
 		return 1
-	}
-
-	func add(value: Byte, to register: inout Byte) -> Cycles {
-		flags = []
-		if register > register &+ value { flags.formUnion(.fullCarry) }
-		if register & 0x0f + value & 0x0f > 0x0f { flags.formUnion(.halfCarry) }
-		register &+= value
-		if register == 0 { flags.formUnion(.zero) }
-		pc &+= 1
-		return 1
-	}
-
-	func add(address: Address, to register: inout Byte) -> Cycles {
-		let value = mmu.read(address: address)
-		_ = add(value: value, to: &register)
-		return 2
-	}
-
-	func addWithCarry(value: Byte, to register: inout Byte) -> Cycles {
-		let carry: Byte = flags.contains(.fullCarry) ? 1 : 0
-		flags = []
-		if register > register &+ value { flags.formUnion(.fullCarry) }
-		if register & 0x0f + value & 0x0f > 0x0f { flags.formUnion(.halfCarry) }
-		register &+= value
-		if register > register &+ carry { flags.formUnion(.fullCarry) }
-		if register & 0x0f + carry > 0x0f { flags.formUnion(.halfCarry) }
-		register &+= carry
-		if register == 0 { flags.formUnion(.zero) }
-		pc &+= 1
-		return 1
-	}
-
-	func addWithCarry(address: Address, to register: inout Byte) -> Cycles {
-		let value = mmu.read(address: address)
-		_ = addWithCarry(value: value, to: &register)
-		return 2
-	}
-
-	func subtract(value: Byte, from register: inout Byte) -> Cycles {
-		flags = .subtract
-		if register < value { flags.formUnion(.fullCarry) }
-		if register & 0x0f < value & 0x0f { flags.formUnion(.halfCarry) }
-		if register == value { flags.formUnion(.zero) }
-		register &-= value
-		pc &+= 1
-		return 1
-	}
-
-	func subtract(address: Address, from register: inout Byte) -> Cycles {
-		let value = mmu.read(address: address)
-		_ = subtract(value: value, from: &register)
-		return 2
-	}
-
-	func subtractWithCarry(value: Byte, from register: inout Byte) -> Cycles {
-		let carry: Byte = flags.contains(.fullCarry) ? 1 : 0
-		flags = .subtract
-		if register < value { flags.formUnion(.fullCarry) }
-		if register & 0x0f < value & 0x0f { flags.formUnion(.halfCarry) }
-		register &-= value
-		if register < carry { flags.formUnion(.fullCarry) }
-		if register & 0x0f < carry { flags.formUnion(.halfCarry) }
-		register &-= carry
-		if register == 0 { flags.formUnion(.zero) }
-		pc &+= 1
-		return 1
-	}
-
-	func subtractWithCarry(address: Address, from register: inout Byte) -> Cycles {
-		let value = mmu.read(address: address)
-		_ = subtractWithCarry(value: value, from: &register)
-		return 2
-	}
-
-	func and(value: Byte, into register: inout Byte) -> Cycles {
-		register &= value
-		flags = register == 0 ? [.zero, .halfCarry] : .halfCarry
-		pc &+= 1
-		return 1
-	}
-
-	func and(address: Address, into register: inout Byte) -> Cycles {
-		let value = mmu.read(address: address)
-		_ = and(value: value, into: &register)
-		return 2
-	}
-
-	func xor(value: Byte, into register: inout Byte) -> Cycles {
-		register ^= value
-		flags = register == 0 ? .zero : []
-		pc &+= 1
-		return 1
-	}
-
-	func xor(address: Address, into register: inout Byte) -> Cycles {
-		let value = mmu.read(address: address)
-		_ = xor(value: value, into: &register)
-		return 2
-	}
-
-	func or(value: Byte, into register: inout Byte) -> Cycles {
-		register |= value
-		flags = register == 0 ? .zero : []
-		pc &+= 1
-		return 1
-	}
-
-	func or(address: Address, into register: inout Byte) -> Cycles {
-		let value = mmu.read(address: address)
-		_ = or(value: value, into: &register)
-		return 2
-	}
-
-	func compare(value: Byte, with register: Byte) -> Cycles {
-		flags = .subtract
-		if register < value { flags.formUnion(.fullCarry) }
-		if register & 0x0f < value & 0x0f { flags.formUnion(.halfCarry) }
-		if register == value { flags.formUnion(.zero) }
-		pc &+= 1
-		return 1
-	}
-
-	func compare(address: Address, with register: Byte) -> Cycles {
-		let value = mmu.read(address: address)
-		_ = compare(value: value, with: register)
-		return 2
 	}
 
 	func `return`(condition: Bool) -> Cycles {
@@ -440,13 +551,6 @@ extension CPU {
 		pc = mmu.readWord(address: sp)
 		sp &+= 2
 		return 4
-	}
-
-	func pop(pair: inout Word) -> Cycles {
-		pair = mmu.readWord(address: sp)
-		sp &+= 2
-		pc &+= 1
-		return 3
 	}
 
 	func jump(condition: Bool) -> Cycles {
@@ -480,20 +584,6 @@ extension CPU {
 		return 6
 	}
 
-	func push(pair: Word) -> Cycles {
-		mmu.write(word: pair, to: sp - 2)
-		sp &-= 2
-		pc &+= 1
-		return 4
-	}
-
-	func addOperand(to register: inout Byte) -> Cycles {
-		let value = mmu.read(address: pc &+ 1)
-		_ = add(value: value, to: &register)
-		pc &+= 1
-		return 2
-	}
-
 	func reset(vector: Byte) -> Cycles {
 		mmu.write(word: pc &+ 1, to: sp - 2)
 		sp &-= 2
@@ -501,24 +591,9 @@ extension CPU {
 		return 4
 	}
 
-	func addOperandWithCarry(to register: inout Byte) -> Cycles {
-		let value = mmu.read(address: pc &+ 1)
-		_ = addWithCarry(value: value, to: &register)
-		pc &+= 1
-		return 2
-	}
-
 	func undefined() -> Cycles {
-		// This is an error in the program and would crash a real Game Boy
-		assertionFailure()
+		assertionFailure("This is an error in the program and would crash a real Game Boy")
 		return 0
-	}
-
-	func subtractOperand(from register: inout Byte) -> Cycles {
-		let value = mmu.read(address: pc &+ 1)
-		_ = subtract(value: value, from: &register)
-		pc &+= 1
-		return 2
 	}
 
 	func returnEnableInterrupts() -> Cycles {
@@ -526,49 +601,9 @@ extension CPU {
 		return `return`()
 	}
 
-	func subtractOperandWithCarry(from register: inout Byte) -> Cycles {
-		let value = mmu.read(address: pc &+ 1)
-		_ = subtractWithCarry(value: value, from: &register)
-		pc &+= 1
-		return 2
-	}
-
-	func andOperand(into register: inout Byte) -> Cycles {
-		flags = .halfCarry
-		register &= mmu.read(address: pc &+ 1)
-		if register == 0 { flags.formUnion(.zero) }
-		pc &+= 2
-		return 2
-	}
-
-	func addSignedOperandToStackPointer() -> Cycles {
-		flags = []
-		let toAdd = Int32(Int8(bitPattern: mmu.read(address: pc &+ 1)))
-		let oldSP = Int32(sp)
-		let newSP = oldSP + toAdd
-
-		if oldSP & 0xff + toAdd & 0xff > 0xff {
-			flags.formUnion(.fullCarry)
-		}
-		if oldSP & 0x0f + toAdd & 0x0f > 0x0f {
-			flags.formUnion(.halfCarry)
-		}
-		sp = Word(truncatingIfNeeded: newSP)
-		pc &+= 2
-		return 4
-	}
-
 	func jump(to word: Word) -> Cycles {
 		pc = word
 		return 1
-	}
-
-	func xorOperand(into register: inout Byte) -> Cycles {
-		let value = mmu.read(address: pc &+ 1)
-		register ^= value
-		flags = register == 0 ? .zero : []
-		pc &+= 2
-		return 2
 	}
 
 	func disableInterrupts() -> Cycles {
@@ -577,41 +612,9 @@ extension CPU {
 		return 1
 	}
 
-	func orOperand(into register: inout Byte) -> Cycles {
-		let value = mmu.read(address: pc &+ 1)
-		register |= value
-		flags = register == 0 ? .zero : []
-		pc &+= 2
-		return 2
-	}
-
-	/// Add signed operand to SP and store the result in HL
-	func addSignedOperandToStackPointer(storeIn pair: inout Word) -> Cycles {
-		flags = []
-		let toAdd = Int32(Int8(bitPattern: mmu.read(address: pc &+ 1)))
-		let sp32 = Int32(sp)
-		pair = Word(truncatingIfNeeded: sp32 + toAdd)
-
-		if sp32 & 0xff + toAdd & 0xff > 0xff {
-			flags.formUnion(.fullCarry)
-		}
-		if sp32 & 0x0f + toAdd & 0x0f > 0x0f {
-			flags.formUnion(.halfCarry)
-		}
-		pc &+= 2
-		return 3
-	}
-
 	func enableInterrupts() -> Cycles {
 		interuptsEnabled = true
 		pc &+= 1
 		return 1
-	}
-
-	func compareOperand(with register: Byte) -> Cycles {
-		let value = mmu.read(address: pc &+ 1)
-		_ = compare(value: value, with: register)
-		pc &+= 1
-		return 2
 	}
 }

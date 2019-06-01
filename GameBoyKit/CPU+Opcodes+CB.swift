@@ -34,5 +34,22 @@ extension CPU {
 		Opcode(mnemonic: "RR L") { $0.rotateRight(value: &$0.l) },
 		Opcode(mnemonic: "RR (HL)") { $0.rotateRight(address: $0.hl) },
 		Opcode(mnemonic: "RR A") { $0.rotateRight(value: &$0.a) },
+		// 0xCB2n
+		Opcode(mnemonic: "SLA B") { $0.shiftLeftArithmetic(value: &$0.b) },
+		Opcode(mnemonic: "SLA C") { $0.shiftLeftArithmetic(value: &$0.c) },
+		Opcode(mnemonic: "SLA D") { $0.shiftLeftArithmetic(value: &$0.d) },
+		Opcode(mnemonic: "SLA E") { $0.shiftLeftArithmetic(value: &$0.e) },
+		Opcode(mnemonic: "SLA H") { $0.shiftLeftArithmetic(value: &$0.h) },
+		Opcode(mnemonic: "SLA L") { $0.shiftLeftArithmetic(value: &$0.l) },
+		Opcode(mnemonic: "SLA (HL)") { $0.shiftLeftArithmetic(address: $0.hl) },
+		Opcode(mnemonic: "SLA A") { $0.shiftLeftArithmetic(value: &$0.a) },
+		Opcode(mnemonic: "SRA B") { $0.shiftRightArithmetic(value: &$0.b) },
+		Opcode(mnemonic: "SRA C") { $0.shiftRightArithmetic(value: &$0.c) },
+		Opcode(mnemonic: "SRA D") { $0.shiftRightArithmetic(value: &$0.d) },
+		Opcode(mnemonic: "SRA E") { $0.shiftRightArithmetic(value: &$0.e) },
+		Opcode(mnemonic: "SRA H") { $0.shiftRightArithmetic(value: &$0.h) },
+		Opcode(mnemonic: "SRA L") { $0.shiftRightArithmetic(value: &$0.l) },
+		Opcode(mnemonic: "SRA (HL)") { $0.shiftRightArithmetic(address: $0.hl) },
+		Opcode(mnemonic: "SRA A") { $0.shiftRightArithmetic(value: &$0.a) },
 	]
 }

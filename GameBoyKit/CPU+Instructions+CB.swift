@@ -1,4 +1,10 @@
 extension CPU {
+	func prefixCB() -> Cycles {
+		let opcodeIndex = Int(mmu.read(address: pc &+ 1))
+		let opcode = CPU.cbOpcodes[opcodeIndex]
+		return opcode.block(self)
+	}
+
 	func rotateLeftCarry(value: inout Byte) -> Cycles {
 		flags = []
 		let carry = value >> 7
@@ -63,6 +69,36 @@ extension CPU {
 	func rotateRight(address: Address) -> Cycles {
 		var value = mmu.read(address: address)
 		_ = rotateRight(value: &value)
+		mmu.write(byte: value, to: address)
+		return 4
+	}
+
+	func shiftLeftArithmetic(value: inout Byte) -> Cycles {
+		flags = value & 0x80 != 0 ? .fullCarry : []
+		value <<= 1
+		if value == 0 { flags.formUnion(.zero) }
+		pc &+= 2
+		return 2
+	}
+
+	func shiftLeftArithmetic(address: Address) -> Cycles {
+		var value = mmu.read(address: address)
+		_ = shiftLeftArithmetic(value: &value)
+		mmu.write(byte: value, to: address)
+		return 4
+	}
+
+	func shiftRightArithmetic(value: inout Byte) -> Cycles {
+		flags = value & 0x01 != 0 ? .fullCarry : []
+		value = (value & 0x80) | (value >> 1)
+		if value == 0 { flags.formUnion(.zero) }
+		pc &+= 2
+		return 2
+	}
+
+	func shiftRightArithmetic(address: Address) -> Cycles {
+		var value = mmu.read(address: address)
+		_ = shiftRightArithmetic(value: &value)
 		mmu.write(byte: value, to: address)
 		return 4
 	}

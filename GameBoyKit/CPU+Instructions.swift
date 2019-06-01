@@ -7,7 +7,7 @@ extension CPU {
 	func loadOperand(into pair: inout Word) -> Cycles {
 		pair = mmu.readWord(address: pc + 1)
 		pc &+= 3
-		return 2
+		return 3
 	}
 
 	func load(register: Byte, into address: Address) -> Cycles {
@@ -19,7 +19,7 @@ extension CPU {
 	func increment(pair: inout Word) -> Cycles {
 		pair &+= 1
 		pc &+= 1
-		return 1
+		return 2
 	}
 
 	func increment(register: inout Byte) -> Cycles {
@@ -28,7 +28,7 @@ extension CPU {
 		if register & 0x0f == 0x0f { flags.formUnion(.halfCarry) }
 		register &+= 1
 		pc &+= 1
-		return 2
+		return 1
 	}
 
 	func decrement(register: inout Byte) -> Cycles {
@@ -44,7 +44,7 @@ extension CPU {
 	func loadOperand(into register: inout Byte) -> Cycles {
 		register = mmu.read(address: pc + 1)
 		pc &+= 2
-		return 1
+		return 2
 	}
 
 	func rotateLeftCarryA() -> Cycles {
@@ -80,7 +80,7 @@ extension CPU {
 	func decrement(pair: inout Word) -> Cycles {
 		pair &-= 1
 		pc &+= 1
-		return 1
+		return 2
 	}
 
 	func rotateRightCarryA() -> Cycles {
@@ -171,9 +171,65 @@ extension CPU {
 		return 2
 	}
 
-	func complement() -> Cycles {
+	func complementAccumulator() -> Cycles {
 		a = ~a
 		flags.formUnion([.halfCarry, .subtract])
+		pc &+= 1
+		return 1
+	}
+
+	func loadAddressAndDecrementHL(from register: Byte) -> Cycles {
+		mmu.write(byte: register, to: hl)
+		hl &-= 1
+		pc &+= 1
+		return 2
+	}
+
+	func incrementValue(at address: Address) -> Cycles {
+		flags.formIntersection(.fullCarry) // preserve the carry flag
+		let value = mmu.read(address: address)
+		if value & 0x0f == 0x0f { flags.formUnion(.halfCarry) }
+		if value == 0xff { flags.formUnion(.zero) }
+		mmu.write(byte: value &+ 1, to: address)
+		pc &+= 1
+		return 3
+	}
+
+	func decrementValue(at address: Address) -> Cycles {
+		flags.formIntersection(.fullCarry)
+		flags.formUnion(.subtract)
+		let value = mmu.read(address: address)
+		if value & 0x0f == 0 { flags.formUnion(.halfCarry) }
+		if value == 1 { flags.formUnion(.zero) }
+		mmu.write(byte: value &- 1, to: address)
+		pc &+= 1
+		return 3
+	}
+
+	func loadOperand(into address: Address) -> Cycles {
+		let value = mmu.read(address: pc + 1)
+		mmu.write(byte: value, to: address)
+		pc &+= 2
+		return 3
+	}
+
+	func setCarryFlag() -> Cycles {
+		flags.formIntersection(.zero) // preserve zero flag
+		flags.formUnion(.fullCarry)
+		pc &+= 1
+		return 1
+	}
+
+	func loadFromAddressAndDecrementHL(to register: inout Byte) -> Cycles {
+		register = mmu.read(address: hl)
+		hl &-= 1
+		pc &+= 1
+		return 2
+	}
+
+	func complementCarryFlag() -> Cycles {
+		flags.formSymmetricDifference(.fullCarry)
+		flags.formIntersection([.zero, .fullCarry]) // preserve zero flag
 		pc &+= 1
 		return 1
 	}

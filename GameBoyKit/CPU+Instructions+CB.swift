@@ -102,4 +102,33 @@ extension CPU {
 		mmu.write(byte: value, to: address)
 		return 4
 	}
+
+	func swap(value: inout Byte) -> Cycles {
+		value = (value << 4) | (value >> 4)
+		flags = value == 0 ? .zero : []
+		pc &+= 2
+		return 2
+	}
+
+	func swap(address: Address) -> Cycles {
+		var value = mmu.read(address: address)
+		_ = swap(value: &value)
+		mmu.write(byte: value, to: address)
+		return 4
+	}
+
+	func shiftRightLogical(value: inout Byte) -> Cycles {
+		flags = value & 0x01 != 0 ? .fullCarry : []
+		value >>= 1
+		if value == 0 { flags.formUnion(.zero) }
+		pc &+= 2
+		return 2
+	}
+
+	func shiftRightLogical(address: Address) -> Cycles {
+		var value = mmu.read(address: address)
+		_ = shiftRightLogical(value: &value)
+		mmu.write(byte: value, to: address)
+		return 4
+	}
 }

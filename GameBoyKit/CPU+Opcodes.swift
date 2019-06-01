@@ -136,5 +136,22 @@ extension CPU {
 		Opcode(mnemonic: "LD A, L") { $0.load(value: $0.l, into: &$0.a) },
 		Opcode(mnemonic: "LD A, (HL)") { $0.load(address: $0.hl, into: &$0.a) },
 		Opcode(mnemonic: "LD A, A") { $0.load(value: $0.a, into: &$0.a) },
+		// 0x8n
+		Opcode(mnemonic: "ADD A, B") { $0.add(value: $0.b, to: &$0.a) },
+		Opcode(mnemonic: "ADD A, C") { $0.add(value: $0.c, to: &$0.a) },
+		Opcode(mnemonic: "ADD A, D") { $0.add(value: $0.d, to: &$0.a) },
+		Opcode(mnemonic: "ADD A, E") { $0.add(value: $0.e, to: &$0.a) },
+		Opcode(mnemonic: "ADD A, H") { $0.add(value: $0.h, to: &$0.a) },
+		Opcode(mnemonic: "ADD A, L") { $0.add(value: $0.l, to: &$0.a) },
+		Opcode(mnemonic: "ADD A, (HL)") { $0.add(address: $0.hl, to: &$0.a) },
+		Opcode(mnemonic: "ADD A, A") { $0.add(value: $0.a, to: &$0.a) },
+		Opcode(mnemonic: "ADC A, B    4") { $0.addWithCarry(value: $0.b, to: &$0.a) },
+		Opcode(mnemonic: "ADC A, C    4") { $0.addWithCarry(value: $0.c, to: &$0.a) },
+		Opcode(mnemonic: "ADC A, D    4") { $0.addWithCarry(value: $0.d, to: &$0.a) },
+		Opcode(mnemonic: "ADC A, E    4") { $0.addWithCarry(value: $0.e, to: &$0.a) },
+		Opcode(mnemonic: "ADC A, H    4") { $0.addWithCarry(value: $0.h, to: &$0.a) },
+		Opcode(mnemonic: "ADC A, L    4") { $0.addWithCarry(value: $0.l, to: &$0.a) },
+		Opcode(mnemonic: "ADC A, (HL)    8") { $0.addWithCarry(address: $0.hl, to: &$0.a) },
+		Opcode(mnemonic: "ADC A, A    4") { $0.addWithCarry(value: $0.a, to: &$0.a) },
 	]
 }

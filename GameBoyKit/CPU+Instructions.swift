@@ -250,4 +250,40 @@ extension CPU {
 		pc &+= 1
 		return 1
 	}
+
+	func add(value: Byte, to register: inout Byte) -> Cycles {
+		flags = []
+		if register > register &+ value { flags.formUnion(.fullCarry) }
+		if register & 0x0f + value & 0x0f > 0x0f { flags.formUnion(.halfCarry) }
+		register &+= value
+		if register == 0 { flags.formUnion(.zero) }
+		pc &+= 1
+		return 1
+	}
+
+	func add(address: Address, to register: inout Byte) -> Cycles {
+		let value = mmu.read(address: address)
+		_ = add(value: value, to: &register)
+		return 2
+	}
+
+	func addWithCarry(value: Byte, to register: inout Byte) -> Cycles {
+		let carry: Byte = flags.contains(.fullCarry) ? 1 : 0
+		flags = []
+		if register > register &+ value { flags.formUnion(.fullCarry) }
+		if register & 0x0f + value & 0x0f > 0x0f { flags.formUnion(.halfCarry) }
+		register &+= value
+		if register > register &+ carry { flags.formUnion(.fullCarry) }
+		if register & 0x0f + carry & 0x0f > 0x0f { flags.formUnion(.halfCarry) }
+		register &+= carry
+		if register == 0 { flags.formUnion(.zero) }
+		pc &+= 1
+		return 1
+	}
+
+	func addWithCarry(address: Address, to register: inout Byte) -> Cycles {
+		let value = mmu.read(address: address)
+		_ = addWithCarry(value: value, to: &register)
+		return 2
+	}
 }

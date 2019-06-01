@@ -153,5 +153,22 @@ extension CPU {
 		Opcode(mnemonic: "ADC A, L") { $0.addWithCarry(value: $0.l, to: &$0.a) },
 		Opcode(mnemonic: "ADC A, (HL)") { $0.addWithCarry(address: $0.hl, to: &$0.a) },
 		Opcode(mnemonic: "ADC A, A") { $0.addWithCarry(value: $0.a, to: &$0.a) },
+		// 0x9n
+		Opcode(mnemonic: "SUB B") { $0.subtract(value: $0.b, from: &$0.a) },
+		Opcode(mnemonic: "SUB C") { $0.subtract(value: $0.c, from: &$0.a) },
+		Opcode(mnemonic: "SUB D") { $0.subtract(value: $0.d, from: &$0.a) },
+		Opcode(mnemonic: "SUB E") { $0.subtract(value: $0.e, from: &$0.a) },
+		Opcode(mnemonic: "SUB H") { $0.subtract(value: $0.h, from: &$0.a) },
+		Opcode(mnemonic: "SUB L") { $0.subtract(value: $0.l, from: &$0.a) },
+		Opcode(mnemonic: "SUB (HL)") { $0.subtract(address: $0.hl, from: &$0.a) },
+		Opcode(mnemonic: "SUB A") { $0.subtract(value: $0.a, from: &$0.a) },
+		Opcode(mnemonic: "SBC A, B") { $0.subtractWithCarry(value: $0.b, from: &$0.a) },
+		Opcode(mnemonic: "SBC A, C") { $0.subtractWithCarry(value: $0.c, from: &$0.a) },
+		Opcode(mnemonic: "SBC A, D") { $0.subtractWithCarry(value: $0.d, from: &$0.a) },
+		Opcode(mnemonic: "SBC A, E") { $0.subtractWithCarry(value: $0.e, from: &$0.a) },
+		Opcode(mnemonic: "SBC A, H") { $0.subtractWithCarry(value: $0.h, from: &$0.a) },
+		Opcode(mnemonic: "SBC A, L") { $0.subtractWithCarry(value: $0.l, from: &$0.a) },
+		Opcode(mnemonic: "SBC A, (HL)") { $0.subtractWithCarry(address: $0.hl, from: &$0.a) },
+		Opcode(mnemonic: "SBC A, A") { $0.subtractWithCarry(value: $0.a, from: &$0.a) },
 	]
 }

@@ -274,7 +274,7 @@ extension CPU {
 		if register & 0x0f + value & 0x0f > 0x0f { flags.formUnion(.halfCarry) }
 		register &+= value
 		if register > register &+ carry { flags.formUnion(.fullCarry) }
-		if register & 0x0f + carry & 0x0f > 0x0f { flags.formUnion(.halfCarry) }
+		if register & 0x0f + carry > 0x0f { flags.formUnion(.halfCarry) }
 		register &+= carry
 		if register == 0 { flags.formUnion(.zero) }
 		pc &+= 1
@@ -284,6 +284,42 @@ extension CPU {
 	func addWithCarry(address: Address, to register: inout Byte) -> Cycles {
 		let value = mmu.read(address: address)
 		_ = addWithCarry(value: value, to: &register)
+		return 2
+	}
+
+	func subtract(value: Byte, from register: inout Byte) -> Cycles {
+		flags = .subtract
+		if register < value { flags.formUnion(.fullCarry) }
+		if register & 0x0f < value & 0x0f { flags.formUnion(.halfCarry) }
+		if register == value { flags.formUnion(.zero) }
+		register &-= value
+		pc &+= 1
+		return 1
+	}
+
+	func subtract(address: Address, from register: inout Byte) -> Cycles {
+		let value = mmu.read(address: address)
+		_ = subtract(value: value, from: &register)
+		return 2
+	}
+
+	func subtractWithCarry(value: Byte, from register: inout Byte) -> Cycles {
+		let carry: Byte = flags.contains(.fullCarry) ? 1 : 0
+		flags = .subtract
+		if register < value { flags.formUnion(.fullCarry) }
+		if register & 0x0f < value & 0x0f { flags.formUnion(.halfCarry) }
+		register &-= value
+		if register < carry { flags.formUnion(.fullCarry) }
+		if register & 0x0f < carry { flags.formUnion(.halfCarry) }
+		register &-= carry
+		if register == 0 { flags.formUnion(.zero) }
+		pc &+= 1
+		return 1
+	}
+
+	func subtractWithCarry(address: Address, from register: inout Byte) -> Cycles {
+		let value = mmu.read(address: address)
+		_ = subtractWithCarry(value: value, from: &register)
 		return 2
 	}
 }

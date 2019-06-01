@@ -10,8 +10,8 @@ extension CPU {
 		return 3
 	}
 
-	func load(register: Byte, into address: Address) -> Cycles {
-		mmu.write(byte: register, to: address)
+	func load(value: Byte, into address: Address) -> Cycles {
+		mmu.write(byte: value, to: address)
 		pc &+= 1
 		return 2
 	}
@@ -238,12 +238,6 @@ extension CPU {
 		register = value
 		pc &+= 1
 		return 1
-	}
-
-	func load(value: Byte, into address: Address) -> Cycles {
-		mmu.write(byte: value, to: address)
-		pc &+= 1
-		return 2
 	}
 
 	func halt() -> Cycles {
@@ -484,14 +478,14 @@ extension CPU {
 		return 2
 	}
 
-	func loadHighRAMOperand(from register: Byte) -> Cycles {
+	func loadHRAMOperand(from register: Byte) -> Cycles {
 		let lowByte = mmu.read(address: pc &+ 1)
 		mmu.write(byte: register, to: 0xff00 | Word(lowByte))
 		pc &+= 2
 		return 3
 	}
 
-	func loadHighRAM(from register: Byte, intoAddressWithLowByte lowByte: Byte) -> Cycles {
+	func loadHRAM(from register: Byte, intoAddressWithLowByte lowByte: Byte) -> Cycles {
 		mmu.write(byte: register, to: 0xff00 | Word(lowByte))
 		pc &+= 1
 		return 2
@@ -539,6 +533,76 @@ extension CPU {
 		register ^= value
 		flags = register == 0 ? .zero : []
 		pc &+= 2
+		return 2
+	}
+
+	func loadFromHRAMOperand(int register: inout Byte) -> Cycles {
+		let offset = mmu.read(address: pc &+ 1)
+		register = mmu.read(address: 0xff00 | Word(offset))
+		pc &+= 2
+		return 3
+	}
+
+	func loadFromHRAMAddress(withLoadByte lowByte: Byte, into register: inout Byte) -> Cycles {
+		register = mmu.read(address: 0xff00 | Word(lowByte))
+		pc &+= 1
+		return 2
+	}
+
+	func disableInterrupts() -> Cycles {
+		interuptsEnabled = false
+		pc &+= 1
+		return 1
+	}
+
+	func orOperand(into register: inout Byte) -> Cycles {
+		let value = mmu.read(address: pc &+ 1)
+		register |= value
+		flags = register == 0 ? .zero : []
+		pc &+= 2
+		return 2
+	}
+
+	/// Add signed operand to SP and store the result in HL
+	func addSignedOperandToStackPointer(storeIn pair: inout Word) -> Cycles {
+		flags = []
+		let toAdd = Int32(Int8(bitPattern: mmu.read(address: pc &+ 1)))
+		let sp32 = Int32(sp)
+		pair = Word(truncatingIfNeeded: sp32 + toAdd)
+
+		if sp32 & 0xff + toAdd & 0xff > 0xff {
+			flags.formUnion(.fullCarry)
+		}
+		if sp32 & 0x0f + toAdd & 0x0f > 0x0f {
+			flags.formUnion(.halfCarry)
+		}
+		pc &+= 2
+		return 3
+	}
+
+	func load(value: Word, into pair: inout Word) -> Cycles {
+		pair = value
+		pc &+= 1
+		return 2
+	}
+
+	func loadFromAddressOperand(into register: inout Byte) -> Cycles {
+		let address = mmu.readWord(address: pc &+ 1)
+		register = mmu.read(address: address)
+		pc &+= 3
+		return 4
+	}
+
+	func enableInterrupts() -> Cycles {
+		interuptsEnabled = true
+		pc &+= 1
+		return 1
+	}
+
+	func compareOperand(with register: Byte) -> Cycles {
+		let value = mmu.read(address: pc &+ 1)
+		_ = compare(value: value, with: register)
+		pc &+= 1
 		return 2
 	}
 }

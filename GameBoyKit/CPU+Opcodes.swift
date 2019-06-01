@@ -3,7 +3,7 @@ extension CPU {
 		// 0x0n
 		Opcode(mnemonic: "NOP") { $0.nop() },
 		Opcode(mnemonic: "LD BC, nn") { $0.loadOperand(into: &$0.bc) },
-		Opcode(mnemonic: "LD (BC), A") { $0.load(register: $0.a, into: $0.bc) },
+		Opcode(mnemonic: "LD (BC), A") { $0.load(value: $0.a, into: $0.bc) },
 		Opcode(mnemonic: "INC BC") { $0.increment(pair: &$0.bc) },
 		Opcode(mnemonic: "INC B") { $0.increment(register: &$0.b) },
 		Opcode(mnemonic: "DEC B") { $0.decrement(register: &$0.b) },
@@ -20,7 +20,7 @@ extension CPU {
 		// 0x1n
 		Opcode(mnemonic: "STOP") { $0.stop() },
 		Opcode(mnemonic: "LD DE, nn") { $0.loadOperand(into: &$0.de) },
-		Opcode(mnemonic: "LD (DE), A") { $0.load(register: $0.a, into: $0.de) },
+		Opcode(mnemonic: "LD (DE), A") { $0.load(value: $0.a, into: $0.de) },
 		Opcode(mnemonic: "INC DE") { $0.increment(pair: &$0.de) },
 		Opcode(mnemonic: "INC D") { $0.increment(register: &$0.d) },
 		Opcode(mnemonic: "DEC D") { $0.decrement(register: &$0.d) },
@@ -239,9 +239,9 @@ extension CPU {
 		Opcode(mnemonic: "SBC A, n") { $0.subtractOperandWithCarry(from: &$0.a) },
 		Opcode(mnemonic: "RST 0x18") { $0.reset(vector: 0x18) },
 		// OxEn
-		Opcode(mnemonic: "LDH (n), A") { $0.loadHighRAMOperand(from: $0.a) },
+		Opcode(mnemonic: "LDH (n), A") { $0.loadHRAMOperand(from: $0.a) },
 		Opcode(mnemonic: "POP HL") { $0.pop(pair: &$0.hl) },
-		Opcode(mnemonic: "LD (C), A") { $0.loadHighRAM(from: $0.a, intoAddressWithLowByte: $0.c) },
+		Opcode(mnemonic: "LD (C), A") { $0.loadHRAM(from: $0.a, intoAddressWithLowByte: $0.c) },
 		Opcode(mnemonic: "UNDEFINED") { $0.undefined() },
 		Opcode(mnemonic: "UNDEFINED") { $0.undefined() },
 		Opcode(mnemonic: "PUSH HL") { $0.push(pair: $0.hl) },
@@ -255,5 +255,22 @@ extension CPU {
 		Opcode(mnemonic: "UNDEFINED") { $0.undefined() },
 		Opcode(mnemonic: "XOR n") { $0.xorOperand(into: &$0.a) },
 		Opcode(mnemonic: "RST 0x28") { $0.reset(vector: 0x28) },
+		// OxFn
+		Opcode(mnemonic: "LDH A, (n)") { $0.loadFromHRAMOperand(int: &$0.a) },
+		Opcode(mnemonic: "POP AF") { $0.pop(pair: &$0.af) },
+		Opcode(mnemonic: "LD A, (C)") { $0.loadFromHRAMAddress(withLoadByte: $0.c, into: &$0.a) },
+		Opcode(mnemonic: "DI") { $0.disableInterrupts() },
+		Opcode(mnemonic: "UNDEFINED") { $0.undefined() },
+		Opcode(mnemonic: "PUSH AF") { $0.push(pair: $0.af) },
+		Opcode(mnemonic: "OR n") { $0.orOperand(into: &$0.a) },
+		Opcode(mnemonic: "RST 0x30") { $0.reset(vector: 0x30) },
+		Opcode(mnemonic: "LD HL, SP+e") { $0.addSignedOperandToStackPointer(storeIn: &$0.hl) },
+		Opcode(mnemonic: "LD SP, HL") { $0.load(value: $0.hl, into: &$0.sp) },
+		Opcode(mnemonic: "LD A, (nn)") { $0.loadFromAddressOperand(into: &$0.a) },
+		Opcode(mnemonic: "EI") { $0.enableInterrupts() },
+		Opcode(mnemonic: "UNDEFINED") { $0.undefined() },
+		Opcode(mnemonic: "UNDEFINED") { $0.undefined() },
+		Opcode(mnemonic: "CP n") { $0.compareOperand(with: $0.a) },
+		Opcode(mnemonic: "RST 0x38") { $0.reset(vector: 0x38) }
 	]
 }

@@ -1,8 +1,114 @@
 extension CPU {
+
+	// MARK: Misc/Control
+
 	func nop() -> Cycles {
 		pc &+= 1
 		return 1
 	}
+
+	// MARK: 8-bit Loads
+
+	func load(value: Byte, into address: Address) -> Cycles {
+		mmu.write(byte: value, to: address)
+		pc &+= 1
+		return 2
+	}
+
+	func loadOperand(into register: inout Byte) -> Cycles {
+		register = mmu.read(address: pc &+ 1)
+		pc &+= 2
+		return 2
+	}
+
+	func loadFromHRAMOperand(int register: inout Byte) -> Cycles {
+		let offset = mmu.read(address: pc &+ 1)
+		register = mmu.read(address: 0xff00 | Word(offset))
+		pc &+= 2
+		return 3
+	}
+
+	func loadFromHRAMAddress(withLoadByte lowByte: Byte, into register: inout Byte) -> Cycles {
+		register = mmu.read(address: 0xff00 | Word(lowByte))
+		pc &+= 1
+		return 2
+	}
+
+	func loadFromAddressOperand(into register: inout Byte) -> Cycles {
+		let address = mmu.readWord(address: pc &+ 1)
+		register = mmu.read(address: address)
+		pc &+= 3
+		return 4
+	}
+
+	func load(address: Address, into register: inout Byte) -> Cycles {
+		register = mmu.read(address: address)
+		pc &+= 1
+		return 2
+	}
+
+	func loadAddressAndIncrementHL(from register: Byte) -> Cycles {
+		mmu.write(byte: register, to: hl)
+		hl &+= 1
+		pc &+= 1
+		return 2
+	}
+
+	func loadFromAddressAndIncrementHL(to register: inout Byte) -> Cycles {
+		register = mmu.read(address: hl)
+		hl &+= 1
+		pc &+= 1
+		return 2
+	}
+
+	func loadAddressAndDecrementHL(from register: Byte) -> Cycles {
+		mmu.write(byte: register, to: hl)
+		hl &-= 1
+		pc &+= 1
+		return 2
+	}
+
+	func loadOperand(into address: Address) -> Cycles {
+		let value = mmu.read(address: pc &+ 1)
+		mmu.write(byte: value, to: address)
+		pc &+= 2
+		return 3
+	}
+
+	func loadFromAddressAndDecrementHL(to register: inout Byte) -> Cycles {
+		register = mmu.read(address: hl)
+		hl &-= 1
+		pc &+= 1
+		return 2
+	}
+
+	func load(value: Byte, into register: inout Byte) -> Cycles {
+		register = value
+		pc &+= 1
+		return 1
+	}
+
+	func loadHRAMOperand(from register: Byte) -> Cycles {
+		let lowByte = mmu.read(address: pc &+ 1)
+		mmu.write(byte: register, to: 0xff00 | Word(lowByte))
+		pc &+= 2
+		return 3
+	}
+
+	func loadHRAM(from register: Byte, intoAddressWithLowByte lowByte: Byte) -> Cycles {
+		mmu.write(byte: register, to: 0xff00 | Word(lowByte))
+		pc &+= 1
+		return 2
+	}
+
+	func loadIntoAddressOperand(byte: Byte) -> Cycles {
+		let address = mmu.readWord(address: pc &+ 1)
+		mmu.write(byte: byte, to: address)
+		pc &+= 2
+		return 4
+	}
+
+	// MARK: 16-bit Loads
 
 	func loadOperand(into pair: inout Word) -> Cycles {
 		pair = mmu.readWord(address: pc &+ 1)
@@ -10,11 +116,20 @@ extension CPU {
 		return 3
 	}
 
-	func load(value: Byte, into address: Address) -> Cycles {
-		mmu.write(byte: value, to: address)
+	func loadIntoAddressOperand(word: Word) -> Cycles {
+		let address = mmu.readWord(address: pc &+ 1)
+		mmu.write(word: word, to: address)
+		pc &+= 3
+		return 5
+	}
+
+	func load(value: Word, into pair: inout Word) -> Cycles {
+		pair = value
 		pc &+= 1
 		return 2
 	}
+
+	// MARK: Uncategorized
 
 	func increment(pair: inout Word) -> Cycles {
 		pair &+= 1
@@ -41,12 +156,6 @@ extension CPU {
 		return 1
 	}
 
-	func loadOperand(into register: inout Byte) -> Cycles {
-		register = mmu.read(address: pc &+ 1)
-		pc &+= 2
-		return 2
-	}
-
 	func rotateLeftCarryA() -> Cycles {
 		let carry = a >> 7
 		flags = carry != 0 ? .fullCarry : []
@@ -55,24 +164,11 @@ extension CPU {
 		return 5
 	}
 
-	func loadIntoAddressOperand(word: Word) -> Cycles {
-		let address = mmu.readWord(address: pc &+ 1)
-		mmu.write(word: word, to: address)
-		pc &+= 3
-		return 5
-	}
-
 	func add(value: Word, to pair: inout Word) -> Cycles {
 		flags.formIntersection(.zero) // preserve old zero flag
 		if pair & 0x0fff + value & 0x0fff > 0x0fff { flags.formUnion(.halfCarry) }
 		if pair > pair &+ value { flags.formUnion(.fullCarry) }
 		pair &+= value
-		pc &+= 1
-		return 2
-	}
-
-	func load(address: Address, into register: inout Byte) -> Cycles {
-		register = mmu.read(address: address)
 		pc &+= 1
 		return 2
 	}
@@ -136,13 +232,6 @@ extension CPU {
 		}
 	}
 
-	func loadAddressAndIncrementHL(from register: Byte) -> Cycles {
-		mmu.write(byte: register, to: hl)
-		hl &+= 1
-		pc &+= 1
-		return 2
-	}
-
 	/// Assuming the last arithmetic operation was between two BCD numbers, converts
 	/// the result in `a` to BCD
 	func decimalAdjustAccumulator() -> Cycles {
@@ -164,25 +253,11 @@ extension CPU {
 		return 1
 	}
 
-	func loadFromAddressAndIncrementHL(to register: inout Byte) -> Cycles {
-		register = mmu.read(address: hl)
-		hl &+= 1
-		pc &+= 1
-		return 2
-	}
-
 	func complementAccumulator() -> Cycles {
 		a = ~a
 		flags.formUnion([.halfCarry, .subtract])
 		pc &+= 1
 		return 1
-	}
-
-	func loadAddressAndDecrementHL(from register: Byte) -> Cycles {
-		mmu.write(byte: register, to: hl)
-		hl &-= 1
-		pc &+= 1
-		return 2
 	}
 
 	func incrementValue(at address: Address) -> Cycles {
@@ -206,13 +281,6 @@ extension CPU {
 		return 3
 	}
 
-	func loadOperand(into address: Address) -> Cycles {
-		let value = mmu.read(address: pc &+ 1)
-		mmu.write(byte: value, to: address)
-		pc &+= 2
-		return 3
-	}
-
 	func setCarryFlag() -> Cycles {
 		flags.formIntersection(.zero) // preserve zero flag
 		flags.formUnion(.fullCarry)
@@ -220,22 +288,9 @@ extension CPU {
 		return 1
 	}
 
-	func loadFromAddressAndDecrementHL(to register: inout Byte) -> Cycles {
-		register = mmu.read(address: hl)
-		hl &-= 1
-		pc &+= 1
-		return 2
-	}
-
 	func complementCarryFlag() -> Cycles {
 		flags.formSymmetricDifference(.fullCarry)
 		flags.formIntersection([.zero, .fullCarry]) // preserve zero flag
-		pc &+= 1
-		return 1
-	}
-
-	func load(value: Byte, into register: inout Byte) -> Cycles {
-		register = value
 		pc &+= 1
 		return 1
 	}
@@ -478,19 +533,6 @@ extension CPU {
 		return 2
 	}
 
-	func loadHRAMOperand(from register: Byte) -> Cycles {
-		let lowByte = mmu.read(address: pc &+ 1)
-		mmu.write(byte: register, to: 0xff00 | Word(lowByte))
-		pc &+= 2
-		return 3
-	}
-
-	func loadHRAM(from register: Byte, intoAddressWithLowByte lowByte: Byte) -> Cycles {
-		mmu.write(byte: register, to: 0xff00 | Word(lowByte))
-		pc &+= 1
-		return 2
-	}
-
 	func andOperand(into register: inout Byte) -> Cycles {
 		flags = .halfCarry
 		register &= mmu.read(address: pc &+ 1)
@@ -521,31 +563,11 @@ extension CPU {
 		return 1
 	}
 
-	func loadIntoAddressOperand(byte: Byte) -> Cycles {
-		let address = mmu.readWord(address: pc &+ 1)
-		mmu.write(byte: byte, to: address)
-		pc &+= 2
-		return 4
-	}
-
 	func xorOperand(into register: inout Byte) -> Cycles {
 		let value = mmu.read(address: pc &+ 1)
 		register ^= value
 		flags = register == 0 ? .zero : []
 		pc &+= 2
-		return 2
-	}
-
-	func loadFromHRAMOperand(int register: inout Byte) -> Cycles {
-		let offset = mmu.read(address: pc &+ 1)
-		register = mmu.read(address: 0xff00 | Word(offset))
-		pc &+= 2
-		return 3
-	}
-
-	func loadFromHRAMAddress(withLoadByte lowByte: Byte, into register: inout Byte) -> Cycles {
-		register = mmu.read(address: 0xff00 | Word(lowByte))
-		pc &+= 1
 		return 2
 	}
 
@@ -578,19 +600,6 @@ extension CPU {
 		}
 		pc &+= 2
 		return 3
-	}
-
-	func load(value: Word, into pair: inout Word) -> Cycles {
-		pair = value
-		pc &+= 1
-		return 2
-	}
-
-	func loadFromAddressOperand(into register: inout Byte) -> Cycles {
-		let address = mmu.readWord(address: pc &+ 1)
-		register = mmu.read(address: address)
-		pc &+= 3
-		return 4
 	}
 
 	func enableInterrupts() -> Cycles {

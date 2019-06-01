@@ -1,6 +1,6 @@
 extension CPU {
 	static let cbOpcodes: [Opcode] = [
-		// Ox0n
+		// OxCB0n
 		Opcode(mnemonic: "RLC B") { $0.rotateLeftCarry(value: &$0.b) },
 		Opcode(mnemonic: "RLC C") { $0.rotateLeftCarry(value: &$0.c) },
 		Opcode(mnemonic: "RLC D") { $0.rotateLeftCarry(value: &$0.d) },
@@ -17,5 +17,22 @@ extension CPU {
 		Opcode(mnemonic: "RRC L") { $0.rotateRightCarry(value: &$0.l) },
 		Opcode(mnemonic: "RRC (HL)") { $0.rotateRightCarry(address: $0.hl) },
 		Opcode(mnemonic: "RRC A") { $0.rotateRightCarry(value: &$0.a) },
+		// 0xCB1n
+		Opcode(mnemonic: "RL B") { $0.rotateLeft(value: &$0.b) },
+		Opcode(mnemonic: "RL C") { $0.rotateLeft(value: &$0.c) },
+		Opcode(mnemonic: "RL D") { $0.rotateLeft(value: &$0.d) },
+		Opcode(mnemonic: "RL E") { $0.rotateLeft(value: &$0.e) },
+		Opcode(mnemonic: "RL H") { $0.rotateLeft(value: &$0.h) },
+		Opcode(mnemonic: "RL L") { $0.rotateLeft(value: &$0.l) },
+		Opcode(mnemonic: "RL (HL)") { $0.rotateLeft(address: $0.hl) },
+		Opcode(mnemonic: "RL A") { $0.rotateLeft(value: &$0.a) },
+		Opcode(mnemonic: "RR B") { $0.rotateRight(value: &$0.b) },
+		Opcode(mnemonic: "RR C") { $0.rotateRight(value: &$0.c) },
+		Opcode(mnemonic: "RR D") { $0.rotateRight(value: &$0.d) },
+		Opcode(mnemonic: "RR E") { $0.rotateRight(value: &$0.e) },
+		Opcode(mnemonic: "RR H") { $0.rotateRight(value: &$0.h) },
+		Opcode(mnemonic: "RR L") { $0.rotateRight(value: &$0.l) },
+		Opcode(mnemonic: "RR (HL)") { $0.rotateRight(address: $0.hl) },
+		Opcode(mnemonic: "RR A") { $0.rotateRight(value: &$0.a) },
 	]
 }

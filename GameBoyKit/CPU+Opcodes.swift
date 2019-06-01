@@ -170,5 +170,22 @@ extension CPU {
 		Opcode(mnemonic: "SBC A, L") { $0.subtractWithCarry(value: $0.l, from: &$0.a) },
 		Opcode(mnemonic: "SBC A, (HL)") { $0.subtractWithCarry(address: $0.hl, from: &$0.a) },
 		Opcode(mnemonic: "SBC A, A") { $0.subtractWithCarry(value: $0.a, from: &$0.a) },
+		// 0xan
+		Opcode(mnemonic: "AND B") { $0.and(value: $0.b, into: &$0.a) },
+		Opcode(mnemonic: "AND C") { $0.and(value: $0.c, into: &$0.a) },
+		Opcode(mnemonic: "AND D") { $0.and(value: $0.d, into: &$0.a) },
+		Opcode(mnemonic: "AND E") { $0.and(value: $0.e, into: &$0.a) },
+		Opcode(mnemonic: "AND H") { $0.and(value: $0.h, into: &$0.a) },
+		Opcode(mnemonic: "AND L") { $0.and(value: $0.l, into: &$0.a) },
+		Opcode(mnemonic: "AND (HL)") { $0.and(address: $0.hl, into: &$0.a) },
+		Opcode(mnemonic: "AND A") { $0.and(value: $0.a, into: &$0.a) },
+		Opcode(mnemonic: "XOR B") { $0.xor(value: $0.b, into: &$0.a) },
+		Opcode(mnemonic: "XOR C") { $0.xor(value: $0.c, into: &$0.a) },
+		Opcode(mnemonic: "XOR D") { $0.xor(value: $0.d, into: &$0.a) },
+		Opcode(mnemonic: "XOR E") { $0.xor(value: $0.e, into: &$0.a) },
+		Opcode(mnemonic: "XOR H") { $0.xor(value: $0.h, into: &$0.a) },
+		Opcode(mnemonic: "XOR L") { $0.xor(value: $0.l, into: &$0.a) },
+		Opcode(mnemonic: "XOR (HL)") { $0.xor(address: $0.hl, into: &$0.a) },
+		Opcode(mnemonic: "XOR A") { $0.xor(value: $0.a, into: &$0.a) },
 	]
 }

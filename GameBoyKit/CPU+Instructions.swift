@@ -322,4 +322,30 @@ extension CPU {
 		_ = subtractWithCarry(value: value, from: &register)
 		return 2
 	}
+
+	func and(value: Byte, into register: inout Byte) -> Cycles {
+		register &= value
+		flags = register == 0 ? [.zero, .halfCarry] : .halfCarry
+		pc &+= 1
+		return 1
+	}
+
+	func and(address: Address, into register: inout Byte) -> Cycles {
+		let value = mmu.read(address: address)
+		_ = and(value: value, into: &register)
+		return 2
+	}
+
+	func xor(value: Byte, into register: inout Byte) -> Cycles {
+		register ^= value
+		flags = register == 0 ? .zero : []
+		pc &+= 1
+		return 1
+	}
+
+	func xor(address: Address, into register: inout Byte) -> Cycles {
+		let value = mmu.read(address: address)
+		_ = xor(value: value, into: &register)
+		return 2
+	}
 }

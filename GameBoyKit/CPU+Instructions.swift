@@ -5,7 +5,7 @@ extension CPU {
 	}
 
 	func loadOperand(into pair: inout Word) -> Cycles {
-		pair = mmu.readWord(address: pc + 1)
+		pair = mmu.readWord(address: pc &+ 1)
 		pc &+= 3
 		return 3
 	}
@@ -42,7 +42,7 @@ extension CPU {
 	}
 
 	func loadOperand(into register: inout Byte) -> Cycles {
-		register = mmu.read(address: pc + 1)
+		register = mmu.read(address: pc &+ 1)
 		pc &+= 2
 		return 2
 	}
@@ -56,10 +56,10 @@ extension CPU {
 	}
 
 	func loadIntoAddressOperand(word: Word) -> Cycles {
-		let address = mmu.readWord(address: pc + 1)
+		let address = mmu.readWord(address: pc &+ 1)
 		mmu.write(word: word, to: address)
 		pc &+= 3
-		return 2
+		return 5
 	}
 
 	func add(value: Word, to pair: inout Word) -> Cycles {
@@ -110,7 +110,7 @@ extension CPU {
 	/// Jump relative to the current `pc` rather than to an absolute address.
 	/// Slightly more efficient than a normal jump.
 	func jumpRelative() -> Cycles {
-		let distance = Int16(Int8(bitPattern: mmu.read(address: pc + 1)))
+		let distance = Int16(Int8(bitPattern: mmu.read(address: pc &+ 1)))
 		pc &+= 2
 		pc = UInt16(bitPattern: Int16(pc) &+ distance)
 		return 3
@@ -207,7 +207,7 @@ extension CPU {
 	}
 
 	func loadOperand(into address: Address) -> Cycles {
-		let value = mmu.read(address: pc + 1)
+		let value = mmu.read(address: pc &+ 1)
 		mmu.write(byte: value, to: address)
 		pc &+= 2
 		return 3
@@ -402,7 +402,7 @@ extension CPU {
 
 	func jump(condition: Bool) -> Cycles {
 		if condition {
-			pc = mmu.readWord(address: pc + 1)
+			pc = mmu.readWord(address: pc &+ 1)
 			return 4
 		} else {
 			pc &+= 3
@@ -411,7 +411,7 @@ extension CPU {
 	}
 
 	func jump() -> Cycles {
-		pc = mmu.readWord(address: pc + 1)
+		pc = mmu.readWord(address: pc &+ 1)
 		return 4
 	}
 
@@ -425,8 +425,8 @@ extension CPU {
 	}
 
 	func call() -> Cycles {
-		mmu.write(word: pc + 3, to: sp - 2)
-		pc = mmu.readWord(address: pc + 1)
+		mmu.write(word: pc &+ 3, to: sp - 2)
+		pc = mmu.readWord(address: pc &+ 1)
 		sp &-= 2
 		return 6
 	}
@@ -439,21 +439,21 @@ extension CPU {
 	}
 
 	func addOperand(to register: inout Byte) -> Cycles {
-		let value = mmu.read(address: pc + 1)
+		let value = mmu.read(address: pc &+ 1)
 		_ = add(value: value, to: &register)
 		pc &+= 1
 		return 2
 	}
 
 	func reset(vector: Byte) -> Cycles {
-		mmu.write(word: pc + 1, to: sp - 2)
+		mmu.write(word: pc &+ 1, to: sp - 2)
 		sp &-= 2
 		pc = Word(vector)
 		return 4
 	}
 
 	func addOperandWithCarry(to register: inout Byte) -> Cycles {
-		let value = mmu.read(address: pc + 1)
+		let value = mmu.read(address: pc &+ 1)
 		_ = addWithCarry(value: value, to: &register)
 		pc &+= 1
 		return 2
@@ -466,7 +466,7 @@ extension CPU {
 	}
 
 	func subtractOperand(from register: inout Byte) -> Cycles {
-		let value = mmu.read(address: pc + 1)
+		let value = mmu.read(address: pc &+ 1)
 		_ = subtract(value: value, from: &register)
 		pc &+= 1
 		return 2
@@ -478,9 +478,67 @@ extension CPU {
 	}
 
 	func subtractOperandWithCarry(from register: inout Byte) -> Cycles {
-		let value = mmu.read(address: pc + 1)
+		let value = mmu.read(address: pc &+ 1)
 		_ = subtractWithCarry(value: value, from: &register)
 		pc &+= 1
+		return 2
+	}
+
+	func loadHighRAMOperand(from register: Byte) -> Cycles {
+		let lowByte = mmu.read(address: pc &+ 1)
+		mmu.write(byte: register, to: 0xff00 | Word(lowByte))
+		pc &+= 2
+		return 3
+	}
+
+	func loadHighRAM(from register: Byte, intoAddressWithLowByte lowByte: Byte) -> Cycles {
+		mmu.write(byte: register, to: 0xff00 | Word(lowByte))
+		pc &+= 1
+		return 2
+	}
+
+	func andOperand(into register: inout Byte) -> Cycles {
+		flags = .halfCarry
+		register &= mmu.read(address: pc &+ 1)
+		if register == 0 { flags.formUnion(.zero) }
+		pc &+= 2
+		return 2
+	}
+
+	func addSignedOperandToStackPointer() -> Cycles {
+		flags = []
+		let toAdd = Int32(Int8(bitPattern: mmu.read(address: pc &+ 1)))
+		let oldSP = Int32(sp)
+		let newSP = oldSP + toAdd
+
+		if oldSP & 0xff + toAdd & 0xff > 0xff {
+			flags.formUnion(.fullCarry)
+		}
+		if oldSP & 0x0f + toAdd & 0x0f > 0x0f {
+			flags.formUnion(.halfCarry)
+		}
+		sp = Word(truncatingIfNeeded: newSP)
+		pc &+= 2
+		return 4
+	}
+
+	func jump(to word: Word) -> Cycles {
+		pc = word
+		return 1
+	}
+
+	func loadIntoAddressOperand(byte: Byte) -> Cycles {
+		let address = mmu.readWord(address: pc &+ 1)
+		mmu.write(byte: byte, to: address)
+		pc &+= 2
+		return 4
+	}
+
+	func xorOperand(into register: inout Byte) -> Cycles {
+		let value = mmu.read(address: pc &+ 1)
+		register ^= value
+		flags = register == 0 ? .zero : []
+		pc &+= 2
 		return 2
 	}
 }

@@ -170,7 +170,7 @@ extension CPU {
 		Opcode(mnemonic: "SBC A, L") { $0.subtractWithCarry(value: $0.l, from: &$0.a) },
 		Opcode(mnemonic: "SBC A, (HL)") { $0.subtractWithCarry(address: $0.hl, from: &$0.a) },
 		Opcode(mnemonic: "SBC A, A") { $0.subtractWithCarry(value: $0.a, from: &$0.a) },
-		// 0xan
+		// 0xAn
 		Opcode(mnemonic: "AND B") { $0.and(value: $0.b, into: &$0.a) },
 		Opcode(mnemonic: "AND C") { $0.and(value: $0.c, into: &$0.a) },
 		Opcode(mnemonic: "AND D") { $0.and(value: $0.d, into: &$0.a) },
@@ -187,7 +187,7 @@ extension CPU {
 		Opcode(mnemonic: "XOR L") { $0.xor(value: $0.l, into: &$0.a) },
 		Opcode(mnemonic: "XOR (HL)") { $0.xor(address: $0.hl, into: &$0.a) },
 		Opcode(mnemonic: "XOR A") { $0.xor(value: $0.a, into: &$0.a) },
-		// 0xbn
+		// 0xBn
 		Opcode(mnemonic: "OR B") { $0.or(value: $0.b, into: &$0.a) },
 		Opcode(mnemonic: "OR C") { $0.or(value: $0.c, into: &$0.a) },
 		Opcode(mnemonic: "OR D") { $0.or(value: $0.d, into: &$0.a) },
@@ -204,7 +204,7 @@ extension CPU {
 		Opcode(mnemonic: "CP L") { $0.compare(value: $0.l, with: $0.a) },
 		Opcode(mnemonic: "CP (HL)") { $0.compare(address: $0.hl, with: $0.a) },
 		Opcode(mnemonic: "CP A") { $0.compare(value: $0.a, with: $0.a) },
-		// 0xcn
+		// 0xCn
 		Opcode(mnemonic: "RET NZ") { $0.return(condition: !$0.flags.contains(.zero)) },
 		Opcode(mnemonic: "POP BC") { $0.pop(pair: &$0.bc) },
 		Opcode(mnemonic: "JP NZ, nn") { $0.jump(condition: !$0.flags.contains(.zero)) },
@@ -221,7 +221,7 @@ extension CPU {
 		Opcode(mnemonic: "CALL") { $0.call() },
 		Opcode(mnemonic: "ADC A, n") { $0.addOperandWithCarry(to: &$0.a) },
 		Opcode(mnemonic: "RST 0x08") { $0.reset(vector: 0x08) },
-		// 0xdn
+		// 0xDn
 		Opcode(mnemonic: "RET NC") { $0.return(condition: !$0.flags.contains(.fullCarry)) },
 		Opcode(mnemonic: "POP DE") { $0.pop(pair: &$0.de) },
 		Opcode(mnemonic: "JP NC, nn    16/12") { $0.jump(condition: !$0.flags.contains(.fullCarry)) },
@@ -238,5 +238,22 @@ extension CPU {
 		Opcode(mnemonic: "UNDEFINED") { $0.undefined() },
 		Opcode(mnemonic: "SBC A, n") { $0.subtractOperandWithCarry(from: &$0.a) },
 		Opcode(mnemonic: "RST 0x18") { $0.reset(vector: 0x18) },
+		// OxEn
+		Opcode(mnemonic: "LDH (n), A") { $0.loadHighRAMOperand(from: $0.a) },
+		Opcode(mnemonic: "POP HL") { $0.pop(pair: &$0.hl) },
+		Opcode(mnemonic: "LD (C), A") { $0.loadHighRAM(from: $0.a, intoAddressWithLowByte: $0.c) },
+		Opcode(mnemonic: "UNDEFINED") { $0.undefined() },
+		Opcode(mnemonic: "UNDEFINED") { $0.undefined() },
+		Opcode(mnemonic: "PUSH HL") { $0.push(pair: $0.hl) },
+		Opcode(mnemonic: "AND n") { $0.andOperand(into: &$0.a) },
+		Opcode(mnemonic: "RST 0x20") { $0.reset(vector: 0x20) },
+		Opcode(mnemonic: "ADD SP, e") { $0.addSignedOperandToStackPointer() },
+		Opcode(mnemonic: "JP (HL)") { $0.jump(to: $0.hl) },
+		Opcode(mnemonic: "LD (nn), A") { $0.loadIntoAddressOperand(byte: $0.a) },
+		Opcode(mnemonic: "UNDEFINED") { $0.undefined() },
+		Opcode(mnemonic: "UNDEFINED") { $0.undefined() },
+		Opcode(mnemonic: "UNDEFINED") { $0.undefined() },
+		Opcode(mnemonic: "XOR n") { $0.xorOperand(into: &$0.a) },
+		Opcode(mnemonic: "RST 0x28") { $0.reset(vector: 0x28) },
 	]
 }

@@ -1,12 +1,5 @@
 extension CPU {
 
-	// MARK: Misc/Control
-
-	func nop() -> Cycles {
-		pc &+= 1
-		return 1
-	}
-
 	// MARK: 8-bit Loads
 
 	func load(value: Byte, into address: Address) -> Cycles {
@@ -469,7 +462,90 @@ extension CPU {
 		return 4
 	}
 
-	// MARK: Uncategorized
+	// MARK: Jumps/Calls
+
+	func jump() -> Cycles {
+		pc = mmu.readWord(address: pc &+ 1)
+		return 4
+	}
+
+	func jump(to word: Word) -> Cycles {
+		pc = word
+		return 1
+	}
+
+	func jump(condition: Bool) -> Cycles {
+		if condition {
+			return jump()
+		} else {
+			pc &+= 3
+			return 3
+		}
+	}
+
+	/// Jump relative to the current `pc` rather than to an absolute address.
+	/// Slightly more efficient than a normal jump.
+	func jumpRelative() -> Cycles {
+		let distance = Int16(Int8(bitPattern: mmu.read(address: pc &+ 1)))
+		pc &+= 2
+		pc = UInt16(bitPattern: Int16(pc) &+ distance)
+		return 3
+	}
+
+	func jumpRelative(condition: Bool) -> Cycles {
+		if condition {
+			return jumpRelative()
+		} else {
+			pc &+= 2
+			return 2
+		}
+	}
+
+	func `return`() -> Cycles {
+		pc = mmu.readWord(address: sp)
+		sp &+= 2
+		return 4
+	}
+
+	func `return`(condition: Bool) -> Cycles {
+		if condition {
+			_ = `return`()
+			return 5
+		} else {
+			pc &+= 1
+			return 2
+		}
+	}
+
+	func returnEnableInterrupts() -> Cycles {
+		interuptsEnabled = true
+		return `return`()
+	}
+
+	func call() -> Cycles {
+		mmu.write(word: pc &+ 3, to: sp - 2)
+		pc = mmu.readWord(address: pc &+ 1)
+		sp &-= 2
+		return 6
+	}
+
+	func call(condition: Bool) -> Cycles {
+		if condition {
+			return call()
+		} else {
+			pc &+= 3
+			return 3
+		}
+	}
+
+	func reset(vector: Byte) -> Cycles {
+		mmu.write(word: pc &+ 1, to: sp - 2)
+		sp &-= 2
+		pc = Word(vector)
+		return 4
+	}
+
+	// MARK: 8-bit Rotations/Shifts
 
 	func rotateLeftCarryA() -> Cycles {
 		let carry = a >> 7
@@ -487,11 +563,6 @@ extension CPU {
 		return 2
 	}
 
-	func stop() -> Cycles {
-		pc &+= 1
-		return 1
-	}
-
 	/// Rotate `a` left moving bit 7 into the carry flag and the carry flag into bit 0.
 	/// Updates carry flag, resets others.
 	func rotateLeftA() -> Cycles {
@@ -501,15 +572,6 @@ extension CPU {
 		flags = carry > 0 ? .fullCarry : []
 		pc &+= 1
 		return 1
-	}
-
-	/// Jump relative to the current `pc` rather than to an absolute address.
-	/// Slightly more efficient than a normal jump.
-	func jumpRelative() -> Cycles {
-		let distance = Int16(Int8(bitPattern: mmu.read(address: pc &+ 1)))
-		pc &+= 2
-		pc = UInt16(bitPattern: Int16(pc) &+ distance)
-		return 3
 	}
 
 	/// Rotate `a` right moving bit 0 into the carry flag and the carry flag into bit 7.
@@ -523,86 +585,20 @@ extension CPU {
 		return 1
 	}
 
-	func jumpRelative(condition: Bool) -> Cycles {
-		if condition {
-			return jumpRelative()
-		} else {
-			pc &+= 2
-			return 2
-		}
-	}
+	// MARK: Misc/Control
 
-	func halt() -> Cycles {
+	func nop() -> Cycles {
 		pc &+= 1
 		return 1
 	}
 
-	func `return`(condition: Bool) -> Cycles {
-		if condition {
-			_ = `return`()
-			return 5
-		} else {
-			pc &+= 1
-			return 2
-		}
+	func stop() -> Cycles {
+		pc &+= 1
+		return 1
 	}
 
-	func `return`() -> Cycles {
-		pc = mmu.readWord(address: sp)
-		sp &+= 2
-		return 4
-	}
-
-	func jump(condition: Bool) -> Cycles {
-		if condition {
-			pc = mmu.readWord(address: pc &+ 1)
-			return 4
-		} else {
-			pc &+= 3
-			return 3
-		}
-	}
-
-	func jump() -> Cycles {
-		pc = mmu.readWord(address: pc &+ 1)
-		return 4
-	}
-
-	func call(condition: Bool) -> Cycles {
-		if condition {
-			return call()
-		} else {
-			pc &+= 3
-			return 3
-		}
-	}
-
-	func call() -> Cycles {
-		mmu.write(word: pc &+ 3, to: sp - 2)
-		pc = mmu.readWord(address: pc &+ 1)
-		sp &-= 2
-		return 6
-	}
-
-	func reset(vector: Byte) -> Cycles {
-		mmu.write(word: pc &+ 1, to: sp - 2)
-		sp &-= 2
-		pc = Word(vector)
-		return 4
-	}
-
-	func undefined() -> Cycles {
-		assertionFailure("This is an error in the program and would crash a real Game Boy")
-		return 0
-	}
-
-	func returnEnableInterrupts() -> Cycles {
-		interuptsEnabled = true
-		return `return`()
-	}
-
-	func jump(to word: Word) -> Cycles {
-		pc = word
+	func halt() -> Cycles {
+		pc &+= 1
 		return 1
 	}
 
@@ -616,5 +612,12 @@ extension CPU {
 		interuptsEnabled = true
 		pc &+= 1
 		return 1
+	}
+
+	// MARK: Undefined
+
+	func undefined() -> Cycles {
+		assertionFailure("This is an error in the program and would crash a real Game Boy")
+		return 0
 	}
 }

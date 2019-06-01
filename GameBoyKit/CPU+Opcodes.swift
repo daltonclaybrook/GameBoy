@@ -221,5 +221,22 @@ extension CPU {
 		Opcode(mnemonic: "CALL") { $0.call() },
 		Opcode(mnemonic: "ADC A, n") { $0.addOperandWithCarry(to: &$0.a) },
 		Opcode(mnemonic: "RST 0x08") { $0.reset(vector: 0x08) },
+		// 0xdn
+		Opcode(mnemonic: "RET NC") { $0.return(condition: !$0.flags.contains(.fullCarry)) },
+		Opcode(mnemonic: "POP DE") { $0.pop(pair: &$0.de) },
+		Opcode(mnemonic: "JP NC, nn    16/12") { $0.jump(condition: !$0.flags.contains(.fullCarry)) },
+		Opcode(mnemonic: "UNDEFINED") { $0.undefined() },
+		Opcode(mnemonic: "CALL NC, nn") { $0.call(condition: !$0.flags.contains(.fullCarry)) },
+		Opcode(mnemonic: "PUSH DE") { $0.push(pair: $0.de) },
+		Opcode(mnemonic: "SUB n") { $0.subtractOperand(from: &$0.a) },
+		Opcode(mnemonic: "RST 0x10") { $0.reset(vector: 0x10) },
+		Opcode(mnemonic: "RET C") { $0.return(condition: $0.flags.contains(.fullCarry)) },
+		Opcode(mnemonic: "RETI") { $0.returnEnableInterrupts() },
+		Opcode(mnemonic: "JP C, nn") { $0.jump(condition: $0.flags.contains(.fullCarry)) },
+		Opcode(mnemonic: "UNDEFINED") { $0.undefined() },
+		Opcode(mnemonic: "CALL C, nn") { $0.call(condition: $0.flags.contains(.fullCarry)) },
+		Opcode(mnemonic: "UNDEFINED") { $0.undefined() },
+		Opcode(mnemonic: "SBC A, n") { $0.subtractOperandWithCarry(from: &$0.a) },
+		Opcode(mnemonic: "RST 0x18") { $0.reset(vector: 0x18) },
 	]
 }

@@ -458,4 +458,29 @@ extension CPU {
 		pc &+= 1
 		return 2
 	}
+
+	func undefined() -> Cycles {
+		// This is an error in the program and would crash a real Game Boy
+		assertionFailure()
+		return 0
+	}
+
+	func subtractOperand(from register: inout Byte) -> Cycles {
+		let value = mmu.read(address: pc + 1)
+		_ = subtract(value: value, from: &register)
+		pc &+= 1
+		return 2
+	}
+
+	func returnEnableInterrupts() -> Cycles {
+		interuptsEnabled = true
+		return `return`()
+	}
+
+	func subtractOperandWithCarry(from register: inout Byte) -> Cycles {
+		let value = mmu.read(address: pc + 1)
+		_ = subtractWithCarry(value: value, from: &register)
+		pc &+= 1
+		return 2
+	}
 }

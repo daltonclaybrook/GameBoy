@@ -376,4 +376,86 @@ extension CPU {
 		_ = compare(value: value, with: register)
 		return 2
 	}
+
+	func `return`(condition: Bool) -> Cycles {
+		if condition {
+			_ = `return`()
+			return 5
+		} else {
+			pc &+= 1
+			return 2
+		}
+	}
+
+	func `return`() -> Cycles {
+		pc = mmu.readWord(address: sp)
+		sp &+= 2
+		return 4
+	}
+
+	func pop(pair: inout Word) -> Cycles {
+		pair = mmu.readWord(address: sp)
+		sp &+= 2
+		pc &+= 1
+		return 3
+	}
+
+	func jump(condition: Bool) -> Cycles {
+		if condition {
+			pc = mmu.readWord(address: pc + 1)
+			return 4
+		} else {
+			pc &+= 3
+			return 3
+		}
+	}
+
+	func jump() -> Cycles {
+		pc = mmu.readWord(address: pc + 1)
+		return 4
+	}
+
+	func call(condition: Bool) -> Cycles {
+		if condition {
+			return call()
+		} else {
+			pc &+= 3
+			return 3
+		}
+	}
+
+	func call() -> Cycles {
+		mmu.write(word: pc + 3, to: sp - 2)
+		pc = mmu.readWord(address: pc + 1)
+		sp &-= 2
+		return 6
+	}
+
+	func push(pair: Word) -> Cycles {
+		mmu.write(word: pair, to: sp - 2)
+		sp &-= 2
+		pc &+= 1
+		return 4
+	}
+
+	func addOperand(to register: inout Byte) -> Cycles {
+		let value = mmu.read(address: pc + 1)
+		_ = add(value: value, to: &register)
+		pc &+= 1
+		return 2
+	}
+
+	func reset(vector: Byte) -> Cycles {
+		mmu.write(word: pc + 1, to: sp - 2)
+		sp &-= 2
+		pc = Word(vector)
+		return 4
+	}
+
+	func addOperandWithCarry(to register: inout Byte) -> Cycles {
+		let value = mmu.read(address: pc + 1)
+		_ = addWithCarry(value: value, to: &register)
+		pc &+= 1
+		return 2
+	}
 }

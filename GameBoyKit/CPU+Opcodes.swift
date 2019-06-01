@@ -204,5 +204,22 @@ extension CPU {
 		Opcode(mnemonic: "CP L") { $0.compare(value: $0.l, with: $0.a) },
 		Opcode(mnemonic: "CP (HL)") { $0.compare(address: $0.hl, with: $0.a) },
 		Opcode(mnemonic: "CP A") { $0.compare(value: $0.a, with: $0.a) },
+		// 0xcn
+		Opcode(mnemonic: "RET NZ") { $0.return(condition: !$0.flags.contains(.zero)) },
+		Opcode(mnemonic: "POP BC") { $0.pop(pair: &$0.bc) },
+		Opcode(mnemonic: "JP NZ, nn") { $0.jump(condition: !$0.flags.contains(.zero)) },
+		Opcode(mnemonic: "JP nn") { $0.jump() },
+		Opcode(mnemonic: "CALL NZ, nn") { $0.call(condition: !$0.flags.contains(.zero)) },
+		Opcode(mnemonic: "PUSH BC") { $0.push(pair: $0.bc) },
+		Opcode(mnemonic: "ADD A, n") { $0.addOperand(to: &$0.a) },
+		Opcode(mnemonic: "RST 0x00") { $0.reset(vector: 0x00) },
+		Opcode(mnemonic: "RET Z") { $0.return(condition: $0.flags.contains(.zero)) },
+		Opcode(mnemonic: "RET") { $0.return() },
+		Opcode(mnemonic: "JP Z, nn") { $0.jump(condition: $0.flags.contains(.zero)) },
+		Opcode(mnemonic: "PREFIX CB    4") { $0.nop() }, // todo
+		Opcode(mnemonic: "CALL Z, nn") { $0.call(condition: $0.flags.contains(.zero)) },
+		Opcode(mnemonic: "CALL") { $0.call() },
+		Opcode(mnemonic: "ADC A, n") { $0.addOperandWithCarry(to: &$0.a) },
+		Opcode(mnemonic: "RST 0x08") { $0.reset(vector: 0x08) },
 	]
 }

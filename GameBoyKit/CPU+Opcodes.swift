@@ -187,5 +187,22 @@ extension CPU {
 		Opcode(mnemonic: "XOR L") { $0.xor(value: $0.l, into: &$0.a) },
 		Opcode(mnemonic: "XOR (HL)") { $0.xor(address: $0.hl, into: &$0.a) },
 		Opcode(mnemonic: "XOR A") { $0.xor(value: $0.a, into: &$0.a) },
+		// 0xbn
+		Opcode(mnemonic: "OR B") { $0.or(value: $0.b, into: &$0.a) },
+		Opcode(mnemonic: "OR C") { $0.or(value: $0.c, into: &$0.a) },
+		Opcode(mnemonic: "OR D") { $0.or(value: $0.d, into: &$0.a) },
+		Opcode(mnemonic: "OR E") { $0.or(value: $0.e, into: &$0.a) },
+		Opcode(mnemonic: "OR H") { $0.or(value: $0.h, into: &$0.a) },
+		Opcode(mnemonic: "OR L") { $0.or(value: $0.l, into: &$0.a) },
+		Opcode(mnemonic: "OR (HL)") { $0.or(address: $0.hl, into: &$0.a) },
+		Opcode(mnemonic: "OR A") { $0.or(value: $0.a, into: &$0.a) },
+		Opcode(mnemonic: "CP B") { $0.compare(value: $0.b, with: $0.a) },
+		Opcode(mnemonic: "CP C") { $0.compare(value: $0.c, with: $0.a) },
+		Opcode(mnemonic: "CP D") { $0.compare(value: $0.d, with: $0.a) },
+		Opcode(mnemonic: "CP E") { $0.compare(value: $0.e, with: $0.a) },
+		Opcode(mnemonic: "CP H") { $0.compare(value: $0.h, with: $0.a) },
+		Opcode(mnemonic: "CP L") { $0.compare(value: $0.l, with: $0.a) },
+		Opcode(mnemonic: "CP (HL)") { $0.compare(address: $0.hl, with: $0.a) },
+		Opcode(mnemonic: "CP A") { $0.compare(value: $0.a, with: $0.a) },
 	]
 }

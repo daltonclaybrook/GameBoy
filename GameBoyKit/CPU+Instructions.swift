@@ -348,4 +348,32 @@ extension CPU {
 		_ = xor(value: value, into: &register)
 		return 2
 	}
+
+	func or(value: Byte, into register: inout Byte) -> Cycles {
+		register |= value
+		flags = register == 0 ? .zero : []
+		pc &+= 1
+		return 1
+	}
+
+	func or(address: Address, into register: inout Byte) -> Cycles {
+		let value = mmu.read(address: address)
+		_ = or(value: value, into: &register)
+		return 2
+	}
+
+	func compare(value: Byte, with register: Byte) -> Cycles {
+		flags = .subtract
+		if register < value { flags.formUnion(.fullCarry) }
+		if register & 0x0f < value & 0x0f { flags.formUnion(.halfCarry) }
+		if register == value { flags.formUnion(.zero) }
+		pc &+= 1
+		return 1
+	}
+
+	func compare(address: Address, with register: Byte) -> Cycles {
+		let value = mmu.read(address: address)
+		_ = compare(value: value, with: register)
+		return 2
+	}
 }

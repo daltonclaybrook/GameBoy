@@ -1,3 +1,5 @@
+typealias BitIndex = UInt8
+
 extension CPU {
 	func prefixCB() -> Cycles {
 		let opcodeIndex = Int(mmu.read(address: pc &+ 1))
@@ -129,6 +131,20 @@ extension CPU {
 		var value = mmu.read(address: address)
 		_ = shiftRightLogical(value: &value)
 		mmu.write(byte: value, to: address)
+		return 4
+	}
+
+	func checkBit(index: BitIndex, of byte: Byte) -> Cycles {
+		flags.formIntersection(.fullCarry) // preserve old carry flag
+		flags.formUnion(.halfCarry)
+		if (1 << index) & byte != 0 { flags.formUnion(.zero) }
+		pc &+= 2
+		return 2
+	}
+
+	func checkBit(index: BitIndex, of address: Address) -> Cycles {
+		let byte = mmu.read(address: address)
+		_ = checkBit(index: index, of: byte)
 		return 4
 	}
 }

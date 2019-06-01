@@ -233,4 +233,10 @@ extension CPU {
 		pc &+= 1
 		return 1
 	}
+
+	func load(value: Byte, into register: inout Byte) -> Cycles {
+		register = value
+		pc &+= 1
+		return 1
+	}
 }

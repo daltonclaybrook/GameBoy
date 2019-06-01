@@ -68,5 +68,22 @@ extension CPU {
 		Opcode(mnemonic: "DEC A") { $0.decrement(register: &$0.a) },
 		Opcode(mnemonic: "LD A, n") { $0.loadOperand(into: &$0.a) },
 		Opcode(mnemonic: "CCF") { $0.complementCarryFlag() },
+		// 0x4n
+		Opcode(mnemonic: "LD B, B") { $0.load(value: $0.b, into: &$0.b) },
+		Opcode(mnemonic: "LD B, C") { $0.load(value: $0.c, into: &$0.b) },
+		Opcode(mnemonic: "LD B, D") { $0.load(value: $0.d, into: &$0.b) },
+		Opcode(mnemonic: "LD B, E") { $0.load(value: $0.e, into: &$0.b) },
+		Opcode(mnemonic: "LD B, H") { $0.load(value: $0.h, into: &$0.b) },
+		Opcode(mnemonic: "LD B, L") { $0.load(value: $0.l, into: &$0.b) },
+		Opcode(mnemonic: "LD B, (HL)") { $0.load(address: $0.hl, into: &$0.b) },
+		Opcode(mnemonic: "LD B, A") { $0.load(value: $0.a, into: &$0.b) },
+		Opcode(mnemonic: "LD C, B") { $0.load(value: $0.b, into: &$0.c) },
+		Opcode(mnemonic: "LD C, C") { $0.load(value: $0.c, into: &$0.c) },
+		Opcode(mnemonic: "LD C, D") { $0.load(value: $0.d, into: &$0.c) },
+		Opcode(mnemonic: "LD C, E") { $0.load(value: $0.e, into: &$0.c) },
+		Opcode(mnemonic: "LD C, H") { $0.load(value: $0.h, into: &$0.c) },
+		Opcode(mnemonic: "LD C, L") { $0.load(value: $0.l, into: &$0.c) },
+		Opcode(mnemonic: "LD C, (HL)") { $0.load(address: $0.hl, into: &$0.c) },
+		Opcode(mnemonic: "LD C, A") { $0.load(value: $0.a, into: &$0.c) },
 	]
 }

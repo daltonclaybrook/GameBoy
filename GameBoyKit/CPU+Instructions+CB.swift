@@ -160,4 +160,17 @@ extension CPU {
 		mmu.write(byte: byte, to: address)
 		return 4
 	}
+
+	func setBit(index: BitIndex, of byte: inout Byte) -> Cycles {
+		byte |= 1 << index
+		pc &+= 2
+		return 2
+	}
+
+	func setBit(index: BitIndex, of address: Address) -> Cycles {
+		var byte = mmu.read(address: address)
+		_ = setBit(index: index, of: &byte)
+		mmu.write(byte: byte, to: address)
+		return 4
+	}
 }

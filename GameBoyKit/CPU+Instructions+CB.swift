@@ -147,4 +147,17 @@ extension CPU {
 		_ = checkBit(index: index, of: byte)
 		return 4
 	}
+
+	func resetBit(index: BitIndex, of byte: inout Byte) -> Cycles {
+		byte &= ~(1 << index)
+		pc &+= 2
+		return 2
+	}
+
+	func resetBit(index: BitIndex, of address: Address) -> Cycles {
+		var byte = mmu.read(address: address)
+		_ = resetBit(index: index, of: &byte)
+		mmu.write(byte: byte, to: address)
+		return 4
+	}
 }

@@ -119,5 +119,22 @@ extension CPU {
 		Opcode(mnemonic: "LD L, L") { $0.load(value: $0.l, into: &$0.l) },
 		Opcode(mnemonic: "LD L, (HL)") { $0.load(address: $0.hl, into: &$0.l) },
 		Opcode(mnemonic: "LD L, A") { $0.load(value: $0.a, into: &$0.l) },
+		// 0x7n
+		Opcode(mnemonic: "LD (HL), B") { $0.load(value: $0.b, into: $0.hl) },
+		Opcode(mnemonic: "LD (HL), C") { $0.load(value: $0.c, into: $0.hl) },
+		Opcode(mnemonic: "LD (HL), D") { $0.load(value: $0.d, into: $0.hl) },
+		Opcode(mnemonic: "LD (HL), E") { $0.load(value: $0.e, into: $0.hl) },
+		Opcode(mnemonic: "LD (HL), H") { $0.load(value: $0.h, into: $0.hl) },
+		Opcode(mnemonic: "LD (HL), L") { $0.load(value: $0.l, into: $0.hl) },
+		Opcode(mnemonic: "HALT") { $0.halt() },
+		Opcode(mnemonic: "LD (HL), A") { $0.load(value: $0.a, into: $0.hl) },
+		Opcode(mnemonic: "LD A, B") { $0.load(value: $0.b, into: &$0.a) },
+		Opcode(mnemonic: "LD A, C") { $0.load(value: $0.c, into: &$0.a) },
+		Opcode(mnemonic: "LD A, D") { $0.load(value: $0.d, into: &$0.a) },
+		Opcode(mnemonic: "LD A, E") { $0.load(value: $0.e, into: &$0.a) },
+		Opcode(mnemonic: "LD A, H") { $0.load(value: $0.h, into: &$0.a) },
+		Opcode(mnemonic: "LD A, L") { $0.load(value: $0.l, into: &$0.a) },
+		Opcode(mnemonic: "LD A, (HL)") { $0.load(address: $0.hl, into: &$0.a) },
+		Opcode(mnemonic: "LD A, A") { $0.load(value: $0.a, into: &$0.a) },
 	]
 }

@@ -7,12 +7,16 @@ public final class GameBoy {
 	private let cpu: CPU
 	private let mmu = MMU()
 	private let ppu = PPU()
+	private let palette = ColorPalette()
+	private let io: IO
 
 	public init() {
 		clock = Clock(queue: queue)
 		cpu = CPU(mmu: mmu)
+		io = IO(palette: palette)
 		mmu.register(device: ROM())
 		mmu.register(device: VRAM(ppu: ppu))
+		mmu.register(device: io)
 	}
 
 	public func start() {

@@ -5,8 +5,8 @@ public final class VRAM: MemoryAddressable {
 	private var data: Data
 
 	public init(ppu: PPU) {
-		let capacity = Int(addressableRange.upperBound + 1 - addressableRange.lowerBound)
-		data = Data(capacity: capacity)
+		let count = Int(addressableRange.upperBound + 1 - addressableRange.lowerBound)
+		data = Data(repeating: 0, count: count)
 		self.ppu = ppu
 	}
 

@@ -12,18 +12,30 @@ public struct IORegisters {
 public final class IO: MemoryAddressable {
 	public let addressableRange: ClosedRange<Address> = (0xff00...0xff7f)
 	private var data: Data
+	private let palette: ColorPalette
 
-	init() {
-		let capacity = Int(addressableRange.upperBound + 1 - addressableRange.lowerBound)
-		data = Data(capacity: capacity)
+	init(palette: ColorPalette) {
+		let count = Int(addressableRange.upperBound + 1 - addressableRange.lowerBound)
+		data = Data(repeating: 0, count: count)
+		self.palette = palette
 	}
 
 	public func read(address: Address) -> Byte {
-		return data[address.adjusted(for: self)]
+		switch address {
+		case palette.monochromeAddressRange, palette.colorAddressRange:
+			return palette.read(address: address)
+		default:
+			return data[address.adjusted(for: self)]
+		}
 	}
 
 	public func write(byte: Byte, to address: Address) {
-		data[address.adjusted(for: self)] = byte
+		switch address {
+		case palette.monochromeAddressRange, palette.colorAddressRange:
+			palette.write(byte: byte, to: address)
+		default:
+			data[address.adjusted(for: self)] = byte
+		}
 	}
 }
 

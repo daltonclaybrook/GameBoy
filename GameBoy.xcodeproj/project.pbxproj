@@ -30,6 +30,10 @@
 		75BD98B422A0AD9600CFFB68 /* CPU+Instructions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75BD98B322A0AD9600CFFB68 /* CPU+Instructions.swift */; };
 		75BD98B622A2F37C00CFFB68 /* CPU+Opcodes+CB.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75BD98B522A2F37C00CFFB68 /* CPU+Opcodes+CB.swift */; };
 		75BD98B822A2F44300CFFB68 /* CPU+Instructions+CB.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75BD98B722A2F44300CFFB68 /* CPU+Instructions+CB.swift */; };
+		75BD98BA22A40D6000CFFB68 /* IO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75BD98B922A40D6000CFFB68 /* IO.swift */; };
+		75BD98BC22A40F4D00CFFB68 /* Data+GameBoy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75BD98BB22A40F4D00CFFB68 /* Data+GameBoy.swift */; };
+		75BD98BE22A4135900CFFB68 /* LCDStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75BD98BD22A4135900CFFB68 /* LCDStatus.swift */; };
+		75BD98C022A413AA00CFFB68 /* LCDControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75BD98BF22A413AA00CFFB68 /* LCDControl.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -97,6 +101,10 @@
 		75BD98B322A0AD9600CFFB68 /* CPU+Instructions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CPU+Instructions.swift"; sourceTree = "<group>"; };
 		75BD98B522A2F37C00CFFB68 /* CPU+Opcodes+CB.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CPU+Opcodes+CB.swift"; sourceTree = "<group>"; };
 		75BD98B722A2F44300CFFB68 /* CPU+Instructions+CB.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CPU+Instructions+CB.swift"; sourceTree = "<group>"; };
+		75BD98B922A40D6000CFFB68 /* IO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IO.swift; sourceTree = "<group>"; };
+		75BD98BB22A40F4D00CFFB68 /* Data+GameBoy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+GameBoy.swift"; sourceTree = "<group>"; };
+		75BD98BD22A4135900CFFB68 /* LCDStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LCDStatus.swift; sourceTree = "<group>"; };
+		75BD98BF22A413AA00CFFB68 /* LCDControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LCDControl.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -169,9 +177,13 @@
 				75BD98B522A2F37C00CFFB68 /* CPU+Opcodes+CB.swift */,
 				75BD98B322A0AD9600CFFB68 /* CPU+Instructions.swift */,
 				75BD98B722A2F44300CFFB68 /* CPU+Instructions+CB.swift */,
+				75BD98B922A40D6000CFFB68 /* IO.swift */,
+				75BD98BB22A40F4D00CFFB68 /* Data+GameBoy.swift */,
 				75BD98B122A0AA8500CFFB68 /* Opcode.swift */,
 				75B3AD4D229DEFB400A03C5A /* MMU.swift */,
 				75B3AD53229E128900A03C5A /* VRAM.swift */,
+				75BD98BD22A4135900CFFB68 /* LCDStatus.swift */,
+				75BD98BF22A413AA00CFFB68 /* LCDControl.swift */,
 				75B3AD55229E13B700A03C5A /* PPU.swift */,
 				75B3AD57229EA1DD00A03C5A /* GameBoy.swift */,
 				75B3AD59229EA57700A03C5A /* Clock.swift */,
@@ -345,13 +357,17 @@
 			buildActionMask = 2147483647;
 			files = (
 				75B3AD54229E128900A03C5A /* VRAM.swift in Sources */,
+				75BD98BE22A4135900CFFB68 /* LCDStatus.swift in Sources */,
 				75BD98B422A0AD9600CFFB68 /* CPU+Instructions.swift in Sources */,
 				75BD98B022A0A93B00CFFB68 /* CPU+Opcodes.swift in Sources */,
 				75BD98B622A2F37C00CFFB68 /* CPU+Opcodes+CB.swift in Sources */,
 				75B3AD50229DFA7C00A03C5A /* MemoryProtocols.swift in Sources */,
+				75BD98BC22A40F4D00CFFB68 /* Data+GameBoy.swift in Sources */,
+				75BD98BA22A40D6000CFFB68 /* IO.swift in Sources */,
 				75B3AD5A229EA57700A03C5A /* Clock.swift in Sources */,
 				75B3AD56229E13B700A03C5A /* PPU.swift in Sources */,
 				75BD98B222A0AA8600CFFB68 /* Opcode.swift in Sources */,
+				75BD98C022A413AA00CFFB68 /* LCDControl.swift in Sources */,
 				75B3AD58229EA1DD00A03C5A /* GameBoy.swift in Sources */,
 				75B3AD4C229DEEFF00A03C5A /* CPU.swift in Sources */,
 				75B3AD52229DFC1700A03C5A /* ROM.swift in Sources */,

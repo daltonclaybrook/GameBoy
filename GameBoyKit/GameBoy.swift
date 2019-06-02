@@ -12,7 +12,7 @@ public final class GameBoy {
 		clock = Clock(queue: queue)
 		cpu = CPU(mmu: mmu)
 		mmu.register(device: ROM())
-		mmu.register(device: VRAM())
+		mmu.register(device: VRAM(ppu: ppu))
 	}
 
 	public func start() {

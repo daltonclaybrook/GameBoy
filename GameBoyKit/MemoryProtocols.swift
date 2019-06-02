@@ -23,3 +23,9 @@ extension MemoryAddressable {
 		write(byte: Byte(big), to: address + 1)
 	}
 }
+
+extension Address {
+	func adjusted(for memory: MemoryAddressable) -> Address {
+		return self - memory.addressableRange.lowerBound
+	}
+}

@@ -5,19 +5,23 @@ public struct IORegisters {
 	public static let scrollY: Address = 0xff43
 	public static let lcdYCoordinate: Address = 0xff44
 	public static let lcdYCoordinateCompare: Address = 0xff45
+	public static let dmaTransfer: Address = 0xff46
 	public static let windowY: Address = 0xff4a
 	public static let windowX: Address = 0xff4b
+	public static let vramBank: Address = 0xff4f
 }
 
 public final class IO: MemoryAddressable {
 	public let addressableRange: ClosedRange<Address> = (0xff00...0xff7f)
 	private var data: Data
 	private let palette: ColorPalette
+	private let oam: OAM
 
-	init(palette: ColorPalette) {
+	init(palette: ColorPalette, oam: OAM) {
 		let count = Int(addressableRange.upperBound + 1 - addressableRange.lowerBound)
 		data = Data(repeating: 0, count: count)
 		self.palette = palette
+		self.oam = oam
 	}
 
 	public func read(address: Address) -> Byte {
@@ -33,6 +37,8 @@ public final class IO: MemoryAddressable {
 		switch address {
 		case palette.monochromeAddressRange, palette.colorAddressRange:
 			palette.write(byte: byte, to: address)
+		case IORegisters.dmaTransfer:
+			oam.dmaTransfer(byte: byte)
 		default:
 			data[address.adjusted(for: self)] = byte
 		}
@@ -71,5 +77,9 @@ extension IO {
 
 	var windowX: UInt8 {
 		return read(address: IORegisters.windowX)
+	}
+
+	var vramBank: UInt8 {
+		return read(address: IORegisters.vramBank) & 0x01
 	}
 }

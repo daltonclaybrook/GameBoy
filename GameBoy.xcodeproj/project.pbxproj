@@ -35,6 +35,7 @@
 		75BD98BE22A4135900CFFB68 /* LCDStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75BD98BD22A4135900CFFB68 /* LCDStatus.swift */; };
 		75BD98C022A413AA00CFFB68 /* LCDControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75BD98BF22A413AA00CFFB68 /* LCDControl.swift */; };
 		75BD98C222A41DDC00CFFB68 /* ColorPalette.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75BD98C122A41DDC00CFFB68 /* ColorPalette.swift */; };
+		75BD98C422A49C0C00CFFB68 /* OAM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75BD98C322A49C0C00CFFB68 /* OAM.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -107,6 +108,7 @@
 		75BD98BD22A4135900CFFB68 /* LCDStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LCDStatus.swift; sourceTree = "<group>"; };
 		75BD98BF22A413AA00CFFB68 /* LCDControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LCDControl.swift; sourceTree = "<group>"; };
 		75BD98C122A41DDC00CFFB68 /* ColorPalette.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorPalette.swift; sourceTree = "<group>"; };
+		75BD98C322A49C0C00CFFB68 /* OAM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OAM.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -180,6 +182,7 @@
 				75BD98B322A0AD9600CFFB68 /* CPU+Instructions.swift */,
 				75BD98B722A2F44300CFFB68 /* CPU+Instructions+CB.swift */,
 				75BD98B922A40D6000CFFB68 /* IO.swift */,
+				75BD98C322A49C0C00CFFB68 /* OAM.swift */,
 				75BD98BB22A40F4D00CFFB68 /* Data+GameBoy.swift */,
 				75BD98B122A0AA8500CFFB68 /* Opcode.swift */,
 				75B3AD4D229DEFB400A03C5A /* MMU.swift */,
@@ -362,6 +365,7 @@
 				75B3AD54229E128900A03C5A /* VRAM.swift in Sources */,
 				75BD98BE22A4135900CFFB68 /* LCDStatus.swift in Sources */,
 				75BD98B422A0AD9600CFFB68 /* CPU+Instructions.swift in Sources */,
+				75BD98C422A49C0C00CFFB68 /* OAM.swift in Sources */,
 				75BD98B022A0A93B00CFFB68 /* CPU+Opcodes.swift in Sources */,
 				75BD98B622A2F37C00CFFB68 /* CPU+Opcodes+CB.swift in Sources */,
 				75B3AD50229DFA7C00A03C5A /* MemoryProtocols.swift in Sources */,

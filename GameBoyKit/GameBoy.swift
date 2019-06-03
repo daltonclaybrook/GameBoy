@@ -13,10 +13,12 @@ public final class GameBoy {
 	public init() {
 		clock = Clock(queue: queue)
 		cpu = CPU(mmu: mmu)
-		io = IO(palette: palette)
+		let oam = OAM(mmu: mmu)
+		io = IO(palette: palette, oam: oam)
 		mmu.register(device: ROM())
 		mmu.register(device: VRAM(ppu: ppu))
 		mmu.register(device: io)
+		mmu.register(device: oam)
 	}
 
 	public func start() {

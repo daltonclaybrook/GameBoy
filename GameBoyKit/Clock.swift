@@ -1,12 +1,12 @@
-public typealias Cycles = Int
-public typealias CyclesPerSecond = Int
+public typealias Cycles = UInt64
+public typealias CyclesPerSecond = UInt64
 
 public final class Clock {
 	private(set) public var isRunning = false
 
 	private let queue: DispatchQueue
 	private let cyclesPerBatch: Cycles = 10_000
-	private let baseSpeed = 4_194_304 // 4.194 MHz
+	private let baseSpeed: UInt64 = 4_194_304 // 4.194 MHz
 	/// Clock Speed is Base Speed divided by 4
 	///
 	/// Each CPU instruction takes a certain number of machine cycles to
@@ -42,7 +42,7 @@ public final class Clock {
 
 	private func advanceClock(stepBlock: @escaping () -> Cycles) {
 		let startDate = Date()
-		var cycles = 0
+		var cycles: Cycles = 0
 		while cycles < cyclesPerBatch {
 			cycles += stepBlock()
 		}

@@ -13,6 +13,7 @@ public struct IORegisters {
 
 public final class IO: MemoryAddressable {
 	public let addressableRange: ClosedRange<Address> = (0xff00...0xff7f)
+
 	private var data: Data
 	private let palette: ColorPalette
 	private let oam: OAM
@@ -51,7 +52,8 @@ extension IO {
 	}
 
 	var lcdStatus: LCDStatus {
-		return LCDStatus(rawValue: read(address: IORegisters.lcdStatus))
+		get { return LCDStatus(rawValue: read(address: IORegisters.lcdStatus)) }
+		set { write(byte: newValue.rawValue, to: IORegisters.lcdStatus) }
 	}
 
 	var scrollX: UInt8 {

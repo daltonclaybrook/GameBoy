@@ -6,7 +6,7 @@ public struct LCDStatus: RawRepresentable {
 		case transferingToLCD
 	}
 
-	public let rawValue: UInt8
+	private(set) public var rawValue: UInt8
 
 	public init(rawValue: UInt8) {
 		self.rawValue = rawValue
@@ -15,7 +15,8 @@ public struct LCDStatus: RawRepresentable {
 
 extension LCDStatus {
 	var mode: Mode {
-		return Mode(rawValue: rawValue & 0x03)!
+		get { return Mode(rawValue: rawValue & 0x03)! }
+		set { rawValue = (rawValue & 0xfc) | newValue.rawValue }
 	}
 
 	var isVRAMAccessible: Bool {

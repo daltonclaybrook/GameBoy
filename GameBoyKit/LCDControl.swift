@@ -57,3 +57,25 @@ extension LCDControl {
 		return rawValue & 0x01 != 0
 	}
 }
+
+extension LCDControl.TileMapDisplay {
+	var mapDataRange: ClosedRange<Address> {
+		switch self {
+		case .low:
+			return (0x9800...0x9bff)
+		case .high:
+			return (0x9c00...0x9fff)
+		}
+	}
+}
+
+extension LCDControl.TileData {
+	var tileDataRange: ClosedRange<Address> {
+		switch self {
+		case .low:
+			return (0x8000...0x8fff)
+		case .high:
+			return (0x8800...0x97ff)
+		}
+	}
+}

@@ -15,11 +15,12 @@ public final class GameBoy {
 		clock = Clock(queue: queue)
 		cpu = CPU(mmu: mmu)
 		let oam = OAM(mmu: mmu)
+		let vram = VRAM()
 		io = IO(palette: palette, oam: oam)
-		ppu = PPU(io: io)
+		ppu = PPU(io: io, vram: vram)
 
 		mmu.register(device: ROM())
-		mmu.register(device: VRAM(ppu: ppu))
+		mmu.register(device: vram)
 		mmu.register(device: io)
 		mmu.register(device: oam)
 	}

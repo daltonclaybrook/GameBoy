@@ -13,9 +13,9 @@ public struct IORegisters {
 
 public final class IO: MemoryAddressable {
 	public let addressableRange: ClosedRange<Address> = (0xff00...0xff7f)
+	public let palette: ColorPalette
 
 	private var data: Data
-	private let palette: ColorPalette
 	private let oam: OAM
 
 	init(palette: ColorPalette, oam: OAM) {

@@ -1,3 +1,12 @@
+// Only first 2 bits are used
+public typealias ColorNumber = Byte
+
+public struct Color {
+	let red: Byte
+	let green: Byte
+	let blue: Byte
+}
+
 public final class ColorPalette {
 	public struct Registers {
 		public static let monochromeBGData: Address = 0xff47
@@ -80,5 +89,17 @@ public final class ColorPalette {
 		default:
 			fatalError("Attempting to read from invalid address")
 		}
+	}
+
+	public func monochromeBGColor(for number: ColorNumber) -> Color {
+		let shift = number & 0x03 * 2
+		let colorShadeIndex = (monochromeBGData >> shift) & 0x03
+		// Possible values are:
+		// 0 => 255 (white)
+		// 1 => 170 (light gray)
+		// 2 => 85 (dark gray)
+		// 3 => 0 (black)
+		let grayValue = 255 - colorShadeIndex * 85
+		return Color(red: grayValue, green: grayValue, blue: grayValue)
 	}
 }

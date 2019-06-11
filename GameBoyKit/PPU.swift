@@ -71,30 +71,18 @@ public final class PPU {
 		pixelBuffer = Data(repeating: .max, count: Int(truncatingIfNeeded: pixelBytesCount))
 	}
 
-	/// Tasks:
-	/// - get line number
-	/// - get x and y scroll offset
-	/// - get current selected tile data range for BG and window
-	/// - get current selected tile map range for BG
-	/// - get current selected tile map range for window (todo)
-	/// - get BG map index for pixel
-	/// - get tile ID for map index
-	/// - get pixel offset within tile
-	/// - get palette for tile from BG attributes map (todo)
-	/// - get color for tile pixel index
-	/// - convert 15-bit color to 4-byte RGBA
-	/// - determine offset in pixel buffer and write pixel
-	/// - loop
-
 	/// Todo:
 	/// - display window
 	/// - display sprites
 	private func renderLine() {
 		let scrollX = io.scrollX
 		let scrollY = io.scrollY
-		let screenLine = UInt8(truncatingIfNeeded: currentLine)
-		let mapY = scrollY &+ screenLine
+		let currentLine = self.currentLine
+		let mapY = scrollY &+ UInt8(truncatingIfNeeded: currentLine)
 		let yOffsetInTile = mapY % 8 // tile height in pixels
+
+		let bytesPerPixel: UInt64 = 4
+		let bytesPerLine = screenPixelWidth * bytesPerPixel
 
 		let lcdControl = io.lcdControl
 		let mapDataRange = lcdControl.backgroundTileMapDisplay.mapDataRange
@@ -113,7 +101,13 @@ public final class PPU {
 			// this byte contains 4 pixels
 			let pixelData = vram.read(address: pixelAddress)
 			let pixelBitOffset = (xOffsetInTile % 4) * 2 // 2 bits per pixel
-			let pixel = (pixelData >> pixelBitOffset) & 0x03
+			let pixelColorNumber: ColorNumber = (pixelData >> pixelBitOffset) & 0x03
+			let pixelColor = io.palette.monochromeBGColor(for: pixelColorNumber)
+			let bufferOffset = Int(truncatingIfNeeded: currentLine * bytesPerLine + screenX * bytesPerPixel)
+			pixelBuffer[bufferOffset] = pixelColor.blue
+			pixelBuffer[bufferOffset + 1] = pixelColor.green
+			pixelBuffer[bufferOffset + 2] = pixelColor.red
+			pixelBuffer[bufferOffset + 3] = 255 // alpha
 		}
 	}
 }

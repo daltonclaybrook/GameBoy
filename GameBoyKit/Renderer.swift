@@ -6,7 +6,18 @@ public enum RendererError: Error {
 	case failedToLoadShaders
 }
 
-public final class Renderer: NSObject {
+public struct PixelRegion {
+	let x: Int
+	let y: Int
+	let width: Int
+	let height: Int
+}
+
+public protocol Renderer {
+	func render(pixelData: [Byte], at region: PixelRegion)
+}
+
+public final class MetalRenderer: NSObject, Renderer {
 	private let view: MTKView
 	private let device: MTLDevice
 	private let texture: MTLTexture
@@ -16,6 +27,7 @@ public final class Renderer: NSObject {
 	private var vertexBuffer: MTLBuffer?
 	private var viewportSize: vector_uint2 = .zero
 	private var numberOfVertices = 0
+	private var currentCommandBuffer: MTLCommandBuffer?
 
 	public init(view: MTKView, device: MTLDevice) throws {
 		self.view = view
@@ -31,7 +43,7 @@ public final class Renderer: NSObject {
 		}
 		self.texture = texture
 
-		let library = try device.makeDefaultLibrary(bundle: Bundle(for: Renderer.self))
+		let library = try device.makeDefaultLibrary(bundle: Bundle(for: MetalRenderer.self))
 		guard let vertexFunction = library.makeFunction(name: "vertexShader"),
 			let fragmentFunction = library.makeFunction(name: "samplingShader") else {
 				throw RendererError.failedToLoadShaders
@@ -54,7 +66,31 @@ public final class Renderer: NSObject {
 		updateForDrawableSizeChange(view.drawableSize)
 	}
 
+	public func render(pixelData: [Byte], at region: PixelRegion) {
+		guard let commandBuffer = currentCommandBuffer else {
+			return replaceTextureRegion(with: pixelData, at: region)
+		}
+
+		switch commandBuffer.status {
+		case .completed, .error:
+			replaceTextureRegion(with: pixelData, at: region)
+		default:
+			commandBuffer.addCompletedHandler { [weak self] _ in
+				self?.replaceTextureRegion(with: pixelData, at: region)
+			}
+		}
+	}
+
 	// MARK: - Helpers
+
+	private func replaceTextureRegion(with bytes: [Byte], at region: PixelRegion) {
+		texture.replace(
+			region: region.mtlRegion,
+			mipmapLevel: 0,
+			withBytes: bytes,
+			bytesPerRow: 4 * Constants.screenWidth
+		)
+	}
 
 	private func updateForDrawableSizeChange(_ size: CGSize) {
 		let minSize = Float(min(size.width, size.height))
@@ -80,11 +116,16 @@ public final class Renderer: NSObject {
 	}
 }
 
-extension Renderer: MTKViewDelegate {
+extension MetalRenderer: MTKViewDelegate {
 	public func draw(in view: MTKView) {
 		guard let commandBuffer = commandQueue.makeCommandBuffer() else { return }
 		defer { commandBuffer.commit() }
 		commandBuffer.label = "Draw Command"
+
+		currentCommandBuffer = commandBuffer
+		commandBuffer.addCompletedHandler { [weak self] _ in
+			self?.currentCommandBuffer = nil
+		}
 
 		guard let renderPassDescriptor = view.currentRenderPassDescriptor,
 			let renderEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor),
@@ -96,7 +137,7 @@ extension Renderer: MTKViewDelegate {
 		renderEncoder.setVertexBuffer(vertexBuffer, offset: 0, index: Int(AAPLVertexInputIndexVertices.rawValue))
 		renderEncoder.setVertexBytes([viewportSize], length: MemoryLayout<vector_uint2>.size, index: Int(AAPLVertexInputIndexViewportSize.rawValue))
 
-//		renderEncoder.setFragmentTexture(, index: )
+		renderEncoder.setFragmentTexture(texture, index: Int(AAPLTextureIndexBaseColor.rawValue))
 
 		renderEncoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: numberOfVertices)
 		renderEncoder.endEncoding()
@@ -105,5 +146,13 @@ extension Renderer: MTKViewDelegate {
 
 	public func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
 		updateForDrawableSizeChange(size)
+	}
+}
+
+extension PixelRegion {
+	var mtlRegion: MTLRegion {
+		let origin = MTLOrigin(x: x, y: y, z: 0)
+		let size = MTLSize(width: width, height: height, depth: 1)
+		return MTLRegion(origin: origin, size: size)
 	}
 }

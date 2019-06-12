@@ -7,14 +7,29 @@
 //
 
 import GameBoyKit
+import MetalKit
 import UIKit
 
 class ViewController: UIViewController {
-	private let gameBoy = GameBoy()
+	@IBOutlet var mtkView: MTKView!
+	private var gameBoy: GameBoy?
 
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		gameBoy.start()
+
+		guard let device = MTLCreateSystemDefaultDevice() else {
+			return assertionFailure("Metal device could not be created")
+		}
+		mtkView.device = device
+
+		do {
+			let renderer = try MetalRenderer(view: mtkView, device: device)
+			let gameBoy = GameBoy(renderer: renderer)
+			gameBoy.start()
+			self.gameBoy = gameBoy
+		} catch let error {
+			return assertionFailure("error creating renderer: \(error)")
+		}
 	}
 }
 

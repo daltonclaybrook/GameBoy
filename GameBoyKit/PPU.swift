@@ -1,4 +1,5 @@
 public final class PPU {
+	private let renderer: Renderer
 	private let io: IO
 	private let vram: VRAM
 	private var clock: Cycles = 0
@@ -12,8 +13,6 @@ public final class PPU {
 	private let vBlankDuration: Cycles
 	private let cyclesPerLine: Cycles
 	private let cyclesPerFrame: Cycles
-
-	private var pixelBuffer = Data()
 
 	private var currentLine: UInt64 {
 		return (clock % cyclesPerFrame) / cyclesPerLine
@@ -33,9 +32,11 @@ public final class PPU {
 		}
 	}
 
-	init(io: IO, vram: VRAM) {
+	init(renderer: Renderer, io: IO, vram: VRAM) {
+		self.renderer = renderer
 		self.io = io
 		self.vram = vram
+
 		cyclesPerLine = oamSearchDuration + lcdTransferDuration + hBlankDuration
 		vBlankDuration = cyclesPerLine * vBlankLineCount
 		cyclesPerFrame = cyclesPerLine * (UInt64(Constants.screenHeight) + vBlankLineCount)
@@ -66,7 +67,9 @@ public final class PPU {
 
 	private func clearPixelBuffer() {
 		let pixelBytesCount = Constants.screenHeight * Constants.screenWidth * 4 // 4 bytes per pixel
-		pixelBuffer = Data(repeating: .max, count: pixelBytesCount)
+		let region = PixelRegion(x: 0, y: 0, width: Constants.screenWidth, height: Constants.screenHeight)
+		let pixelData = [Byte](repeating: .max, count: pixelBytesCount)
+		renderer.render(pixelData: pixelData, at: region)
 	}
 
 	/// Todo:
@@ -79,14 +82,11 @@ public final class PPU {
 		let mapY = scrollY &+ UInt8(truncatingIfNeeded: currentLine)
 		let yOffsetInTile = mapY % 8 // tile height in pixels
 
-		let bytesPerPixel = 4
-		let bytesPerLine = Constants.screenWidth * bytesPerPixel
-
 		let lcdControl = io.lcdControl
 		let mapDataRange = lcdControl.backgroundTileMapDisplay.mapDataRange
 		let tileDataRange = lcdControl.selectedTileDataForBackgroundAndWindow.tileDataRange
 
-		for screenX in (0..<Constants.screenWidth) {
+		let lineBuffer = (0..<Constants.screenWidth).reduce(into: [Byte]()) { result, screenX in
 			let mapX = UInt8(truncatingIfNeeded: screenX) &+ scrollX
 			let xOffsetInTile = mapX % 8 // tile width in pixels
 			let tileOffsetInMap = (Address(mapY) / 8) * mapWidthInTiles + UInt16(mapX)
@@ -101,15 +101,16 @@ public final class PPU {
 			let pixelBitOffset = (xOffsetInTile % 4) * 2 // 2 bits per pixel
 			let pixelColorNumber: ColorNumber = (pixelData >> pixelBitOffset) & 0x03
 			let pixelColor = io.palette.monochromeBGColor(for: pixelColorNumber)
-			let bufferOffset = Int(truncatingIfNeeded: currentLine * bytesPerLine + screenX * bytesPerPixel)
-			applyColorToPixelBuffer(pixelColor, atOffset: bufferOffset)
+			result.append(contentsOf: pixelColor.rgbaBytes)
 		}
-	}
 
-	private func applyColorToPixelBuffer(_ color: Color, atOffset: Int) {
-		pixelBuffer[atOffset] = color.red
-		pixelBuffer[atOffset + 1] = color.green
-		pixelBuffer[atOffset + 2] = color.blue
-		pixelBuffer[atOffset + 3] = 255 // alpha
+		let region = PixelRegion(x: 0, y: currentLine, width: Constants.screenWidth, height: 1)
+		renderer.render(pixelData: lineBuffer, at: region)
+	}
+}
+
+extension Color {
+	var rgbaBytes: [Byte] {
+		return [red, green, blue, 255]
 	}
 }

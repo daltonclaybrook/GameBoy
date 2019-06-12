@@ -11,13 +11,13 @@ public final class GameBoy {
 	private let mmu = MMU()
 	private let palette = ColorPalette()
 
-	public init() {
+	public init(renderer: Renderer) {
 		clock = Clock(queue: queue)
 		cpu = CPU(mmu: mmu)
 		let oam = OAM(mmu: mmu)
 		let vram = VRAM()
 		io = IO(palette: palette, oam: oam)
-		ppu = PPU(io: io, vram: vram)
+		ppu = PPU(renderer: renderer, io: io, vram: vram)
 
 		mmu.register(device: ROM())
 		mmu.register(device: vram)

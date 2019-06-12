@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		757F38C422B0731E00BBB570 /* Renderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 757F38C322B0731E00BBB570 /* Renderer.swift */; };
+		757F38C622B0765E00BBB570 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 757F38C522B0765E00BBB570 /* Constants.swift */; };
+		757F38CA22B08A5500BBB570 /* AAPLShaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 757F38C822B08A5500BBB570 /* AAPLShaders.metal */; };
+		757F38CB22B08A5500BBB570 /* AAPLShaderTypes.h in Headers */ = {isa = PBXBuildFile; fileRef = 757F38C922B08A5500BBB570 /* AAPLShaderTypes.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		757F38CD22B08A6A00BBB570 /* AAPL_LICENSE.txt in Resources */ = {isa = PBXBuildFile; fileRef = 757F38CC22B08A6A00BBB570 /* AAPL_LICENSE.txt */; };
 		75B3AD09229DEEA500A03C5A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B3AD08229DEEA500A03C5A /* AppDelegate.swift */; };
 		75B3AD0B229DEEA500A03C5A /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B3AD0A229DEEA500A03C5A /* ViewController.swift */; };
 		75B3AD0E229DEEA500A03C5A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 75B3AD0C229DEEA500A03C5A /* Main.storyboard */; };
@@ -77,6 +82,11 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		757F38C322B0731E00BBB570 /* Renderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Renderer.swift; sourceTree = "<group>"; };
+		757F38C522B0765E00BBB570 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		757F38C822B08A5500BBB570 /* AAPLShaders.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = AAPLShaders.metal; sourceTree = "<group>"; };
+		757F38C922B08A5500BBB570 /* AAPLShaderTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AAPLShaderTypes.h; sourceTree = "<group>"; };
+		757F38CC22B08A6A00BBB570 /* AAPL_LICENSE.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = AAPL_LICENSE.txt; sourceTree = "<group>"; };
 		75B3AD05229DEEA500A03C5A /* GameBoy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GameBoy.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		75B3AD08229DEEA500A03C5A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		75B3AD0A229DEEA500A03C5A /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -138,6 +148,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		757F38C722B08A4900BBB570 /* AAPL */ = {
+			isa = PBXGroup;
+			children = (
+				757F38CC22B08A6A00BBB570 /* AAPL_LICENSE.txt */,
+				757F38C822B08A5500BBB570 /* AAPLShaders.metal */,
+				757F38C922B08A5500BBB570 /* AAPLShaderTypes.h */,
+			);
+			path = AAPL;
+			sourceTree = "<group>";
+		};
 		75B3ACFC229DEEA500A03C5A = {
 			isa = PBXGroup;
 			children = (
@@ -174,6 +194,7 @@
 		75B3AD2E229DEED400A03C5A /* GameBoyKit */ = {
 			isa = PBXGroup;
 			children = (
+				757F38C722B08A4900BBB570 /* AAPL */,
 				75B3AD2F229DEED400A03C5A /* GameBoyKit.h */,
 				75B3AD30229DEED400A03C5A /* Info.plist */,
 				75B3AD4B229DEEFF00A03C5A /* CPU.swift */,
@@ -190,7 +211,9 @@
 				75BD98BD22A4135900CFFB68 /* LCDStatus.swift */,
 				75BD98BF22A413AA00CFFB68 /* LCDControl.swift */,
 				75BD98C122A41DDC00CFFB68 /* ColorPalette.swift */,
+				757F38C522B0765E00BBB570 /* Constants.swift */,
 				75B3AD55229E13B700A03C5A /* PPU.swift */,
+				757F38C322B0731E00BBB570 /* Renderer.swift */,
 				75B3AD57229EA1DD00A03C5A /* GameBoy.swift */,
 				75B3AD59229EA57700A03C5A /* Clock.swift */,
 				75B3AD51229DFC1700A03C5A /* ROM.swift */,
@@ -216,6 +239,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				75B3AD3F229DEED400A03C5A /* GameBoyKit.h in Headers */,
+				757F38CB22B08A5500BBB570 /* AAPLShaderTypes.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -336,6 +360,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				757F38CD22B08A6A00BBB570 /* AAPL_LICENSE.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -370,12 +395,15 @@
 				75BD98B622A2F37C00CFFB68 /* CPU+Opcodes+CB.swift in Sources */,
 				75B3AD50229DFA7C00A03C5A /* MemoryProtocols.swift in Sources */,
 				75BD98BC22A40F4D00CFFB68 /* Data+GameBoy.swift in Sources */,
+				757F38C422B0731E00BBB570 /* Renderer.swift in Sources */,
 				75BD98BA22A40D6000CFFB68 /* IO.swift in Sources */,
 				75B3AD5A229EA57700A03C5A /* Clock.swift in Sources */,
+				757F38C622B0765E00BBB570 /* Constants.swift in Sources */,
 				75B3AD56229E13B700A03C5A /* PPU.swift in Sources */,
 				75BD98B222A0AA8600CFFB68 /* Opcode.swift in Sources */,
 				75BD98C222A41DDC00CFFB68 /* ColorPalette.swift in Sources */,
 				75BD98C022A413AA00CFFB68 /* LCDControl.swift in Sources */,
+				757F38CA22B08A5500BBB570 /* AAPLShaders.metal in Sources */,
 				75B3AD58229EA1DD00A03C5A /* GameBoy.swift in Sources */,
 				75B3AD4C229DEEFF00A03C5A /* CPU.swift in Sources */,
 				75B3AD52229DFC1700A03C5A /* ROM.swift in Sources */,

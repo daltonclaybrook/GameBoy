@@ -58,7 +58,7 @@ public final class PPU {
 		io.lcdStatus.mode = nextMode
 		io.lcdYCoordinate = UInt8(truncatingIfNeeded: currentLine)
 
-		if previousMode == .transferingToLCD && nextMode != .horizontalBlank {
+		if previousMode == .transferingToLCD && nextMode == .horizontalBlank {
 			renderLine()
 		}
 	}

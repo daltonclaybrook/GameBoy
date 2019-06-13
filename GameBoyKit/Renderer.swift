@@ -68,16 +68,18 @@ public final class MetalRenderer: NSObject, Renderer {
 	}
 
 	public func render(pixelData: [Byte], at region: PixelRegion) {
-		guard let commandBuffer = currentCommandBuffer else {
-			return replaceTextureRegion(with: pixelData, at: region)
-		}
+		DispatchQueue.main.async {
+			guard let commandBuffer = self.currentCommandBuffer else {
+				return self.replaceTextureRegion(with: pixelData, at: region)
+			}
 
-		switch commandBuffer.status {
-		case .completed, .error:
-			replaceTextureRegion(with: pixelData, at: region)
-		default:
-			queuedTextureReplaceBlock = { [weak self] in
-				self?.replaceTextureRegion(with: pixelData, at: region)
+			switch commandBuffer.status {
+			case .completed, .error:
+				self.replaceTextureRegion(with: pixelData, at: region)
+			default:
+				self.queuedTextureReplaceBlock = { [weak self] in
+					self?.replaceTextureRegion(with: pixelData, at: region)
+				}
 			}
 		}
 	}
@@ -94,7 +96,8 @@ public final class MetalRenderer: NSObject, Renderer {
 	}
 
 	private func updateForDrawableSizeChange(_ size: CGSize) {
-		let minSize = Float(min(size.width, size.height))
+		let scale = Float(view.layer?.contentsScale ?? 1.0)
+		let minSize = Float(min(size.width, size.height)) / scale
 		viewportSize.x = UInt32(size.width)
 		viewportSize.y = UInt32(size.height)
 

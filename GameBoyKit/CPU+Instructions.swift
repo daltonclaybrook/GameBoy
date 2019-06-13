@@ -486,9 +486,9 @@ extension CPU {
 	/// Jump relative to the current `pc` rather than to an absolute address.
 	/// Slightly more efficient than a normal jump.
 	func jumpRelative() -> Cycles {
-		let distance = Int16(Int8(bitPattern: mmu.read(address: pc &+ 1)))
+		let distance = Int(Int8(bitPattern: mmu.read(address: pc &+ 1)))
 		pc &+= 2
-		pc = UInt16(bitPattern: Int16(pc) &+ distance)
+		pc = UInt16(truncatingIfNeeded: Int(pc) &+ distance)
 		return 3
 	}
 

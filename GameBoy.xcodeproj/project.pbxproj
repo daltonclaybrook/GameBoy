@@ -12,6 +12,39 @@
 		757F38CA22B08A5500BBB570 /* AAPLShaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 757F38C822B08A5500BBB570 /* AAPLShaders.metal */; };
 		757F38CB22B08A5500BBB570 /* AAPLShaderTypes.h in Headers */ = {isa = PBXBuildFile; fileRef = 757F38C922B08A5500BBB570 /* AAPLShaderTypes.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		757F38CD22B08A6A00BBB570 /* AAPL_LICENSE.txt in Resources */ = {isa = PBXBuildFile; fileRef = 757F38CC22B08A6A00BBB570 /* AAPL_LICENSE.txt */; };
+		757F38D322B1BAC800BBB570 /* tetris.gb in Resources */ = {isa = PBXBuildFile; fileRef = 757F38D222B1BAC800BBB570 /* tetris.gb */; };
+		757F38DB22B1BBA600BBB570 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 757F38DA22B1BBA600BBB570 /* AppDelegate.swift */; };
+		757F38DD22B1BBA600BBB570 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 757F38DC22B1BBA600BBB570 /* ViewController.swift */; };
+		757F38DF22B1BBA800BBB570 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 757F38DE22B1BBA800BBB570 /* Assets.xcassets */; };
+		757F38E222B1BBA800BBB570 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 757F38E022B1BBA800BBB570 /* Main.storyboard */; };
+		757F38F122B1C66200BBB570 /* GameBoyKit_macOS.h in Headers */ = {isa = PBXBuildFile; fileRef = 757F38EF22B1C66200BBB570 /* GameBoyKit_macOS.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		757F38F422B1C66200BBB570 /* GameBoyKit_macOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 757F38ED22B1C66200BBB570 /* GameBoyKit_macOS.framework */; };
+		757F38F522B1C66200BBB570 /* GameBoyKit_macOS.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 757F38ED22B1C66200BBB570 /* GameBoyKit_macOS.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		757F38FA22B1C68D00BBB570 /* AAPL_LICENSE.txt in Resources */ = {isa = PBXBuildFile; fileRef = 757F38CC22B08A6A00BBB570 /* AAPL_LICENSE.txt */; };
+		757F38FB22B1C69000BBB570 /* AAPLShaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 757F38C822B08A5500BBB570 /* AAPLShaders.metal */; };
+		757F38FC22B1C69400BBB570 /* AAPLShaderTypes.h in Headers */ = {isa = PBXBuildFile; fileRef = 757F38C922B08A5500BBB570 /* AAPLShaderTypes.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		757F38FD22B1C69F00BBB570 /* CPU.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B3AD4B229DEEFF00A03C5A /* CPU.swift */; };
+		757F38FE22B1C69F00BBB570 /* CPU+Opcodes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75BD98AF22A0A93B00CFFB68 /* CPU+Opcodes.swift */; };
+		757F38FF22B1C69F00BBB570 /* CPU+Opcodes+CB.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75BD98B522A2F37C00CFFB68 /* CPU+Opcodes+CB.swift */; };
+		757F390022B1C69F00BBB570 /* CPU+Instructions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75BD98B322A0AD9600CFFB68 /* CPU+Instructions.swift */; };
+		757F390122B1C69F00BBB570 /* CPU+Instructions+CB.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75BD98B722A2F44300CFFB68 /* CPU+Instructions+CB.swift */; };
+		757F390222B1C69F00BBB570 /* IO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75BD98B922A40D6000CFFB68 /* IO.swift */; };
+		757F390322B1C69F00BBB570 /* OAM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75BD98C322A49C0C00CFFB68 /* OAM.swift */; };
+		757F390422B1C69F00BBB570 /* Data+GameBoy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75BD98BB22A40F4D00CFFB68 /* Data+GameBoy.swift */; };
+		757F390522B1C69F00BBB570 /* Opcode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75BD98B122A0AA8500CFFB68 /* Opcode.swift */; };
+		757F390622B1C69F00BBB570 /* MMU.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B3AD4D229DEFB400A03C5A /* MMU.swift */; };
+		757F390722B1C69F00BBB570 /* VRAM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B3AD53229E128900A03C5A /* VRAM.swift */; };
+		757F390822B1C69F00BBB570 /* LCDStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75BD98BD22A4135900CFFB68 /* LCDStatus.swift */; };
+		757F390922B1C69F00BBB570 /* LCDControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75BD98BF22A413AA00CFFB68 /* LCDControl.swift */; };
+		757F390A22B1C69F00BBB570 /* ColorPalette.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75BD98C122A41DDC00CFFB68 /* ColorPalette.swift */; };
+		757F390B22B1C69F00BBB570 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 757F38C522B0765E00BBB570 /* Constants.swift */; };
+		757F390C22B1C69F00BBB570 /* PPU.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B3AD55229E13B700A03C5A /* PPU.swift */; };
+		757F390D22B1C69F00BBB570 /* Renderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 757F38C322B0731E00BBB570 /* Renderer.swift */; };
+		757F390E22B1C69F00BBB570 /* GameBoy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B3AD57229EA1DD00A03C5A /* GameBoy.swift */; };
+		757F390F22B1C69F00BBB570 /* Clock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B3AD59229EA57700A03C5A /* Clock.swift */; };
+		757F391022B1C69F00BBB570 /* ROM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B3AD51229DFC1700A03C5A /* ROM.swift */; };
+		757F391122B1C69F00BBB570 /* MemoryProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B3AD4F229DFA7C00A03C5A /* MemoryProtocols.swift */; };
+		757F391222B1C73900BBB570 /* tetris.gb in Resources */ = {isa = PBXBuildFile; fileRef = 757F38D222B1BAC800BBB570 /* tetris.gb */; };
 		75B3AD09229DEEA500A03C5A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B3AD08229DEEA500A03C5A /* AppDelegate.swift */; };
 		75B3AD0B229DEEA500A03C5A /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B3AD0A229DEEA500A03C5A /* ViewController.swift */; };
 		75B3AD0E229DEEA500A03C5A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 75B3AD0C229DEEA500A03C5A /* Main.storyboard */; };
@@ -41,9 +74,20 @@
 		75BD98C022A413AA00CFFB68 /* LCDControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75BD98BF22A413AA00CFFB68 /* LCDControl.swift */; };
 		75BD98C222A41DDC00CFFB68 /* ColorPalette.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75BD98C122A41DDC00CFFB68 /* ColorPalette.swift */; };
 		75BD98C422A49C0C00CFFB68 /* OAM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75BD98C322A49C0C00CFFB68 /* OAM.swift */; };
+		75D0E53C22B1C7BC0049BF6D /* WRAM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75D0E53B22B1C7BC0049BF6D /* WRAM.swift */; };
+		75D0E53D22B1C8430049BF6D /* WRAM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75D0E53B22B1C7BC0049BF6D /* WRAM.swift */; };
+		75D0E53F22B1C9CB0049BF6D /* HRAM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75D0E53E22B1C9CB0049BF6D /* HRAM.swift */; };
+		75D0E54022B1C9F50049BF6D /* HRAM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75D0E53E22B1C9CB0049BF6D /* HRAM.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		757F38F222B1C66200BBB570 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 75B3ACFD229DEEA500A03C5A /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 757F38EC22B1C66200BBB570;
+			remoteInfo = "GameBoyKit-macOS";
+		};
 		75B3AD37229DEED400A03C5A /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 75B3ACFD229DEEA500A03C5A /* Project object */;
@@ -68,6 +112,17 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		757F38F922B1C66200BBB570 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				757F38F522B1C66200BBB570 /* GameBoyKit_macOS.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		75B3AD47229DEED400A03C5A /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -87,6 +142,17 @@
 		757F38C822B08A5500BBB570 /* AAPLShaders.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = AAPLShaders.metal; sourceTree = "<group>"; };
 		757F38C922B08A5500BBB570 /* AAPLShaderTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AAPLShaderTypes.h; sourceTree = "<group>"; };
 		757F38CC22B08A6A00BBB570 /* AAPL_LICENSE.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = AAPL_LICENSE.txt; sourceTree = "<group>"; };
+		757F38D222B1BAC800BBB570 /* tetris.gb */ = {isa = PBXFileReference; lastKnownFileType = file; path = tetris.gb; sourceTree = "<group>"; };
+		757F38D822B1BBA500BBB570 /* GameBoy-macOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "GameBoy-macOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		757F38DA22B1BBA600BBB570 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		757F38DC22B1BBA600BBB570 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		757F38DE22B1BBA800BBB570 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		757F38E122B1BBA800BBB570 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		757F38E322B1BBA800BBB570 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		757F38E422B1BBA800BBB570 /* GameBoy_macOS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = GameBoy_macOS.entitlements; sourceTree = "<group>"; };
+		757F38ED22B1C66200BBB570 /* GameBoyKit_macOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = GameBoyKit_macOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		757F38EF22B1C66200BBB570 /* GameBoyKit_macOS.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GameBoyKit_macOS.h; sourceTree = "<group>"; };
+		757F38F022B1C66200BBB570 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		75B3AD05229DEEA500A03C5A /* GameBoy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GameBoy.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		75B3AD08229DEEA500A03C5A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		75B3AD0A229DEEA500A03C5A /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -119,9 +185,26 @@
 		75BD98BF22A413AA00CFFB68 /* LCDControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LCDControl.swift; sourceTree = "<group>"; };
 		75BD98C122A41DDC00CFFB68 /* ColorPalette.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorPalette.swift; sourceTree = "<group>"; };
 		75BD98C322A49C0C00CFFB68 /* OAM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OAM.swift; sourceTree = "<group>"; };
+		75D0E53B22B1C7BC0049BF6D /* WRAM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WRAM.swift; sourceTree = "<group>"; };
+		75D0E53E22B1C9CB0049BF6D /* HRAM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HRAM.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		757F38D522B1BBA500BBB570 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				757F38F422B1C66200BBB570 /* GameBoyKit_macOS.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		757F38EA22B1C66200BBB570 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		75B3AD02229DEEA500A03C5A /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -158,11 +241,35 @@
 			path = AAPL;
 			sourceTree = "<group>";
 		};
+		757F38D922B1BBA600BBB570 /* GameBoy-macOS */ = {
+			isa = PBXGroup;
+			children = (
+				757F38DA22B1BBA600BBB570 /* AppDelegate.swift */,
+				757F38DC22B1BBA600BBB570 /* ViewController.swift */,
+				757F38DE22B1BBA800BBB570 /* Assets.xcassets */,
+				757F38E022B1BBA800BBB570 /* Main.storyboard */,
+				757F38E322B1BBA800BBB570 /* Info.plist */,
+				757F38E422B1BBA800BBB570 /* GameBoy_macOS.entitlements */,
+			);
+			path = "GameBoy-macOS";
+			sourceTree = "<group>";
+		};
+		757F38EE22B1C66200BBB570 /* GameBoyKit-macOS */ = {
+			isa = PBXGroup;
+			children = (
+				757F38EF22B1C66200BBB570 /* GameBoyKit_macOS.h */,
+				757F38F022B1C66200BBB570 /* Info.plist */,
+			);
+			path = "GameBoyKit-macOS";
+			sourceTree = "<group>";
+		};
 		75B3ACFC229DEEA500A03C5A = {
 			isa = PBXGroup;
 			children = (
 				75B3AD07229DEEA500A03C5A /* GameBoy */,
+				757F38D922B1BBA600BBB570 /* GameBoy-macOS */,
 				75B3AD2E229DEED400A03C5A /* GameBoyKit */,
+				757F38EE22B1C66200BBB570 /* GameBoyKit-macOS */,
 				75B3AD3B229DEED400A03C5A /* GameBoyKitTests */,
 				75B3AD06229DEEA500A03C5A /* Products */,
 			);
@@ -174,6 +281,8 @@
 				75B3AD05229DEEA500A03C5A /* GameBoy.app */,
 				75B3AD2D229DEED400A03C5A /* GameBoyKit.framework */,
 				75B3AD35229DEED400A03C5A /* GameBoyKitTests.xctest */,
+				757F38D822B1BBA500BBB570 /* GameBoy-macOS.app */,
+				757F38ED22B1C66200BBB570 /* GameBoyKit_macOS.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -181,6 +290,7 @@
 		75B3AD07229DEEA500A03C5A /* GameBoy */ = {
 			isa = PBXGroup;
 			children = (
+				757F38D222B1BAC800BBB570 /* tetris.gb */,
 				75B3AD08229DEEA500A03C5A /* AppDelegate.swift */,
 				75B3AD0A229DEEA500A03C5A /* ViewController.swift */,
 				75B3AD0C229DEEA500A03C5A /* Main.storyboard */,
@@ -207,6 +317,8 @@
 				75BD98BB22A40F4D00CFFB68 /* Data+GameBoy.swift */,
 				75BD98B122A0AA8500CFFB68 /* Opcode.swift */,
 				75B3AD4D229DEFB400A03C5A /* MMU.swift */,
+				75D0E53B22B1C7BC0049BF6D /* WRAM.swift */,
+				75D0E53E22B1C9CB0049BF6D /* HRAM.swift */,
 				75B3AD53229E128900A03C5A /* VRAM.swift */,
 				75BD98BD22A4135900CFFB68 /* LCDStatus.swift */,
 				75BD98BF22A413AA00CFFB68 /* LCDControl.swift */,
@@ -234,6 +346,15 @@
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
+		757F38E822B1C66200BBB570 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				757F38F122B1C66200BBB570 /* GameBoyKit_macOS.h in Headers */,
+				757F38FC22B1C69400BBB570 /* AAPLShaderTypes.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		75B3AD28229DEED400A03C5A /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
@@ -246,6 +367,43 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
+		757F38D722B1BBA500BBB570 /* GameBoy-macOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 757F38E522B1BBA800BBB570 /* Build configuration list for PBXNativeTarget "GameBoy-macOS" */;
+			buildPhases = (
+				757F38D422B1BBA500BBB570 /* Sources */,
+				757F38D522B1BBA500BBB570 /* Frameworks */,
+				757F38D622B1BBA500BBB570 /* Resources */,
+				757F38F922B1C66200BBB570 /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				757F38F322B1C66200BBB570 /* PBXTargetDependency */,
+			);
+			name = "GameBoy-macOS";
+			productName = "GameBoy-macOS";
+			productReference = 757F38D822B1BBA500BBB570 /* GameBoy-macOS.app */;
+			productType = "com.apple.product-type.application";
+		};
+		757F38EC22B1C66200BBB570 /* GameBoyKit-macOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 757F38F622B1C66200BBB570 /* Build configuration list for PBXNativeTarget "GameBoyKit-macOS" */;
+			buildPhases = (
+				757F38E822B1C66200BBB570 /* Headers */,
+				757F38E922B1C66200BBB570 /* Sources */,
+				757F38EA22B1C66200BBB570 /* Frameworks */,
+				757F38EB22B1C66200BBB570 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "GameBoyKit-macOS";
+			productName = "GameBoyKit-macOS";
+			productReference = 757F38ED22B1C66200BBB570 /* GameBoyKit_macOS.framework */;
+			productType = "com.apple.product-type.framework";
+		};
 		75B3AD04229DEEA500A03C5A /* GameBoy */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 75B3AD22229DEEA700A03C5A /* Build configuration list for PBXNativeTarget "GameBoy" */;
@@ -312,6 +470,12 @@
 				LastUpgradeCheck = 1020;
 				ORGANIZATIONNAME = "Dalton Claybrook";
 				TargetAttributes = {
+					757F38D722B1BBA500BBB570 = {
+						CreatedOnToolsVersion = 10.2.1;
+					};
+					757F38EC22B1C66200BBB570 = {
+						CreatedOnToolsVersion = 10.2.1;
+					};
 					75B3AD04229DEEA500A03C5A = {
 						CreatedOnToolsVersion = 10.2.1;
 					};
@@ -339,13 +503,33 @@
 			projectRoot = "";
 			targets = (
 				75B3AD04229DEEA500A03C5A /* GameBoy */,
+				757F38D722B1BBA500BBB570 /* GameBoy-macOS */,
 				75B3AD2C229DEED400A03C5A /* GameBoyKit */,
+				757F38EC22B1C66200BBB570 /* GameBoyKit-macOS */,
 				75B3AD34229DEED400A03C5A /* GameBoyKitTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		757F38D622B1BBA500BBB570 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				757F38DF22B1BBA800BBB570 /* Assets.xcassets in Resources */,
+				757F38E222B1BBA800BBB570 /* Main.storyboard in Resources */,
+				757F391222B1C73900BBB570 /* tetris.gb in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		757F38EB22B1C66200BBB570 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				757F38FA22B1C68D00BBB570 /* AAPL_LICENSE.txt in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		75B3AD03229DEEA500A03C5A /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -353,6 +537,7 @@
 				75B3AD13229DEEA700A03C5A /* LaunchScreen.storyboard in Resources */,
 				75B3AD10229DEEA700A03C5A /* Assets.xcassets in Resources */,
 				75B3AD0E229DEEA500A03C5A /* Main.storyboard in Resources */,
+				757F38D322B1BAC800BBB570 /* tetris.gb in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -374,6 +559,46 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		757F38D422B1BBA500BBB570 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				757F38DD22B1BBA600BBB570 /* ViewController.swift in Sources */,
+				757F38DB22B1BBA600BBB570 /* AppDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		757F38E922B1C66200BBB570 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				757F390C22B1C69F00BBB570 /* PPU.swift in Sources */,
+				757F38FD22B1C69F00BBB570 /* CPU.swift in Sources */,
+				757F390622B1C69F00BBB570 /* MMU.swift in Sources */,
+				757F390E22B1C69F00BBB570 /* GameBoy.swift in Sources */,
+				757F390822B1C69F00BBB570 /* LCDStatus.swift in Sources */,
+				757F391022B1C69F00BBB570 /* ROM.swift in Sources */,
+				757F390322B1C69F00BBB570 /* OAM.swift in Sources */,
+				757F38FE22B1C69F00BBB570 /* CPU+Opcodes.swift in Sources */,
+				757F391122B1C69F00BBB570 /* MemoryProtocols.swift in Sources */,
+				757F390A22B1C69F00BBB570 /* ColorPalette.swift in Sources */,
+				757F390122B1C69F00BBB570 /* CPU+Instructions+CB.swift in Sources */,
+				757F390B22B1C69F00BBB570 /* Constants.swift in Sources */,
+				757F390022B1C69F00BBB570 /* CPU+Instructions.swift in Sources */,
+				75D0E54022B1C9F50049BF6D /* HRAM.swift in Sources */,
+				757F390522B1C69F00BBB570 /* Opcode.swift in Sources */,
+				757F390422B1C69F00BBB570 /* Data+GameBoy.swift in Sources */,
+				757F38FB22B1C69000BBB570 /* AAPLShaders.metal in Sources */,
+				757F390F22B1C69F00BBB570 /* Clock.swift in Sources */,
+				757F390222B1C69F00BBB570 /* IO.swift in Sources */,
+				75D0E53D22B1C8430049BF6D /* WRAM.swift in Sources */,
+				757F38FF22B1C69F00BBB570 /* CPU+Opcodes+CB.swift in Sources */,
+				757F390722B1C69F00BBB570 /* VRAM.swift in Sources */,
+				757F390D22B1C69F00BBB570 /* Renderer.swift in Sources */,
+				757F390922B1C69F00BBB570 /* LCDControl.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		75B3AD01229DEEA500A03C5A /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -400,11 +625,13 @@
 				75B3AD5A229EA57700A03C5A /* Clock.swift in Sources */,
 				757F38C622B0765E00BBB570 /* Constants.swift in Sources */,
 				75B3AD56229E13B700A03C5A /* PPU.swift in Sources */,
+				75D0E53F22B1C9CB0049BF6D /* HRAM.swift in Sources */,
 				75BD98B222A0AA8600CFFB68 /* Opcode.swift in Sources */,
 				75BD98C222A41DDC00CFFB68 /* ColorPalette.swift in Sources */,
 				75BD98C022A413AA00CFFB68 /* LCDControl.swift in Sources */,
 				757F38CA22B08A5500BBB570 /* AAPLShaders.metal in Sources */,
 				75B3AD58229EA1DD00A03C5A /* GameBoy.swift in Sources */,
+				75D0E53C22B1C7BC0049BF6D /* WRAM.swift in Sources */,
 				75B3AD4C229DEEFF00A03C5A /* CPU.swift in Sources */,
 				75B3AD52229DFC1700A03C5A /* ROM.swift in Sources */,
 				75BD98B822A2F44300CFFB68 /* CPU+Instructions+CB.swift in Sources */,
@@ -423,6 +650,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		757F38F322B1C66200BBB570 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 757F38EC22B1C66200BBB570 /* GameBoyKit-macOS */;
+			targetProxy = 757F38F222B1C66200BBB570 /* PBXContainerItemProxy */;
+		};
 		75B3AD38229DEED400A03C5A /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 75B3AD2C229DEED400A03C5A /* GameBoyKit */;
@@ -441,6 +673,14 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
+		757F38E022B1BBA800BBB570 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				757F38E122B1BBA800BBB570 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
 		75B3AD0C229DEEA500A03C5A /* Main.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -460,6 +700,114 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		757F38E622B1BBA800BBB570 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = "GameBoy-macOS/GameBoy_macOS.entitlements";
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = ELT5AES94A;
+				INFOPLIST_FILE = "GameBoy-macOS/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.daltonclaybrook.GameBoy-macOS";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		757F38E722B1BBA800BBB570 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = "GameBoy-macOS/GameBoy_macOS.entitlements";
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = ELT5AES94A;
+				INFOPLIST_FILE = "GameBoy-macOS/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.daltonclaybrook.GameBoy-macOS";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		757F38F722B1C66200BBB570 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = ELT5AES94A;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_VERSION = A;
+				INFOPLIST_FILE = "GameBoyKit-macOS/Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.daltonclaybrook.GameBoyKit-macOS";
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		757F38F822B1C66200BBB570 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = ELT5AES94A;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_VERSION = A;
+				INFOPLIST_FILE = "GameBoyKit-macOS/Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.daltonclaybrook.GameBoyKit-macOS";
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
 		75B3AD20229DEEA700A03C5A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -716,6 +1064,24 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		757F38E522B1BBA800BBB570 /* Build configuration list for PBXNativeTarget "GameBoy-macOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				757F38E622B1BBA800BBB570 /* Debug */,
+				757F38E722B1BBA800BBB570 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		757F38F622B1C66200BBB570 /* Build configuration list for PBXNativeTarget "GameBoyKit-macOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				757F38F722B1C66200BBB570 /* Debug */,
+				757F38F822B1C66200BBB570 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		75B3AD00229DEEA500A03C5A /* Build configuration list for PBXProject "GameBoy" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

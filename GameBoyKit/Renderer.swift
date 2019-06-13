@@ -28,6 +28,7 @@ public final class MetalRenderer: NSObject, Renderer {
 	private var viewportSize: vector_uint2 = .zero
 	private var numberOfVertices = 0
 	private var currentCommandBuffer: MTLCommandBuffer?
+	private var queuedTextureReplaceBlock: (() -> Void)?
 
 	public init(view: MTKView, device: MTLDevice) throws {
 		self.view = view
@@ -75,7 +76,7 @@ public final class MetalRenderer: NSObject, Renderer {
 		case .completed, .error:
 			replaceTextureRegion(with: pixelData, at: region)
 		default:
-			commandBuffer.addCompletedHandler { [weak self] _ in
+			queuedTextureReplaceBlock = { [weak self] in
 				self?.replaceTextureRegion(with: pixelData, at: region)
 			}
 		}
@@ -114,6 +115,12 @@ public final class MetalRenderer: NSObject, Renderer {
 			options: .storageModeShared
 		)
 	}
+
+	private func commandBufferCompleted() {
+		currentCommandBuffer = nil
+		queuedTextureReplaceBlock?()
+		queuedTextureReplaceBlock = nil
+	}
 }
 
 extension MetalRenderer: MTKViewDelegate {
@@ -124,7 +131,7 @@ extension MetalRenderer: MTKViewDelegate {
 
 		currentCommandBuffer = commandBuffer
 		commandBuffer.addCompletedHandler { [weak self] _ in
-			self?.currentCommandBuffer = nil
+			self?.commandBufferCompleted()
 		}
 
 		guard let renderPassDescriptor = view.currentRenderPassDescriptor,

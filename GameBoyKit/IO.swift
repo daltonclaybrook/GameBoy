@@ -19,7 +19,7 @@ public final class IO: MemoryAddressable {
 	private let oam: OAM
 
 	init(palette: ColorPalette, oam: OAM) {
-		let count = Int(addressableRange.upperBound + 1 - addressableRange.lowerBound)
+		let count = Int(addressableRange.upperBound - addressableRange.lowerBound + 1)
 		data = Data(repeating: 0, count: count)
 		self.palette = palette
 		self.oam = oam

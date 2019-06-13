@@ -5,7 +5,7 @@ public final class OAM: MemoryAddressable {
 	private unowned let mmu: MMU
 
 	public init(mmu: MMU) {
-		let count = Int(addressableRange.upperBound + 1 - addressableRange.lowerBound)
+		let count = Int(addressableRange.upperBound - addressableRange.lowerBound + 1)
 		self.mmu = mmu
 		data = Data(repeating: 0, count: count)
 	}
@@ -20,7 +20,7 @@ public final class OAM: MemoryAddressable {
 
 	public func dmaTransfer(byte: Byte) {
 		let source = Address(byte) * 0x100
-		let count = addressableRange.upperBound + 1 - addressableRange.lowerBound
+		let count = addressableRange.upperBound - addressableRange.lowerBound + 1
 		for offset in (0..<count) {
 			let from = source + offset
 			let to = addressableRange.lowerBound + offset

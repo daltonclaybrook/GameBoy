@@ -1,5 +1,6 @@
-public final class VRAM: MemoryAddressable {
-	public let addressableRange: ClosedRange<Address> = (0x8000...0x9fff)
+public final class HRAM: MemoryAddressable {
+	// todo: this includes the interrupt enable register, but it shouldn't
+	public let addressableRange: ClosedRange<Address> = (0xff80...0xffff)
 
 	private var data: Data
 

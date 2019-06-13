@@ -48,7 +48,7 @@ public final class Clock {
 		}
 		let timeElapsed = -startDate.timeIntervalSinceNow
 		let delay = TimeInterval(cycles) * secondsPerCycle - timeElapsed
-		print("advancing with delay: \(delay)")
+//		print("advancing with delay: \(delay)")
 		scheduleAdvanceClockIfRunning(afterDelay: delay, stepBlock: stepBlock)
 	}
 

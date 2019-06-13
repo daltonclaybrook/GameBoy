@@ -1,5 +1,5 @@
-public final class VRAM: MemoryAddressable {
-	public let addressableRange: ClosedRange<Address> = (0x8000...0x9fff)
+public final class WRAM: MemoryAddressable {
+	public let addressableRange: ClosedRange<Address> = (0xc000...0xdfff)
 
 	private var data: Data
 

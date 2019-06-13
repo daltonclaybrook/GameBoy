@@ -1,13 +1,17 @@
-import GameBoyKit
+import Cocoa
+import GameBoyKit_macOS
 import MetalKit
-import UIKit
 
-class ViewController: UIViewController {
-	@IBOutlet var mtkView: MTKView!
+class ViewController: NSViewController {
+	private let mtkView = MTKView()
 	private var gameBoy: GameBoy?
 
 	override func viewDidLoad() {
 		super.viewDidLoad()
+
+		view.addSubview(mtkView)
+		mtkView.frame = view.bounds
+		mtkView.autoresizingMask = [.width, .height]
 
 		guard let device = MTLCreateSystemDefaultDevice() else {
 			return assertionFailure("Metal device could not be created")

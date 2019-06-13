@@ -1,11 +1,3 @@
-//
-//  GameBoyKitTests.swift
-//  GameBoyKitTests
-//
-//  Created by Dalton Claybrook on 5/28/19.
-//  Copyright © 2019 Dalton Claybrook. All rights reserved.
-//
-
 import XCTest
 @testable import GameBoyKit
 

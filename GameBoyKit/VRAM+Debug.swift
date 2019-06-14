@@ -1,9 +1,11 @@
 import CoreGraphics
 
 extension VRAM {
-	func writeCGImageToDisk() {
-		guard let image = debugTilesetImage() else { return }
-		let url = URL(fileURLWithPath: "Documents/tileset_a.png")
+	func writeCGImageToDisk(io: IO) {
+//		guard let image = debugTilesetImage(io: io) else { return }
+		guard let image = debugTileMapImage(io: io) else { return }
+
+		let url = URL(fileURLWithPath: "Documents/tilemap.png")
 		guard let destination = CGImageDestinationCreateWithURL(url as CFURL, kUTTypePNG, 1, nil) else { return }
 		CGImageDestinationAddImage(destination, image, nil)
 		_ = CGImageDestinationFinalize(destination)
@@ -12,7 +14,7 @@ extension VRAM {
 		try? data.write(to: dataURL)
 	}
 
-	func debugTilesetImage() -> CGImage? {
+	func debugTilesetImage(io: IO) -> CGImage? {
 		let tilesWide: UInt16 = 16
 		let tilesTall: UInt16 = 24
 		let tileSize: UInt16 = 8
@@ -30,8 +32,8 @@ extension VRAM {
 			let pixelXInTile = pixelX % tileSize
 			let pixelYInTile = pixelY % tileSize
 
-			let tileIndex = tileY * tilesWide + tileX
-			let tileAddress = 0x8000 + tileIndex * 0x10 // each tile is 0x10 bytes
+			let tileNumber = tileY * tilesWide + tileX
+			let tileAddress = 0x8000 + tileNumber * 0x10 // each tile is 0x10 bytes
 
 			let pixelColorNumber = getPixelColorNumber(tileAddress: tileAddress, xOffsetInTile: pixelXInTile, yOffsetInTile: pixelYInTile)
 			let grayValue = 255 - pixelColorNumber * 85
@@ -40,6 +42,38 @@ extension VRAM {
 
 		return getImageFromRGBA(bytes: bytes, width: Int(width), height: Int(height))
 	}
+
+	func debugTileMapImage(io: IO) -> CGImage? {
+		let tileSize = 8
+		let width = 32 * tileSize
+		let height = 32 * tileSize
+
+		var bytes = [Byte]()
+		for pixelIndex in (0..<(width * height)) {
+			let pixelX = pixelIndex % width
+			let pixelY = pixelIndex / width
+
+			let tileX = pixelX / tileSize
+			let tileY = pixelY / tileSize
+
+			let pixelXInTile = pixelX % tileSize
+			let pixelYInTile = pixelY % tileSize
+
+			let bgTileIndex = tileY * 32 + tileX
+			let bgTileAddress = Address(0x9800 + bgTileIndex)
+			let tileNumber = read(address: bgTileAddress)
+			let tileAddress = 0x8000 + Address(tileNumber) * 0x10
+
+			let pixelColorNumber = getPixelColorNumber(tileAddress: tileAddress, xOffsetInTile: UInt16(pixelXInTile), yOffsetInTile: UInt16(pixelYInTile))
+			let pixelColor = io.palette.monochromeBGColor(for: pixelColorNumber)
+
+			bytes.append(contentsOf: pixelColor.rgbaBytes)
+		}
+
+		return getImageFromRGBA(bytes: bytes, width: width, height: width)
+	}
+
+	// MARK: - Helpers
 
 	private func getImageFromRGBA(bytes: [Byte], width: Int, height: Int) -> CGImage? {
 		let _context = CGContext(

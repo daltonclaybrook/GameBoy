@@ -83,23 +83,14 @@ public final class PPU {
 		let pixelYInTile = mapY % 8 // tile height in pixels
 
 		let lcdControl = io.lcdControl
-		let mapDataRange = lcdControl.backgroundTileMapDisplay.mapDataRange
-		let tileDataRange = lcdControl.selectedTileDataForBackgroundAndWindow.tileDataRange
+		let map = lcdControl.backgroundTileMapDisplay
+		let tiles = lcdControl.selectedTileDataForBackgroundAndWindow
 
 		let lineBuffer = (0..<Constants.screenWidth).reduce(into: [Byte]()) { result, screenX in
 			let mapX = UInt8(truncatingIfNeeded: screenX) &+ scrollX
 			let pixelXInTile = mapX % 8 // tile width in pixels
-			let tileOffsetInMap = (Address(mapY) / 8) * mapWidthInTiles + UInt16(mapX)
-			let tileAddressInMap = mapDataRange.lowerBound + tileOffsetInMap
-			let tileIndex = vram.read(address: tileAddressInMap)
-
-			let tileAddress = tileDataRange.lowerBound + Address(tileIndex) * 0x10 // each tile is 0x10 bytes
-			let pixelWordAddress = tileAddress + Address(pixelYInTile) * 2
-			let pixelWord = vram.readWord(address: pixelWordAddress)
-			let shift = 7 - pixelXInTile // pixels go left to right from most to least significant bit
-			let highShift = UInt16(shift + 8 - 1)
-			let lowShift = UInt16(shift)
-			let pixelColorNumber = (pixelWord >> highShift) & 0x02 | (pixelWord >> lowShift) & 0x01
+			let tileAddress = getTileAddress(map: map, tiles: tiles, pixelX: UInt16(mapX), pixelY: UInt16(mapY))
+			let pixelColorNumber = getPixelColorNumber(tileAddress: tileAddress, xOffsetInTile: UInt16(pixelXInTile), yOffsetInTile: UInt16(pixelYInTile))
 
 			let pixelColor = io.palette.monochromeBGColor(for: UInt8(truncatingIfNeeded: pixelColorNumber))
 			result.append(contentsOf: pixelColor.rgbaBytes)
@@ -107,6 +98,23 @@ public final class PPU {
 
 		let region = PixelRegion(x: 0, y: currentLine, width: Constants.screenWidth, height: 1)
 		renderer.render(pixelData: lineBuffer, at: region)
+	}
+
+	private func getTileAddress(map: LCDControl.TileMapDisplay, tiles: LCDControl.TileData, pixelX: UInt16, pixelY: UInt16) -> Address {
+		let tileX = pixelX / 8
+		let tileY = pixelY / 8
+		let tileOffsetInMap = tileY * mapWidthInTiles + tileX
+		let tileAddressInMap = map.mapDataRange.lowerBound + tileOffsetInMap
+		let tileIndex = vram.read(address: tileAddressInMap)
+		return tiles.tileDataRange.lowerBound + Address(tileIndex) * 0x10 // each tile is 0x10 bytes
+	}
+
+	private func getPixelColorNumber(tileAddress: Address, xOffsetInTile: UInt16, yOffsetInTile: UInt16) -> UInt8 {
+		let pixelWord = vram.readWord(address: tileAddress + yOffsetInTile * 2)
+		let lowShift = 7 - xOffsetInTile
+		let highShift = lowShift + 8 - 1
+		let pixelColorNumber = (pixelWord >> highShift) & 0x02 | (pixelWord >> lowShift) & 0x01
+		return UInt8(pixelColorNumber)
 	}
 }
 

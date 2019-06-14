@@ -80,7 +80,7 @@ public final class PPU {
 		let scrollY = io.scrollY
 		let currentLine = Int(truncatingIfNeeded: self.currentLine)
 		let mapY = scrollY &+ UInt8(truncatingIfNeeded: currentLine)
-		let yOffsetInTile = mapY % 8 // tile height in pixels
+		let pixelYInTile = mapY % 8 // tile height in pixels
 
 		let lcdControl = io.lcdControl
 		let mapDataRange = lcdControl.backgroundTileMapDisplay.mapDataRange
@@ -88,19 +88,20 @@ public final class PPU {
 
 		let lineBuffer = (0..<Constants.screenWidth).reduce(into: [Byte]()) { result, screenX in
 			let mapX = UInt8(truncatingIfNeeded: screenX) &+ scrollX
-			let xOffsetInTile = mapX % 8 // tile width in pixels
+			let pixelXInTile = mapX % 8 // tile width in pixels
 			let tileOffsetInMap = (Address(mapY) / 8) * mapWidthInTiles + UInt16(mapX)
 			let tileAddressInMap = mapDataRange.lowerBound + tileOffsetInMap
 			let tileIndex = vram.read(address: tileAddressInMap)
-			let tileDataOffset = Address(tileIndex) * 0x10 // each tile is 0x10 bytes in the tile data
-			// tiles are 2 bits-per-pixel. One line of 8 pixels is 2 bytes.
-			let byteOffsetInTileForPixel = Address(yOffsetInTile * 2 + xOffsetInTile / 4)
-			let pixelAddress = tileDataRange.lowerBound + tileDataOffset + byteOffsetInTileForPixel
-			// this byte contains 4 pixels
-			let pixelData = vram.read(address: pixelAddress)
-			let pixelBitOffset = (xOffsetInTile % 4) * 2 // 2 bits per pixel
-			let pixelColorNumber: ColorNumber = (pixelData >> pixelBitOffset) & 0x03
-			let pixelColor = io.palette.monochromeBGColor(for: pixelColorNumber)
+
+			let tileAddress = tileDataRange.lowerBound + Address(tileIndex) * 0x10 // each tile is 0x10 bytes
+			let pixelWordAddress = tileAddress + Address(pixelYInTile) * 2
+			let pixelWord = vram.readWord(address: pixelWordAddress)
+			let shift = 7 - pixelXInTile // pixels go left to right from most to least significant bit
+			let highShift = UInt16(shift + 8 - 1)
+			let lowShift = UInt16(shift)
+			let pixelColorNumber = (pixelWord >> highShift) & 0x02 | (pixelWord >> lowShift) & 0x01
+
+			let pixelColor = io.palette.monochromeBGColor(for: UInt8(truncatingIfNeeded: pixelColorNumber))
 			result.append(contentsOf: pixelColor.rgbaBytes)
 		}
 

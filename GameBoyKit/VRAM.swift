@@ -1,7 +1,7 @@
 public final class VRAM: MemoryAddressable {
 	public let addressableRange: ClosedRange<Address> = (0x8000...0x9fff)
 
-	private var data: Data
+	private(set) var data: Data
 
 	public init() {
 		let count = Int(addressableRange.upperBound - addressableRange.lowerBound + 1)

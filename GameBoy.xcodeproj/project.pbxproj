@@ -78,6 +78,12 @@
 		75D0E53D22B1C8430049BF6D /* WRAM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75D0E53B22B1C7BC0049BF6D /* WRAM.swift */; };
 		75D0E53F22B1C9CB0049BF6D /* HRAM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75D0E53E22B1C9CB0049BF6D /* HRAM.swift */; };
 		75D0E54022B1C9F50049BF6D /* HRAM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75D0E53E22B1C9CB0049BF6D /* HRAM.swift */; };
+		75D0E54222B26E670049BF6D /* cpu_instrs.gb in Resources */ = {isa = PBXBuildFile; fileRef = 75D0E54122B26E670049BF6D /* cpu_instrs.gb */; };
+		75D0E54322B26E670049BF6D /* cpu_instrs.gb in Resources */ = {isa = PBXBuildFile; fileRef = 75D0E54122B26E670049BF6D /* cpu_instrs.gb */; };
+		75D0E54822B287D90049BF6D /* hello.gbc in Resources */ = {isa = PBXBuildFile; fileRef = 75D0E54722B287D90049BF6D /* hello.gbc */; };
+		75D0E54922B287D90049BF6D /* hello.gbc in Resources */ = {isa = PBXBuildFile; fileRef = 75D0E54722B287D90049BF6D /* hello.gbc */; };
+		75D0E54B22B30C7A0049BF6D /* VRAM+Debug.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75D0E54A22B30C790049BF6D /* VRAM+Debug.swift */; };
+		75D0E54C22B32DFE0049BF6D /* VRAM+Debug.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75D0E54A22B30C790049BF6D /* VRAM+Debug.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -187,6 +193,9 @@
 		75BD98C322A49C0C00CFFB68 /* OAM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OAM.swift; sourceTree = "<group>"; };
 		75D0E53B22B1C7BC0049BF6D /* WRAM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WRAM.swift; sourceTree = "<group>"; };
 		75D0E53E22B1C9CB0049BF6D /* HRAM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HRAM.swift; sourceTree = "<group>"; };
+		75D0E54122B26E670049BF6D /* cpu_instrs.gb */ = {isa = PBXFileReference; lastKnownFileType = file; path = cpu_instrs.gb; sourceTree = "<group>"; };
+		75D0E54722B287D90049BF6D /* hello.gbc */ = {isa = PBXFileReference; lastKnownFileType = file; path = hello.gbc; sourceTree = "<group>"; };
+		75D0E54A22B30C790049BF6D /* VRAM+Debug.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "VRAM+Debug.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -291,6 +300,8 @@
 			isa = PBXGroup;
 			children = (
 				757F38D222B1BAC800BBB570 /* tetris.gb */,
+				75D0E54122B26E670049BF6D /* cpu_instrs.gb */,
+				75D0E54722B287D90049BF6D /* hello.gbc */,
 				75B3AD08229DEEA500A03C5A /* AppDelegate.swift */,
 				75B3AD0A229DEEA500A03C5A /* ViewController.swift */,
 				75B3AD0C229DEEA500A03C5A /* Main.storyboard */,
@@ -330,6 +341,7 @@
 				75B3AD59229EA57700A03C5A /* Clock.swift */,
 				75B3AD51229DFC1700A03C5A /* ROM.swift */,
 				75B3AD4F229DFA7C00A03C5A /* MemoryProtocols.swift */,
+				75D0E54A22B30C790049BF6D /* VRAM+Debug.swift */,
 			);
 			path = GameBoyKit;
 			sourceTree = "<group>";
@@ -516,8 +528,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				75D0E54922B287D90049BF6D /* hello.gbc in Resources */,
 				757F38DF22B1BBA800BBB570 /* Assets.xcassets in Resources */,
 				757F38E222B1BBA800BBB570 /* Main.storyboard in Resources */,
+				75D0E54322B26E670049BF6D /* cpu_instrs.gb in Resources */,
 				757F391222B1C73900BBB570 /* tetris.gb in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -535,7 +549,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				75B3AD13229DEEA700A03C5A /* LaunchScreen.storyboard in Resources */,
+				75D0E54822B287D90049BF6D /* hello.gbc in Resources */,
 				75B3AD10229DEEA700A03C5A /* Assets.xcassets in Resources */,
+				75D0E54222B26E670049BF6D /* cpu_instrs.gb in Resources */,
 				75B3AD0E229DEEA500A03C5A /* Main.storyboard in Resources */,
 				757F38D322B1BAC800BBB570 /* tetris.gb in Resources */,
 			);
@@ -573,6 +589,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				757F390C22B1C69F00BBB570 /* PPU.swift in Sources */,
+				75D0E54C22B32DFE0049BF6D /* VRAM+Debug.swift in Sources */,
 				757F38FD22B1C69F00BBB570 /* CPU.swift in Sources */,
 				757F390622B1C69F00BBB570 /* MMU.swift in Sources */,
 				757F390E22B1C69F00BBB570 /* GameBoy.swift in Sources */,
@@ -613,6 +630,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				75B3AD54229E128900A03C5A /* VRAM.swift in Sources */,
+				75D0E54B22B30C7A0049BF6D /* VRAM+Debug.swift in Sources */,
 				75BD98BE22A4135900CFFB68 /* LCDStatus.swift in Sources */,
 				75BD98B422A0AD9600CFFB68 /* CPU+Instructions.swift in Sources */,
 				75BD98C422A49C0C00CFFB68 /* OAM.swift in Sources */,

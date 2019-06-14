@@ -8,7 +8,11 @@ public final class ROM: MemoryAddressable {
 	}
 
 	func loadROM(data: Data) {
-		self.data[0..<data.count] = data
+		if self.data.count > data.count {
+			self.data[0..<data.count] = data
+		} else {
+			self.data = data
+		}
 	}
 
 	public func read(address: Address) -> UInt8 {

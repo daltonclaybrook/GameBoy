@@ -134,7 +134,9 @@ extension MetalRenderer: MTKViewDelegate {
 
 		currentCommandBuffer = commandBuffer
 		commandBuffer.addCompletedHandler { [weak self] _ in
-			self?.commandBufferCompleted()
+			DispatchQueue.main.async {
+				self?.commandBufferCompleted()
+			}
 		}
 
 		guard let renderPassDescriptor = view.currentRenderPassDescriptor,

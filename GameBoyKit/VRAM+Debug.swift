@@ -18,15 +18,15 @@ extension VRAM {
 		let tileSize: UInt16 = 8
 		let width = tilesWide * tileSize
 		let height = tilesTall * tileSize
-		let numComponents = 4 // 4 components (RGBA)
 
 		var bytes = [Byte]()
 		for pixelIndex in (0..<(width * height)) {
-			let pixelY = pixelIndex / width
 			let pixelX = pixelIndex % width
+			let pixelY = pixelIndex / width
 
-			let tileY = pixelY / tileSize
 			let tileX = pixelX / tileSize
+			let tileY = pixelY / tileSize
+
 			let pixelXInTile = pixelX % tileSize
 			let pixelYInTile = pixelY % tileSize
 
@@ -38,19 +38,26 @@ extension VRAM {
 			bytes.append(contentsOf: [grayValue, grayValue, grayValue, .max])
 		}
 
+		return getImageFromRGBA(bytes: bytes, width: Int(width), height: Int(height))
+	}
+
+	private func getImageFromRGBA(bytes: [Byte], width: Int, height: Int) -> CGImage? {
 		let _context = CGContext(
 			data: nil,
-			width: Int(width),
-			height: Int(height),
+			width: width,
+			height: height,
 			bitsPerComponent: 8,
-			bytesPerRow: Int(width) * numComponents,
+			bytesPerRow: width * 4,
 			space: CGColorSpaceCreateDeviceRGB(),
 			bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue
 		)
 
-		guard let context = _context, let data = context.data else { return nil }
-		_ = data.initializeMemory(as: Byte.self, from: bytes, count: bytes.count)
-		return context.makeImage()
+		if let context = _context, let data = context.data {
+			_ = data.initializeMemory(as: Byte.self, from: bytes, count: bytes.count)
+			return context.makeImage()
+		} else {
+			return nil
+		}
 	}
 
 	private func getPixelColorNumber(tileAddress: Address, xOffsetInTile: UInt16, yOffsetInTile: UInt16) -> UInt8 {

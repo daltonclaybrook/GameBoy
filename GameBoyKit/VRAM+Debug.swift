@@ -13,9 +13,9 @@ extension VRAM {
 	}
 
 	func debugTilesetImage() -> CGImage? {
-		let tilesWide = 16
-		let tilesTall = 24
-		let tileSize = 8
+		let tilesWide: UInt16 = 16
+		let tilesTall: UInt16 = 24
+		let tileSize: UInt16 = 8
 		let width = tilesWide * tileSize
 		let height = tilesTall * tileSize
 		let numComponents = 4 // 4 components (RGBA)
@@ -33,22 +33,17 @@ extension VRAM {
 			let tileIndex = tileY * tilesWide + tileX
 			let tileAddress = 0x8000 + tileIndex * 0x10 // each tile is 0x10 bytes
 
-			let pixelWord = readWord(address: Address(tileAddress + pixelYInTile * 2))
-			let shift = 7 - pixelXInTile
-			let highShift = UInt16(truncatingIfNeeded: shift + 8 - 1)
-			let lowShift = UInt16(truncatingIfNeeded: shift)
-			let pixelBits = (pixelWord >> highShift) & 0x02 | (pixelWord >> lowShift) & 0x01
-
-			let grayValue = UInt8(truncatingIfNeeded: 255 - pixelBits * 85)
+			let pixelColorNumber = getPixelColorNumber(tileAddress: tileAddress, xOffsetInTile: pixelXInTile, yOffsetInTile: pixelYInTile)
+			let grayValue = 255 - pixelColorNumber * 85
 			bytes.append(contentsOf: [grayValue, grayValue, grayValue, .max])
 		}
 
 		let _context = CGContext(
 			data: nil,
-			width: width,
-			height: height,
+			width: Int(width),
+			height: Int(height),
 			bitsPerComponent: 8,
-			bytesPerRow: width * numComponents,
+			bytesPerRow: Int(width) * numComponents,
 			space: CGColorSpaceCreateDeviceRGB(),
 			bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue
 		)
@@ -56,5 +51,13 @@ extension VRAM {
 		guard let context = _context, let data = context.data else { return nil }
 		_ = data.initializeMemory(as: Byte.self, from: bytes, count: bytes.count)
 		return context.makeImage()
+	}
+
+	private func getPixelColorNumber(tileAddress: Address, xOffsetInTile: UInt16, yOffsetInTile: UInt16) -> UInt8 {
+		let pixelWord = readWord(address: tileAddress + yOffsetInTile * 2)
+		let lowShift = 7 - xOffsetInTile
+		let highShift = lowShift + 8 - 1
+		let pixelColorNumber = (pixelWord >> highShift) & 0x02 | (pixelWord >> lowShift) & 0x01
+		return UInt8(pixelColorNumber)
 	}
 }

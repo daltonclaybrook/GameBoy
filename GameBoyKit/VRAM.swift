@@ -1,18 +1,11 @@
 public final class VRAM: MemoryAddressable {
-	public let addressableRange: ClosedRange<Address> = (0x8000...0x9fff)
-
-	private(set) var data: Data
-
-	public init() {
-		let count = Int(addressableRange.upperBound - addressableRange.lowerBound + 1)
-		data = Data(repeating: 0, count: count)
-	}
+	private(set) var bytes = [Byte](repeating: 0, count: MemoryMap.VRAM.count)
 
 	public func read(address: Address) -> Byte {
-		return data[address.adjusted(for: self)]
+		return bytes.read(address: address, in: .VRAM)
 	}
 
 	public func write(byte: Byte, to address: Address) {
-		data[address.adjusted(for: self)] = byte
+		bytes.write(byte: byte, to: address, in: .VRAM)
 	}
 }

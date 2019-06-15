@@ -7,27 +7,20 @@ public final class GameBoy {
 	private let cpu: CPU
 	private let ppu: PPU
 	private let io: IO
+	private let mmu: MMU
 
-	private let mmu = MMU()
 	private let rom = ROM()
 	private let vram = VRAM()
 	private let palette = ColorPalette()
 
 	public init(renderer: Renderer) {
 		clock = Clock(queue: queue)
-		cpu = CPU(mmu: mmu)
-		let oam = OAM(mmu: mmu)
+		let oam = OAM()
 		io = IO(palette: palette, oam: oam)
 		ppu = PPU(renderer: renderer, io: io, vram: vram)
-
-		mmu.register(device: rom)
-		mmu.register(device: vram)
-		// todo: cartridge RAM
-		mmu.register(device: WRAM())
-		// todo: ECHO
-		mmu.register(device: oam)
-		mmu.register(device: io)
-		mmu.register(device: HRAM())
+		mmu = MMU(rom: rom, vram: vram, wram: WRAM(), oam: oam, io: io, hram: HRAM())
+		io.mmu = mmu
+		cpu = CPU(mmu: mmu)
 	}
 
 	public func loadROM(data: Data) {

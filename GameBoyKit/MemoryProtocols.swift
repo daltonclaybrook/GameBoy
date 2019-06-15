@@ -3,8 +3,6 @@ public typealias Byte = UInt8
 public typealias Word = UInt16
 
 public protocol MemoryAddressable {
-	var addressableRange: ClosedRange<Address> { get }
-
 	func write(byte: Byte, to address: Address)
 	func read(address: Address) -> Byte
 }
@@ -21,11 +19,5 @@ extension MemoryAddressable {
 		let big = word >> 8
 		write(byte: Byte(little), to: address)
 		write(byte: Byte(big), to: address + 1)
-	}
-}
-
-extension Address {
-	func adjusted(for memory: MemoryAddressable) -> Address {
-		return self - memory.addressableRange.lowerBound
 	}
 }

@@ -11,6 +11,7 @@ extension VRAM {
 		_ = CGImageDestinationFinalize(destination)
 
 		let dataURL = URL(fileURLWithPath: "Documents/tileset.data")
+		let data = Data(bytes)
 		try? data.write(to: dataURL)
 	}
 

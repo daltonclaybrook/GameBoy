@@ -45,6 +45,8 @@
 		757F391022B1C69F00BBB570 /* ROM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B3AD51229DFC1700A03C5A /* ROM.swift */; };
 		757F391122B1C69F00BBB570 /* MemoryProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B3AD4F229DFA7C00A03C5A /* MemoryProtocols.swift */; };
 		757F391222B1C73900BBB570 /* tetris.gb in Resources */ = {isa = PBXBuildFile; fileRef = 757F38D222B1BAC800BBB570 /* tetris.gb */; };
+		758D864022B4892500C28791 /* MemoryMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 758D863F22B4892500C28791 /* MemoryMap.swift */; };
+		758D864122B48A7400C28791 /* MemoryMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 758D863F22B4892500C28791 /* MemoryMap.swift */; };
 		75B3AD09229DEEA500A03C5A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B3AD08229DEEA500A03C5A /* AppDelegate.swift */; };
 		75B3AD0B229DEEA500A03C5A /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B3AD0A229DEEA500A03C5A /* ViewController.swift */; };
 		75B3AD0E229DEEA500A03C5A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 75B3AD0C229DEEA500A03C5A /* Main.storyboard */; };
@@ -159,6 +161,7 @@
 		757F38ED22B1C66200BBB570 /* GameBoyKit_macOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = GameBoyKit_macOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		757F38EF22B1C66200BBB570 /* GameBoyKit_macOS.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GameBoyKit_macOS.h; sourceTree = "<group>"; };
 		757F38F022B1C66200BBB570 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		758D863F22B4892500C28791 /* MemoryMap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoryMap.swift; sourceTree = "<group>"; };
 		75B3AD05229DEEA500A03C5A /* GameBoy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GameBoy.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		75B3AD08229DEEA500A03C5A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		75B3AD0A229DEEA500A03C5A /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -328,6 +331,7 @@
 				75BD98BB22A40F4D00CFFB68 /* Data+GameBoy.swift */,
 				75BD98B122A0AA8500CFFB68 /* Opcode.swift */,
 				75B3AD4D229DEFB400A03C5A /* MMU.swift */,
+				758D863F22B4892500C28791 /* MemoryMap.swift */,
 				75D0E53B22B1C7BC0049BF6D /* WRAM.swift */,
 				75D0E53E22B1C9CB0049BF6D /* HRAM.swift */,
 				75B3AD53229E128900A03C5A /* VRAM.swift */,
@@ -588,6 +592,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				758D864122B48A7400C28791 /* MemoryMap.swift in Sources */,
 				757F390C22B1C69F00BBB570 /* PPU.swift in Sources */,
 				75D0E54C22B32DFE0049BF6D /* VRAM+Debug.swift in Sources */,
 				757F38FD22B1C69F00BBB570 /* CPU.swift in Sources */,
@@ -629,6 +634,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				758D864022B4892500C28791 /* MemoryMap.swift in Sources */,
 				75B3AD54229E128900A03C5A /* VRAM.swift in Sources */,
 				75D0E54B22B30C7A0049BF6D /* VRAM+Debug.swift in Sources */,
 				75BD98BE22A4135900CFFB68 /* LCDStatus.swift in Sources */,

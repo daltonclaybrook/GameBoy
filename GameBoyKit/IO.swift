@@ -12,15 +12,13 @@ public struct IORegisters {
 }
 
 public final class IO: MemoryAddressable {
-	public let addressableRange: ClosedRange<Address> = (0xff00...0xff7f)
 	public let palette: ColorPalette
+	public weak var mmu: MMU?
 
-	private var data: Data
+	private var bytes = [Byte](repeating: 0, count: MemoryMap.IO.count)
 	private let oam: OAM
 
-	init(palette: ColorPalette, oam: OAM) {
-		let count = Int(addressableRange.upperBound - addressableRange.lowerBound + 1)
-		data = Data(repeating: 0, count: count)
+	public init(palette: ColorPalette, oam: OAM) {
 		self.palette = palette
 		self.oam = oam
 	}
@@ -30,7 +28,7 @@ public final class IO: MemoryAddressable {
 		case palette.monochromeAddressRange, palette.colorAddressRange:
 			return palette.read(address: address)
 		default:
-			return data[address.adjusted(for: self)]
+			return bytes.read(address: address, in: .IO)
 		}
 	}
 
@@ -39,9 +37,13 @@ public final class IO: MemoryAddressable {
 		case palette.monochromeAddressRange, palette.colorAddressRange:
 			palette.write(byte: byte, to: address)
 		case IORegisters.dmaTransfer:
-			oam.dmaTransfer(byte: byte)
+			if let mmu = mmu {
+				oam.dmaTransfer(byte: byte, mmu: mmu)
+			} else {
+				fatalError("DMA transfer could not be initiated because MMU is nil")
+			}
 		default:
-			data[address.adjusted(for: self)] = byte
+			bytes.write(byte: byte, to: address, in: .IO)
 		}
 	}
 }

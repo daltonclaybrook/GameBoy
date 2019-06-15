@@ -1,29 +1,19 @@
 public final class OAM: MemoryAddressable {
-	public let addressableRange: ClosedRange<Address> = (0xfe00...0xfe9f)
-
-	private var data: Data
-	private unowned let mmu: MMU
-
-	public init(mmu: MMU) {
-		let count = Int(addressableRange.upperBound - addressableRange.lowerBound + 1)
-		self.mmu = mmu
-		data = Data(repeating: 0, count: count)
-	}
+	private var bytes = [Byte](repeating: 0, count: MemoryMap.OAM.count)
 
 	public func read(address: Address) -> Byte {
-		return data[address.adjusted(for: self)]
+		return bytes.read(address: address, in: .OAM)
 	}
 
 	public func write(byte: Byte, to address: Address) {
-		data[address.adjusted(for: self)] = byte
+		bytes.write(byte: byte, to: address, in: .OAM)
 	}
 
-	public func dmaTransfer(byte: Byte) {
+	public func dmaTransfer(byte: Byte, mmu: MMU) {
 		let source = Address(byte) * 0x100
-		let count = addressableRange.upperBound - addressableRange.lowerBound + 1
-		for offset in (0..<count) {
+		for offset in (0..<UInt16(MemoryMap.OAM.count)) {
 			let from = source + offset
-			let to = addressableRange.lowerBound + offset
+			let to = MemoryMap.OAM.lowerBound + offset
 			mmu.write(byte: mmu.read(address: from), to: to)
 		}
 	}

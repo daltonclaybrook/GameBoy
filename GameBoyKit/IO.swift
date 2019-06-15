@@ -1,4 +1,5 @@
 public struct IORegisters {
+	public static let interruptFlags: Address = 0xff0f
 	public static let lcdControl: Address = 0xff40
 	public static let lcdStatus: Address = 0xff41
 	public static let scrollX: Address = 0xff42
@@ -49,6 +50,11 @@ public final class IO: MemoryAddressable {
 }
 
 extension IO {
+	var interruptFlags: Interrupts {
+		get { return Interrupts(rawValue: read(address: IORegisters.interruptFlags)) }
+		set { write(byte: newValue.rawValue, to: IORegisters.interruptFlags) }
+	}
+
 	var lcdControl: LCDControl {
 		return LCDControl(rawValue: read(address: IORegisters.lcdControl))
 	}

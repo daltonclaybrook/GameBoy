@@ -5,7 +5,7 @@ public final class MMU: MemoryAddressable {
 	let oam: OAM
 	let io: IO
 	let hram: HRAM
-	private var interruptEnableRegister: UInt8 = 0
+	private var interruptEnable: Interrupts = []
 
 	init(rom: ROM, vram: VRAM, wram: WRAM, oam: OAM, io: IO, hram: HRAM) {
 		self.rom = rom
@@ -38,11 +38,10 @@ public final class MMU: MemoryAddressable {
 		case MemoryMap.HRAM:
 			return hram.read(address: address)
 		case MemoryMap.InterruptEnable:
-			return interruptEnableRegister
+			return interruptEnable.rawValue
 		default:
 			return 0
 		}
-		return 0
 	}
 
 	public func write(byte: Byte, to address: Address) {
@@ -67,7 +66,7 @@ public final class MMU: MemoryAddressable {
 		case MemoryMap.HRAM:
 			hram.write(byte: byte, to: address)
 		case MemoryMap.InterruptEnable:
-			interruptEnableRegister = byte
+			interruptEnable = Interrupts(rawValue: byte)
 		default:
 			break
 		}

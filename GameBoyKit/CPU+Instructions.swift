@@ -618,6 +618,7 @@ extension CPU {
 
 	func undefined() -> Cycles {
 		assertionFailure("This is an error in the program and would crash a real Game Boy")
+		pc &+= 1
 		return 0
 	}
 }

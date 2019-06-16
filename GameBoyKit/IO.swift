@@ -2,8 +2,8 @@ public struct IORegisters {
 	public static let interruptFlags: Address = 0xff0f
 	public static let lcdControl: Address = 0xff40
 	public static let lcdStatus: Address = 0xff41
-	public static let scrollX: Address = 0xff42
-	public static let scrollY: Address = 0xff43
+	public static let scrollY: Address = 0xff42
+	public static let scrollX: Address = 0xff43
 	public static let lcdYCoordinate: Address = 0xff44
 	public static let lcdYCoordinateCompare: Address = 0xff45
 	public static let dmaTransfer: Address = 0xff46
@@ -64,12 +64,12 @@ extension IO {
 		set { write(byte: newValue.rawValue, to: IORegisters.lcdStatus) }
 	}
 
-	var scrollX: UInt8 {
-		return read(address: IORegisters.scrollX)
-	}
-
 	var scrollY: UInt8 {
 		return read(address: IORegisters.scrollY)
+	}
+
+	var scrollX: UInt8 {
+		return read(address: IORegisters.scrollX)
 	}
 
 	var lcdYCoordinate: UInt8 {

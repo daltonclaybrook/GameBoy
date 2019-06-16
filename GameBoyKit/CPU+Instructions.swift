@@ -158,34 +158,36 @@ extension CPU {
 	/// Assuming the last arithmetic operation was between two BCD numbers, converts
 	/// the result in `a` to BCD
 	func decimalAdjustAccumulator() -> Cycles {
-		var a = UInt16(self.a)
+		var register = UInt16(a)
+
 		if !flags.contains(.subtract) {
-			if flags.contains(.halfCarry) || a & 0x0f > 0x09 {
-				a &+= 0x06
+			if flags.contains(.halfCarry) || register & 0x0f > 0x09 {
+				register &+= 0x06
 			}
-			if flags.contains(.fullCarry) || a > 0x9f {
-				a &+= 0x60
+			if flags.contains(.fullCarry) || register > 0x9f {
+				register &+= 0x60
 			}
 		} else {
 			if flags.contains(.halfCarry) {
-				a = (a &- 0x06) & 0xff
+				register = (register &- 0x06) & 0xff
 			}
 			if flags.contains(.fullCarry) {
-				a &-= 0x60
+				register &-= 0x60
 			}
 		}
 
-		flags.formIntersection(.subtract)
+		flags.formIntersection([.subtract, .fullCarry])
 
-		if a & 0x100 != 0 {
+		if register & 0x100 != 0 {
 			flags.formUnion(.fullCarry)
 		}
 
-		a &= 0xff
-		if a == 0 {
+		register &= 0xff
+
+		if register == 0 {
 			flags.formUnion(.zero)
 		}
-		self.a = Byte(a)
+		a = UInt8(register)
 		pc &+= 1
 		return 1
 	}

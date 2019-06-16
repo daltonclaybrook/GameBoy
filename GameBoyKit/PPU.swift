@@ -115,7 +115,7 @@ public final class PPU {
 		let tileOffsetInMap = tileY * mapWidthInTiles + tileX
 		let tileAddressInMap = map.mapDataRange.lowerBound + tileOffsetInMap
 		let tileIndex = vram.read(address: tileAddressInMap)
-		return tiles.tileDataRange.lowerBound + Address(tileIndex) * 0x10 // each tile is 0x10 bytes
+		return tiles.tileAddress(atIndex: tileIndex)
 	}
 
 	private func getPixelColorNumber(tileAddress: Address, xOffsetInTile: UInt16, yOffsetInTile: UInt16) -> UInt8 {

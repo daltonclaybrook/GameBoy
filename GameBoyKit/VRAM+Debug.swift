@@ -1,15 +1,23 @@
 import CoreGraphics
 
 extension VRAM {
-	func writeCGImageToDisk(io: IO) {
-//		guard let image = debugTilesetImage(io: io) else { return }
-		guard let image = debugTileMapImage(io: io) else { return }
+	func writeDebugImagesAndDataToDisk(io: IO) {
+		guard let tileset = debugTilesetImage(io: io),
+			let tileMap = debugTileMapImage(io: io) else { return }
 
-		let url = URL(fileURLWithPath: "Documents/tilemap.png")
+		writeCGImageToDisk(tileset, name: "tileset")
+		writeCGImageToDisk(tileMap, name: "tileMap")
+		writeVRAMDataToDisk()
+	}
+
+	func writeCGImageToDisk(_ image: CGImage, name: String) {
+		let url = URL(fileURLWithPath: "Documents/\(name).png")
 		guard let destination = CGImageDestinationCreateWithURL(url as CFURL, kUTTypePNG, 1, nil) else { return }
 		CGImageDestinationAddImage(destination, image, nil)
 		_ = CGImageDestinationFinalize(destination)
+	}
 
+	func writeVRAMDataToDisk() {
 		let dataURL = URL(fileURLWithPath: "Documents/tileset.data")
 		let data = Data(bytes)
 		try? data.write(to: dataURL)

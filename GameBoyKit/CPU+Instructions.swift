@@ -97,7 +97,7 @@ extension CPU {
 	func loadIntoAddressOperand(byte: Byte) -> Cycles {
 		let address = mmu.readWord(address: pc &+ 1)
 		mmu.write(byte: byte, to: address)
-		pc &+= 2
+		pc &+= 3
 		return 4
 	}
 

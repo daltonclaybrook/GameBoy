@@ -5,7 +5,7 @@ public final class MMU: MemoryAddressable {
 	let oam: OAM
 	let io: IO
 	let hram: HRAM
-	private var interruptEnable: Interrupts = []
+	private(set) var interruptEnable: Interrupts = []
 
 	init(rom: ROM, vram: VRAM, wram: WRAM, oam: OAM, io: IO, hram: HRAM) {
 		self.rom = rom

@@ -1,3 +1,11 @@
+public struct InterruptVectors {
+	public static let vBlank: Address = 0x0040
+	public static let lcdStat: Address = 0x0048
+	public static let timer: Address = 0x0050
+	public static let serial: Address = 0x0058
+	public static let joypad: Address = 0x0060
+}
+
 public final class GameBoy {
 	private let queue: DispatchQueue = DispatchQueue(
 		label: "com.daltonclaybrook.GameBoy.GameBoy",
@@ -30,10 +38,12 @@ public final class GameBoy {
 	}
 
 	private func stepAndReturnCycles() -> Cycles {
+		ppu.step(clock: clock.cycles)
 		let opcodeByte = mmu.read(address: cpu.pc)
 		let opcode = CPU.allOpcodes[Int(opcodeByte)]
+//		print("\(opcode.mnemonic) PC: \(cpu.pc)")
 		let cycles = opcode.block(cpu)
-		ppu.step(cycles: cycles)
+		processInterruptIfNecessary()
 		return cycles
 	}
 
@@ -64,5 +74,32 @@ public final class GameBoy {
 		mmu.write(byte: 0xfc, to: 0xff47)
 		mmu.write(byte: 0xff, to: 0xff48)
 		mmu.write(byte: 0xff, to: 0xff49)
+	}
+
+	private func processInterruptIfNecessary() {
+		guard cpu.interuptsEnabled else { return }
+		if mmu.interruptEnable.contains(.vBlank) && io.interruptFlags.contains(.vBlank) {
+			io.interruptFlags.subtract(.vBlank)
+			callInterrupt(vector: InterruptVectors.vBlank)
+		} else if mmu.interruptEnable.contains(.lcdStat) && io.interruptFlags.contains(.lcdStat) {
+			io.interruptFlags.subtract(.lcdStat)
+			callInterrupt(vector: InterruptVectors.lcdStat)
+		} else if mmu.interruptEnable.contains(.timer) && io.interruptFlags.contains(.timer) {
+			io.interruptFlags.subtract(.timer)
+			callInterrupt(vector: InterruptVectors.timer)
+		} else if mmu.interruptEnable.contains(.serial) && io.interruptFlags.contains(.serial) {
+			io.interruptFlags.subtract(.serial)
+			callInterrupt(vector: InterruptVectors.serial)
+		} else if mmu.interruptEnable.contains(.joypad) && io.interruptFlags.contains(.joypad) {
+			io.interruptFlags.subtract(.joypad)
+			callInterrupt(vector: InterruptVectors.joypad)
+		}
+	}
+
+	private func callInterrupt(vector: Address) {
+		cpu.interuptsEnabled = false
+		mmu.write(word: cpu.pc &+ 2, to: cpu.sp - 2)
+		cpu.sp &-= 2
+		cpu.pc = vector
 	}
 }

@@ -2,7 +2,6 @@ public final class PPU {
 	private let renderer: Renderer
 	private let io: IO
 	private let vram: VRAM
-	private var clock: Cycles = 0
 
 	private let oamSearchDuration: Cycles = 20
 	private let lcdTransferDuration: Cycles = 43
@@ -13,24 +12,7 @@ public final class PPU {
 	private let vBlankDuration: Cycles
 	private let cyclesPerLine: Cycles
 	private let cyclesPerFrame: Cycles
-
-	private var currentLine: UInt64 {
-		return (clock % cyclesPerFrame) / cyclesPerLine
-	}
-
-	private var currentMode: LCDStatus.Mode {
-		guard currentLine < UInt64(Constants.screenHeight) else {
-			return .verticalBlank
-		}
-		switch clock % cyclesPerLine {
-		case (0..<oamSearchDuration):
-			return .searchingOAMRAM
-		case (oamSearchDuration..<(oamSearchDuration + lcdTransferDuration)):
-			return .transferingToLCD
-		default:
-			return .horizontalBlank
-		}
-	}
+	private var isDisplayEnabled = true
 
 	init(renderer: Renderer, io: IO, vram: VRAM) {
 		self.renderer = renderer
@@ -43,27 +25,54 @@ public final class PPU {
 		clearPixelBuffer()
 	}
 
-	func step(cycles: Cycles) {
+	func step(clock: Cycles) {
 		guard io.lcdControl.displayEnabled else {
-			if clock != 0 {
-				clock = 0
-				clearPixelBuffer()
+			if isDisplayEnabled {
+				disableDisplay()
 			}
 			return
 		}
 
-		clock &+= cycles
 		let previousMode = io.lcdStatus.mode
-		let nextMode = currentMode
+		let nextMode = currentMode(clock: clock)
+		let line = currentLine(clock: clock)
+		isDisplayEnabled = io.lcdControl.displayEnabled
 		io.lcdStatus.mode = nextMode
-		io.lcdYCoordinate = UInt8(truncatingIfNeeded: currentLine)
+		io.lcdYCoordinate = UInt8(truncatingIfNeeded: line)
 
 		if previousMode == .transferingToLCD && nextMode == .horizontalBlank {
-			renderLine()
+			render(line: line)
+		} else if previousMode == .horizontalBlank && nextMode == .verticalBlank {
+			io.interruptFlags.formUnion(.vBlank)
 		}
 	}
 
 	// MARK: - Helpers
+
+	private func currentLine(clock: Cycles) -> UInt64 {
+		return (clock % cyclesPerFrame) / cyclesPerLine
+	}
+
+	private func currentMode(clock: Cycles) -> LCDStatus.Mode {
+		guard currentLine(clock: clock) < UInt64(Constants.screenHeight) else {
+			return .verticalBlank
+		}
+		switch clock % cyclesPerLine {
+		case (0..<oamSearchDuration):
+			return .searchingOAMRAM
+		case (oamSearchDuration..<(oamSearchDuration + lcdTransferDuration)):
+			return .transferingToLCD
+		default:
+			return .horizontalBlank
+		}
+	}
+
+	private func disableDisplay() {
+		isDisplayEnabled = false
+		clearPixelBuffer()
+		io.lcdYCoordinate = 0
+		io.lcdStatus.mode = .searchingOAMRAM
+	}
 
 	private func clearPixelBuffer() {
 		let pixelBytesCount = Constants.screenHeight * Constants.screenWidth * 4 // 4 bytes per pixel
@@ -75,10 +84,10 @@ public final class PPU {
 	/// Todo:
 	/// - display window
 	/// - display sprites
-	private func renderLine() {
+	private func render(line: UInt64) {
 		let scrollX = io.scrollX
 		let scrollY = io.scrollY
-		let currentLine = Int(truncatingIfNeeded: self.currentLine)
+		let currentLine = Int(truncatingIfNeeded: line)
 		let mapY = scrollY &+ UInt8(truncatingIfNeeded: currentLine)
 		let pixelYInTile = mapY % 8 // tile height in pixels
 

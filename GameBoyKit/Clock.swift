@@ -3,6 +3,7 @@ public typealias CyclesPerSecond = UInt64
 
 public final class Clock {
 	private(set) public var isRunning = false
+	private(set) public var cycles: Cycles = 0
 
 	private let queue: DispatchQueue
 	private let cyclesPerBatch: Cycles = 10_000
@@ -44,7 +45,9 @@ public final class Clock {
 		let startDate = Date()
 		var cycles: Cycles = 0
 		while cycles < cyclesPerBatch {
-			cycles += stepBlock()
+			let stepCycles = stepBlock()
+			cycles += stepCycles
+			self.cycles += stepCycles
 		}
 		let timeElapsed = -startDate.timeIntervalSinceNow
 		let delay = TimeInterval(cycles) * secondsPerCycle - timeElapsed

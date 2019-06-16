@@ -77,28 +77,25 @@ public final class GameBoy {
 	}
 
 	private func processInterruptIfNecessary() {
+		defer { io.interruptFlags = [] }
 		guard cpu.interuptsEnabled else { return }
+
 		if mmu.interruptEnable.contains(.vBlank) && io.interruptFlags.contains(.vBlank) {
-			io.interruptFlags.subtract(.vBlank)
 			callInterrupt(vector: InterruptVectors.vBlank)
 		} else if mmu.interruptEnable.contains(.lcdStat) && io.interruptFlags.contains(.lcdStat) {
-			io.interruptFlags.subtract(.lcdStat)
 			callInterrupt(vector: InterruptVectors.lcdStat)
 		} else if mmu.interruptEnable.contains(.timer) && io.interruptFlags.contains(.timer) {
-			io.interruptFlags.subtract(.timer)
 			callInterrupt(vector: InterruptVectors.timer)
 		} else if mmu.interruptEnable.contains(.serial) && io.interruptFlags.contains(.serial) {
-			io.interruptFlags.subtract(.serial)
 			callInterrupt(vector: InterruptVectors.serial)
 		} else if mmu.interruptEnable.contains(.joypad) && io.interruptFlags.contains(.joypad) {
-			io.interruptFlags.subtract(.joypad)
 			callInterrupt(vector: InterruptVectors.joypad)
 		}
 	}
 
 	private func callInterrupt(vector: Address) {
 		cpu.interuptsEnabled = false
-		mmu.write(word: cpu.pc &+ 2, to: cpu.sp - 2)
+		mmu.write(word: cpu.pc &+ 1, to: cpu.sp - 2)
 		cpu.sp &-= 2
 		cpu.pc = vector
 	}

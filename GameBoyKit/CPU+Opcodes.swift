@@ -216,7 +216,7 @@ extension CPU {
 		Opcode(mnemonic: "RET Z") { $0.return(condition: $0.flags.contains(.zero)) },
 		Opcode(mnemonic: "RET") { $0.return() },
 		Opcode(mnemonic: "JP Z, nn") { $0.jump(condition: $0.flags.contains(.zero)) },
-		Opcode(mnemonic: "PREFIX CB    4") { $0.nop() }, // todo
+		Opcode(mnemonic: "PREFIX CB") { $0.prefixCB() },
 		Opcode(mnemonic: "CALL Z, nn") { $0.call(condition: $0.flags.contains(.zero)) },
 		Opcode(mnemonic: "CALL") { $0.call() },
 		Opcode(mnemonic: "ADC A, n") { $0.addOperandWithCarry(to: &$0.a) },

@@ -137,7 +137,7 @@ extension CPU {
 	func checkBit(index: BitIndex, of byte: Byte) -> Cycles {
 		flags.formIntersection(.fullCarry) // preserve old carry flag
 		flags.formUnion(.halfCarry)
-		if (1 << index) & byte != 0 { flags.formUnion(.zero) }
+		if (1 << index) & byte == 0 { flags.formUnion(.zero) }
 		pc &+= 2
 		return 2
 	}

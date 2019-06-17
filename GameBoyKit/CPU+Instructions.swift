@@ -582,10 +582,10 @@ extension CPU {
 	/// Rotate `a` left moving bit 7 into the carry flag and the carry flag into bit 0.
 	/// Updates carry flag, resets others.
 	func rotateLeftA() -> Cycles {
-		let carry = a & 0x08
-		a = a << 1
-		if flags.contains(.fullCarry) { a += 1 }
-		flags = carry > 0 ? .fullCarry : []
+		let carry: Byte = flags.contains(.fullCarry) ? 1 : 0
+		flags = []
+		if a & 0x80 != 0 { flags.formUnion(.fullCarry) }
+		a = a << 1 | carry
 		pc &+= 1
 		return 1
 	}
@@ -593,10 +593,10 @@ extension CPU {
 	/// Rotate `a` right moving bit 0 into the carry flag and the carry flag into bit 7.
 	/// Updates carry flag, resets others.
 	func rotateRightA() -> Cycles {
-		let carry = a & 1
-		a = a >> 1
-		if flags.contains(.fullCarry) { a += 0x80 }
-		flags = carry > 0 ? .fullCarry : []
+		let carry: Byte = flags.contains(.fullCarry) ? 0x80 : 0
+		flags = []
+		if a & 0x01 != 0 { flags.formUnion(.fullCarry) }
+		a = a >> 1 | carry
 		pc &+= 1
 		return 1
 	}

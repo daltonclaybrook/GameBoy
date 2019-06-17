@@ -14,6 +14,12 @@ public final class PPU {
 	private let cyclesPerFrame: Cycles
 	private var isDisplayEnabled = true
 
+	private let semaphore = DispatchSemaphore(value: 0)
+	private let queue = DispatchQueue(
+		label: "com.daltonclaybrook.GameBoy.PPU",
+		qos: .userInteractive
+	)
+
 	init(renderer: Renderer, io: IO, vram: VRAM) {
 		self.renderer = renderer
 		self.io = io
@@ -40,10 +46,15 @@ public final class PPU {
 		io.lcdStatus.mode = nextMode
 		io.lcdYCoordinate = UInt8(truncatingIfNeeded: line)
 
-		if previousMode == .transferingToLCD && nextMode == .horizontalBlank {
-			render(line: line)
-		} else if previousMode == .horizontalBlank && nextMode == .verticalBlank {
+		switch (previousMode, nextMode) {
+		case (.searchingOAMRAM, .transferingToLCD):
+			queue.async { self.render(line: line) }
+		case (.transferingToLCD, .horizontalBlank):
+			semaphore.wait() // If the transfer hasn't completed, wait for it to complete
+		case (.horizontalBlank, .verticalBlank):
 			io.interruptFlags.formUnion(.vBlank)
+		default:
+			break
 		}
 	}
 
@@ -85,6 +96,8 @@ public final class PPU {
 	/// - display window
 	/// - display sprites
 	private func render(line: UInt64) {
+		defer { semaphore.signal() } // signal across threads that the LCD transfer has completed
+
 		let scrollX = io.scrollX
 		let scrollY = io.scrollY
 		let currentLine = Int(truncatingIfNeeded: line)

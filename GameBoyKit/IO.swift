@@ -16,6 +16,11 @@ public final class IO: MemoryAddressable {
 	public let palette: ColorPalette
 	public weak var mmu: MMU?
 
+	public var interruptFlags: Interrupts = []
+	public var lcdControl = LCDControl(rawValue: 0)
+	public var lcdStatus = LCDStatus(rawValue: 0)
+	public var lcdYCoordinate: UInt8 = 0
+
 	private var bytes = [Byte](repeating: 0, count: MemoryMap.IO.count)
 	private let oam: OAM
 
@@ -26,6 +31,14 @@ public final class IO: MemoryAddressable {
 
 	public func read(address: Address) -> Byte {
 		switch address {
+		case IORegisters.interruptFlags:
+			return interruptFlags.rawValue
+		case IORegisters.lcdControl:
+			return lcdControl.rawValue
+		case IORegisters.lcdStatus:
+			return lcdStatus.rawValue
+		case IORegisters.lcdYCoordinate:
+			return lcdYCoordinate
 		case palette.monochromeAddressRange, palette.colorAddressRange:
 			return palette.read(address: address)
 		default:
@@ -35,6 +48,14 @@ public final class IO: MemoryAddressable {
 
 	public func write(byte: Byte, to address: Address) {
 		switch address {
+		case IORegisters.interruptFlags:
+			interruptFlags = Interrupts(rawValue: byte)
+		case IORegisters.lcdControl:
+			lcdControl = LCDControl(rawValue: byte)
+		case IORegisters.lcdStatus:
+			lcdStatus = LCDStatus(rawValue: byte)
+		case IORegisters.lcdYCoordinate:
+			lcdYCoordinate = byte
 		case palette.monochromeAddressRange, palette.colorAddressRange:
 			palette.write(byte: byte, to: address)
 		case IORegisters.dmaTransfer:
@@ -50,31 +71,12 @@ public final class IO: MemoryAddressable {
 }
 
 extension IO {
-	var interruptFlags: Interrupts {
-		get { return Interrupts(rawValue: read(address: IORegisters.interruptFlags)) }
-		set { write(byte: newValue.rawValue, to: IORegisters.interruptFlags) }
-	}
-
-	var lcdControl: LCDControl {
-		return LCDControl(rawValue: read(address: IORegisters.lcdControl))
-	}
-
-	var lcdStatus: LCDStatus {
-		get { return LCDStatus(rawValue: read(address: IORegisters.lcdStatus)) }
-		set { write(byte: newValue.rawValue, to: IORegisters.lcdStatus) }
-	}
-
 	var scrollY: UInt8 {
 		return read(address: IORegisters.scrollY)
 	}
 
 	var scrollX: UInt8 {
 		return read(address: IORegisters.scrollX)
-	}
-
-	var lcdYCoordinate: UInt8 {
-		get { return read(address: IORegisters.lcdYCoordinate) }
-		set { write(byte: newValue, to: IORegisters.lcdYCoordinate) }
 	}
 
 	var lcdYCoordinateCompare: UInt8 {

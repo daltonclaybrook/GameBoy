@@ -7,7 +7,7 @@ public struct InterruptVectors {
 }
 
 public final class GameBoy {
-	private let queue: DispatchQueue = DispatchQueue(
+	private let queue = DispatchQueue(
 		label: "com.daltonclaybrook.GameBoy.GameBoy",
 		qos: .userInteractive
 	)

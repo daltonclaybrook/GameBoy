@@ -29,15 +29,15 @@ public final class Clock {
 	}
 
 	func start(stepBlock: @escaping () -> Cycles) {
-		queue.sync {
-			isRunning = true
-			advanceClock(stepBlock: stepBlock)
+		queue.async {
+			self.isRunning = true
+			self.advanceClock(stepBlock: stepBlock)
 		}
 	}
 
 	func stop() {
-		queue.sync {
-			isRunning = false
+		queue.async {
+			self.isRunning = false
 		}
 	}
 

@@ -39,20 +39,32 @@ public final class PPU {
 			return
 		}
 
+		isDisplayEnabled = true
 		let previousMode = io.lcdStatus.mode
 		let nextMode = currentMode(clock: clock)
 		let line = currentLine(clock: clock)
 		isDisplayEnabled = io.lcdControl.displayEnabled
 		io.lcdStatus.mode = nextMode
 		io.lcdYCoordinate = UInt8(truncatingIfNeeded: line)
+		io.lcdStatus.lcdYCoincidence = io.lcdYCoordinate == io.lcdYCoordinateCompare
+
+		if io.lcdStatus.lcdYCoincidenceInterruptEnabled && io.lcdStatus.lcdYCoincidence {
+			io.interruptFlags.formUnion(.lcdStat)
+		}
 
 		switch (previousMode, nextMode) {
 		case (.searchingOAMRAM, .transferingToLCD):
 			queue.async { self.render(line: line) }
 		case (.transferingToLCD, .horizontalBlank):
 			semaphore.wait() // If the transfer hasn't completed, wait for it to complete
+			if io.lcdStatus.hBlankInterruptEnabled {
+				io.interruptFlags.formUnion(.lcdStat)
+			}
 		case (.horizontalBlank, .verticalBlank):
 			io.interruptFlags.formUnion(.vBlank)
+			if io.lcdStatus.vBlankInterruptEnabled {
+				io.interruptFlags.formUnion(.lcdStat)
+			}
 		default:
 			break
 		}

@@ -22,9 +22,12 @@ public final class GameBoy {
 	private let vram = VRAM()
 	private let palette = ColorPalette()
 
+	/// Advance by this amount each step if the CPU is halted
+	private let haltedCycleStep: Cycles = 2
+
 	public init(renderer: Renderer) {
 		clock = Clock(queue: queue)
-		timer = Timer(clock: clock)
+		timer = Timer()
 		let oam = OAM()
 		io = IO(palette: palette, oam: oam, timer: timer)
 		ppu = PPU(renderer: renderer, io: io, vram: vram)
@@ -40,12 +43,28 @@ public final class GameBoy {
 	}
 
 	private func stepAndReturnCycles() -> Cycles {
+//		if cpu.pc == 0xC2B9 { // interrupt test #2
+		if cpu.pc == 0xC2E4 { // interrupt test #3
+			print("break")
+		}
+		timer.step(clock: clock.cycles)
 		ppu.step(clock: clock.cycles)
-		let opcodeByte = mmu.read(address: cpu.pc)
-		let opcode = CPU.allOpcodes[Int(opcodeByte)]
-//		print("\(opcode.mnemonic) PC: \(cpu.pc)")
-		let cycles = opcode.block(cpu)
+		let cycles: Cycles
+		if !cpu.isHalted {
+			let opcodeByte = mmu.read(address: cpu.pc)
+			let opcode = CPU.allOpcodes[Int(opcodeByte)]
+//			print("\(opcode.mnemonic) PC: \(cpu.pc)")
+			cycles = opcode.block(cpu)
+		} else {
+			cycles = haltedCycleStep
+		}
+
 		processInterruptIfNecessary()
+
+		let threshold = 3_000_000
+		if clock.cycles < threshold && clock.cycles + cycles >= threshold {
+			vram.writeDebugImagesAndDataToDisk(io: io)
+		}
 		return cycles
 	}
 
@@ -79,8 +98,16 @@ public final class GameBoy {
 	}
 
 	private func processInterruptIfNecessary() {
-		defer { io.interruptFlags = [] }
+		if cpu.isHalted &&
+			!cpu.interuptsEnabled &&
+			!mmu.interruptEnable.intersection(io.interruptFlags).isEmpty {
+			// disable halt without processing interrupts
+			cpu.isHalted = false
+			return
+		}
+
 		guard cpu.interuptsEnabled else { return }
+		defer { io.interruptFlags = [] }
 
 		if mmu.interruptEnable.contains(.vBlank) && io.interruptFlags.contains(.vBlank) {
 			callInterrupt(vector: InterruptVectors.vBlank)
@@ -97,7 +124,8 @@ public final class GameBoy {
 
 	private func callInterrupt(vector: Address) {
 		cpu.interuptsEnabled = false
-		mmu.write(word: cpu.pc &+ 1, to: cpu.sp - 2)
+		cpu.isHalted = false
+		mmu.write(word: cpu.pc, to: cpu.sp - 2)
 		cpu.sp &-= 2
 		cpu.pc = vector
 	}

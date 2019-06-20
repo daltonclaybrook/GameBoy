@@ -26,6 +26,7 @@ public final class CPU {
 	internal(set) public var flags: Flags = []
 
 	internal(set) public var interuptsEnabled = false
+	internal(set) public var isHalted = false
 
 	let mmu: MMU
 

@@ -11,7 +11,6 @@ public final class Timer: MemoryAddressable {
 	}
 
 	weak var delegate: TimerDelegate?
-	private let clock: Clock
 	private var previousCycleCount: Cycles = 0
 	private let dividerIncrementRate: Cycles = 64
 
@@ -23,9 +22,7 @@ public final class Timer: MemoryAddressable {
 	private var modulo: Byte = 0
 	private var control = TimerControl(rawValue: 0)
 
-	public init(clock: Clock) {
-		self.clock = clock
-	}
+	public init() {}
 
 	public func read(address: Address) -> Byte {
 		switch address {
@@ -58,9 +55,9 @@ public final class Timer: MemoryAddressable {
 		}
 	}
 
-	public func step() {
-		let delta = clock.cycles - previousCycleCount
-		previousCycleCount = clock.cycles
+	public func step(clock: Cycles) {
+		let delta = clock - previousCycleCount
+		previousCycleCount = clock
 
 		if dividerIntermediate + delta >= dividerIncrementRate {
 			divider &+= 1

@@ -614,6 +614,7 @@ extension CPU {
 	}
 
 	func halt() -> Cycles {
+		isHalted = true
 		pc &+= 1
 		return 1
 	}

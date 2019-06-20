@@ -503,8 +503,8 @@ extension CPU {
 	/// Slightly more efficient than a normal jump.
 	func jumpRelative() -> Cycles {
 		let distance = Int(Int8(bitPattern: mmu.read(address: pc &+ 1)))
-		pc &+= 2
 		pc = UInt16(truncatingIfNeeded: Int(pc) &+ distance)
+		pc &+= 2
 		return 3
 	}
 

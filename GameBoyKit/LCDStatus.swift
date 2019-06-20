@@ -1,14 +1,14 @@
 public struct LCDStatus: RawRepresentable {
-	enum Mode: UInt8 {
+	enum Mode: Byte {
 		case horizontalBlank
 		case verticalBlank
 		case searchingOAMRAM
 		case transferingToLCD
 	}
 
-	private(set) public var rawValue: UInt8
+	private(set) public var rawValue: Byte
 
-	public init(rawValue: UInt8) {
+	public init(rawValue: Byte) {
 		self.rawValue = rawValue
 	}
 }

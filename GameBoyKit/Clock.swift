@@ -1,3 +1,4 @@
+/// Machine cycles, or m-cycles
 public typealias Cycles = UInt64
 public typealias CyclesPerSecond = UInt64
 
@@ -5,17 +6,18 @@ public final class Clock {
 	private(set) public var isRunning = false
 	private(set) public var cycles: Cycles = 0
 
+	let timeSpeed: UInt64 = 4_194_304 // 4.194 MHz
+	/// Machine Speed is Time Speed divided by 4
+	///
+	/// Each CPU instruction takes a certain number of T (time) states to
+	/// execute, and it just so happens that all instructions @ 4 MHz have
+	/// a duration in T that is divisible by 4, so, for example, it's more intuitive to
+	/// talk about 2 M (machine) cycles @ 1 MHz vs 8 T states @ 4 MHz.
+	let machineSpeed: CyclesPerSecond
+
 	private let queue: DispatchQueue
 	private let cyclesPerBatch: Cycles = 10_000
-	private let baseSpeed: UInt64 = 4_194_304 // 4.194 MHz
-	/// Clock Speed is Base Speed divided by 4
-	///
-	/// Each CPU instruction takes a certain number of machine cycles to
-	/// execute, and it just so happens that all instructions @ 4 MHz have a
-	/// cycle count that is divisible by 4, so it's more productive to talk
-	/// about 2 cycles @ 1 MHz vs 8 cycles @ 4 MHz.
-	private let clockSpeed: CyclesPerSecond
-	private let secondsPerCycle: TimeInterval
+	private let secondsPerMCycle: TimeInterval
 
 	/// - Parameters:
 	///   - queue: The dispatch queue where the clock will be advanced and the
@@ -24,8 +26,8 @@ public final class Clock {
 	///   cycle. Returns the number of cycles to advance the clock.
 	init(queue: DispatchQueue) {
 		self.queue = queue
-		clockSpeed = baseSpeed / 4
-		secondsPerCycle = 1.0 / TimeInterval(clockSpeed)
+		machineSpeed = timeSpeed / 4
+		secondsPerMCycle = 1.0 / TimeInterval(machineSpeed)
 	}
 
 	func start(stepBlock: @escaping () -> Cycles) {
@@ -50,7 +52,7 @@ public final class Clock {
 			self.cycles += stepCycles
 		}
 		let timeElapsed = -startDate.timeIntervalSinceNow
-		let delay = TimeInterval(cycles) * secondsPerCycle - timeElapsed
+		let delay = TimeInterval(cycles) * secondsPerMCycle - timeElapsed
 //		print("advancing with delay: \(delay)")
 		scheduleAdvanceClockIfRunning(afterDelay: delay, stepBlock: stepBlock)
 	}

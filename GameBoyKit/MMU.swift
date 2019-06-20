@@ -40,6 +40,7 @@ public final class MMU: MemoryAddressable {
 		case MemoryMap.InterruptEnable:
 			return interruptEnable.rawValue
 		default:
+			assertionFailure("Failed to read address: \(address)")
 			return 0
 		}
 	}
@@ -68,7 +69,7 @@ public final class MMU: MemoryAddressable {
 		case MemoryMap.InterruptEnable:
 			interruptEnable = Interrupts(rawValue: byte)
 		default:
-			break
+			assertionFailure("Failed to write address: \(address)")
 		}
 	}
 }

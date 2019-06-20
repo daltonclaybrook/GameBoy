@@ -12,6 +12,7 @@ public final class GameBoy {
 		qos: .userInteractive
 	)
 	private let clock: Clock
+	private let timer: Timer
 	private let cpu: CPU
 	private let ppu: PPU
 	private let io: IO
@@ -23,8 +24,9 @@ public final class GameBoy {
 
 	public init(renderer: Renderer) {
 		clock = Clock(queue: queue)
+		timer = Timer(clock: clock)
 		let oam = OAM()
-		io = IO(palette: palette, oam: oam)
+		io = IO(palette: palette, oam: oam, timer: timer)
 		ppu = PPU(renderer: renderer, io: io, vram: vram)
 		mmu = MMU(rom: rom, vram: vram, wram: WRAM(), oam: oam, io: io, hram: HRAM())
 		io.mmu = mmu

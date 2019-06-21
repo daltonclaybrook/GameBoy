@@ -43,6 +43,7 @@ public final class Clock {
 		}
 	}
 
+//	private var delays: [TimeInterval] = []
 	private func advanceClock(stepBlock: @escaping () -> Cycles) {
 		let startDate = Date()
 		var cycles: Cycles = 0
@@ -54,6 +55,10 @@ public final class Clock {
 		let timeElapsed = -startDate.timeIntervalSinceNow
 		let delay = TimeInterval(cycles) * secondsPerMCycle - timeElapsed
 //		print("advancing with delay: \(delay)")
+//		delays.append(delay)
+//		if delays.count == 600 {
+//			print("delay average: \(delays.reduce(0, +) / TimeInterval(delays.count))")
+//		}
 		scheduleAdvanceClockIfRunning(afterDelay: delay, stepBlock: stepBlock)
 	}
 

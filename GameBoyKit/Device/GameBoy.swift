@@ -44,16 +44,28 @@ public final class GameBoy {
 
 	private func stepAndReturnCycles() -> Cycles {
 //		if cpu.pc == 0xC2B9 { // interrupt test #2
-		if cpu.pc == 0xC2E4 { // interrupt test #3
-			print("break")
-		}
+//		if cpu.pc == 49856 {
+//			print("test 1")
+//		}
+//		if cpu.pc == 49845 {
+//			print("test 2")
+//		}
+//		if cpu.pc == 0xC2E4 { // interrupt test #3
+//			print("test 3")
+//		}
+//		if cpu.pc == 50789 {
+//			print("test 4")
+//		}
+//		if cpu.pc == 2004 {
+//			print("break")
+//		}
 		timer.step(clock: clock.cycles)
 		ppu.step(clock: clock.cycles)
 		let cycles: Cycles
 		if !cpu.isHalted {
 			let opcodeByte = mmu.read(address: cpu.pc)
 			let opcode = CPU.allOpcodes[Int(opcodeByte)]
-//			print("\(opcode.mnemonic) PC: \(cpu.pc)")
+			print("\(opcode.mnemonic) PC: \(cpu.pc)")
 			cycles = opcode.block(cpu)
 		} else {
 			cycles = haltedCycleStep

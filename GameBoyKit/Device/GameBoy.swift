@@ -65,7 +65,7 @@ public final class GameBoy {
 		if !cpu.isHalted {
 			let opcodeByte = mmu.read(address: cpu.pc)
 			let opcode = CPU.allOpcodes[Int(opcodeByte)]
-			print("\(opcode.mnemonic) PC: \(cpu.pc)")
+//			print("\(opcode.mnemonic) PC: \(cpu.pc)")
 			cycles = opcode.block(cpu)
 		} else {
 			cycles = haltedCycleStep

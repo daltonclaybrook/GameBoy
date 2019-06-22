@@ -1,4 +1,4 @@
-struct Opcode {
-	let mnemonic: String
-	let block: (CPU) -> Cycles
+public struct Opcode {
+	public let mnemonic: String
+	public let block: (CPU) -> Cycles
 }

@@ -1,4 +1,7 @@
 import CoreGraphics
+#if os(iOS)
+import MobileCoreServices
+#endif
 
 extension VRAM {
 	func writeDebugImagesAndDataToDisk(io: IO) {

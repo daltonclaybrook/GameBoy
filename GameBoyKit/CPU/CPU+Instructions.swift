@@ -130,7 +130,7 @@ extension CPU {
 	}
 
 	func push(pair: Word) -> Cycles {
-		mmu.write(word: pair, to: sp - 2)
+		mmu.write(word: pair, to: sp &- 2)
 		sp &-= 2
 		pc &+= 1
 		return 4
@@ -465,7 +465,7 @@ extension CPU {
 		flags = []
 		let toAdd = Int32(Int8(bitPattern: mmu.read(address: pc &+ 1)))
 		let oldSP = Int32(sp)
-		let newSP = oldSP + toAdd
+		let newSP = oldSP &+ toAdd
 
 		if oldSP & 0xff + toAdd & 0xff > 0xff {
 			flags.formUnion(.fullCarry)
@@ -539,7 +539,7 @@ extension CPU {
 	}
 
 	func call() -> Cycles {
-		mmu.write(word: pc &+ 3, to: sp - 2)
+		mmu.write(word: pc &+ 3, to: sp &- 2)
 		pc = mmu.readWord(address: pc &+ 1)
 		sp &-= 2
 		return 6
@@ -555,7 +555,7 @@ extension CPU {
 	}
 
 	func reset(vector: Byte) -> Cycles {
-		mmu.write(word: pc &+ 1, to: sp - 2)
+		mmu.write(word: pc &+ 1, to: sp &- 2)
 		sp &-= 2
 		pc = Word(vector)
 		return 4
@@ -568,7 +568,7 @@ extension CPU {
 		flags = carry != 0 ? .fullCarry : []
 		a = a << 1 | carry
 		pc &+= 1
-		return 5
+		return 1
 	}
 
 	func rotateRightCarryA() -> Cycles {
@@ -576,7 +576,7 @@ extension CPU {
 		flags = carry != 0 ? .fullCarry : []
 		a = a >> 1 | carry
 		pc &+= 1
-		return 2
+		return 1
 	}
 
 	/// Rotate `a` left moving bit 7 into the carry flag and the carry flag into bit 0.

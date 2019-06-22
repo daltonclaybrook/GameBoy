@@ -96,8 +96,7 @@ public final class MetalRenderer: NSObject, Renderer {
 	}
 
 	private func updateForDrawableSizeChange(_ size: CGSize) {
-		let scale = Float(view.layer?.contentsScale ?? 1.0)
-		let minSize = Float(min(size.width, size.height)) / scale
+		let minSize = Float(min(size.width, size.height)) / 2
 		viewportSize.x = UInt32(size.width)
 		viewportSize.y = UInt32(size.height)
 

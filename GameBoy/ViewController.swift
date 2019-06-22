@@ -9,6 +9,9 @@ class ViewController: UIViewController {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 
+		// Don't try to initialize Metal if we're unit testing
+		guard AppConfig.runtimeMode == .normal else { return }
+
 		guard let device = MTLCreateSystemDefaultDevice() else {
 			return assertionFailure("Metal device could not be created")
 		}

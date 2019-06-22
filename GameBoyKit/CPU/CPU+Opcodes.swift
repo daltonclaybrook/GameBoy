@@ -1,5 +1,5 @@
 extension CPU {
-	static let allOpcodes: [Opcode] = [
+	public static let allOpcodes: [Opcode] = [
 		// 0x0n
 		Opcode(mnemonic: "NOP") { $0.nop() },
 		Opcode(mnemonic: "LD BC, nn") { $0.loadOperand(into: &$0.bc) },

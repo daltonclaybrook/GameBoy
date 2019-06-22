@@ -145,7 +145,7 @@ extension CPU {
 	func checkBit(index: BitIndex, of address: Address) -> Cycles {
 		let byte = mmu.read(address: address)
 		_ = checkBit(index: index, of: byte)
-		return 4
+		return 3
 	}
 
 	func resetBit(index: BitIndex, of byte: inout Byte) -> Cycles {

@@ -28,7 +28,8 @@ class ViewController: UIViewController {
 	}
 
 	private func makeROMData() throws -> Data {
-		let fileURL = Bundle.main.url(forResource: "tetris", withExtension: "gb")!
+//		let fileURL = Bundle.main.url(forResource: "tetris", withExtension: "gb")!
+        let fileURL = Bundle.main.url(forResource: "call_timing", withExtension: "gb")!
 		return try Data(contentsOf: fileURL)
 	}
 }

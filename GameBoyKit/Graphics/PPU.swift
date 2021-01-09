@@ -1,3 +1,5 @@
+import Foundation
+
 public final class PPU {
 	private let renderer: Renderer
 	private let io: IO

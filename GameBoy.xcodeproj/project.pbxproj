@@ -17,9 +17,9 @@
 		757F38DD22B1BBA600BBB570 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 757F38DC22B1BBA600BBB570 /* ViewController.swift */; };
 		757F38DF22B1BBA800BBB570 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 757F38DE22B1BBA800BBB570 /* Assets.xcassets */; };
 		757F38E222B1BBA800BBB570 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 757F38E022B1BBA800BBB570 /* Main.storyboard */; };
-		757F38F122B1C66200BBB570 /* GameBoyKit_macOS.h in Headers */ = {isa = PBXBuildFile; fileRef = 757F38EF22B1C66200BBB570 /* GameBoyKit_macOS.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		757F38F422B1C66200BBB570 /* GameBoyKit_macOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 757F38ED22B1C66200BBB570 /* GameBoyKit_macOS.framework */; };
-		757F38F522B1C66200BBB570 /* GameBoyKit_macOS.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 757F38ED22B1C66200BBB570 /* GameBoyKit_macOS.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		757F38F122B1C66200BBB570 /* GameBoyKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 757F38EF22B1C66200BBB570 /* GameBoyKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		757F38F422B1C66200BBB570 /* GameBoyKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 757F38ED22B1C66200BBB570 /* GameBoyKit.framework */; };
+		757F38F522B1C66200BBB570 /* GameBoyKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 757F38ED22B1C66200BBB570 /* GameBoyKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		757F38FA22B1C68D00BBB570 /* AAPL_LICENSE.txt in Resources */ = {isa = PBXBuildFile; fileRef = 757F38CC22B08A6A00BBB570 /* AAPL_LICENSE.txt */; };
 		757F38FB22B1C69000BBB570 /* AAPLShaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 757F38C822B08A5500BBB570 /* AAPLShaders.metal */; };
 		757F38FC22B1C69400BBB570 /* AAPLShaderTypes.h in Headers */ = {isa = PBXBuildFile; fileRef = 757F38C922B08A5500BBB570 /* AAPLShaderTypes.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -80,6 +80,13 @@
 		758D867D22B6E82900C28791 /* 01-special.gb in Resources */ = {isa = PBXBuildFile; fileRef = 758D866822B6E82900C28791 /* 01-special.gb */; };
 		758D867E22B6E82900C28791 /* 01-special.gb in Resources */ = {isa = PBXBuildFile; fileRef = 758D866822B6E82900C28791 /* 01-special.gb */; };
 		758D868022B86B8900C28791 /* Timer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 758D867F22B86B8800C28791 /* Timer.swift */; };
+		7590E74C25AA1128005E1280 /* GameBoyKitTests_macOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7590E74B25AA1128005E1280 /* GameBoyKitTests_macOS.swift */; };
+		7590E74E25AA1128005E1280 /* GameBoyKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 757F38ED22B1C66200BBB570 /* GameBoyKit.framework */; };
+		7590E75825AA1134005E1280 /* MockMMU.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75CAF0D322BEC84D00E04FAC /* MockMMU.swift */; };
+		7590E75D25AA1137005E1280 /* OpcodeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75CAF08322BD031100E04FAC /* OpcodeTests.swift */; };
+		7590E76225AA1139005E1280 /* InstructionTimingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75CAF08B22BE760200E04FAC /* InstructionTimingTests.swift */; };
+		7590E76725AA113C005E1280 /* InstructionTimingTests+Timings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75CAF08D22BE772F00E04FAC /* InstructionTimingTests+Timings.swift */; };
+		7590E76C25AA113E005E1280 /* CPU+TestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75CAF0D622C0207600E04FAC /* CPU+TestHelpers.swift */; };
 		75B3AD09229DEEA500A03C5A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B3AD08229DEEA500A03C5A /* AppDelegate.swift */; };
 		75B3AD0B229DEEA500A03C5A /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B3AD0A229DEEA500A03C5A /* ViewController.swift */; };
 		75B3AD0E229DEEA500A03C5A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 75B3AD0C229DEEA500A03C5A /* Main.storyboard */; };
@@ -119,6 +126,7 @@
 		75CAF08E22BE772F00E04FAC /* InstructionTimingTests+Timings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75CAF08D22BE772F00E04FAC /* InstructionTimingTests+Timings.swift */; };
 		75CAF09022BE7B2500E04FAC /* AppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75CAF08F22BE7B2500E04FAC /* AppConfig.swift */; };
 		75CAF0D422BEC84E00E04FAC /* MockMMU.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75CAF0D322BEC84D00E04FAC /* MockMMU.swift */; };
+		75CAF0D722C0207600E04FAC /* CPU+TestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75CAF0D622C0207600E04FAC /* CPU+TestHelpers.swift */; };
 		75D0E53C22B1C7BC0049BF6D /* WRAM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75D0E53B22B1C7BC0049BF6D /* WRAM.swift */; };
 		75D0E53D22B1C8430049BF6D /* WRAM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75D0E53B22B1C7BC0049BF6D /* WRAM.swift */; };
 		75D0E53F22B1C9CB0049BF6D /* HRAM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75D0E53E22B1C9CB0049BF6D /* HRAM.swift */; };
@@ -127,6 +135,8 @@
 		75D0E54322B26E670049BF6D /* cpu_instrs.gb in Resources */ = {isa = PBXBuildFile; fileRef = 75D0E54122B26E670049BF6D /* cpu_instrs.gb */; };
 		75D0E54B22B30C7A0049BF6D /* VRAM+Debug.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75D0E54A22B30C790049BF6D /* VRAM+Debug.swift */; };
 		75D0E54C22B32DFE0049BF6D /* VRAM+Debug.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75D0E54A22B30C790049BF6D /* VRAM+Debug.swift */; };
+		75F61DA724FC269700FA095F /* call_timing.gb in Resources */ = {isa = PBXBuildFile; fileRef = 75F61DA624FC269700FA095F /* call_timing.gb */; };
+		75F61DA924FC26A100FA095F /* call_timing2.gb in Resources */ = {isa = PBXBuildFile; fileRef = 75F61DA824FC26A100FA095F /* call_timing2.gb */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -136,6 +146,20 @@
 			proxyType = 1;
 			remoteGlobalIDString = 757F38EC22B1C66200BBB570;
 			remoteInfo = "GameBoyKit-macOS";
+		};
+		7590E74F25AA1128005E1280 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 75B3ACFD229DEEA500A03C5A /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 757F38EC22B1C66200BBB570;
+			remoteInfo = "GameBoyKit-macOS";
+		};
+		7590E77125AA1178005E1280 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 75B3ACFD229DEEA500A03C5A /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 757F38D722B1BBA500BBB570;
+			remoteInfo = "GameBoy-macOS";
 		};
 		75B3AD37229DEED400A03C5A /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -167,7 +191,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				757F38F522B1C66200BBB570 /* GameBoyKit_macOS.framework in Embed Frameworks */,
+				757F38F522B1C66200BBB570 /* GameBoyKit.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -199,8 +223,8 @@
 		757F38E122B1BBA800BBB570 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		757F38E322B1BBA800BBB570 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		757F38E422B1BBA800BBB570 /* GameBoy_macOS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = GameBoy_macOS.entitlements; sourceTree = "<group>"; };
-		757F38ED22B1C66200BBB570 /* GameBoyKit_macOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = GameBoyKit_macOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		757F38EF22B1C66200BBB570 /* GameBoyKit_macOS.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GameBoyKit_macOS.h; sourceTree = "<group>"; };
+		757F38ED22B1C66200BBB570 /* GameBoyKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = GameBoyKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		757F38EF22B1C66200BBB570 /* GameBoyKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GameBoyKit.h; sourceTree = "<group>"; };
 		757F38F022B1C66200BBB570 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		758834D922BB12DF00B80FD0 /* TimerControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerControl.swift; sourceTree = "<group>"; };
 		758D863F22B4892500C28791 /* MemoryMap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoryMap.swift; sourceTree = "<group>"; };
@@ -221,6 +245,9 @@
 		758D866722B6E82900C28791 /* 11-op a,(hl).gb */ = {isa = PBXFileReference; lastKnownFileType = file; path = "11-op a,(hl).gb"; sourceTree = "<group>"; };
 		758D866822B6E82900C28791 /* 01-special.gb */ = {isa = PBXFileReference; lastKnownFileType = file; path = "01-special.gb"; sourceTree = "<group>"; };
 		758D867F22B86B8800C28791 /* Timer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Timer.swift; sourceTree = "<group>"; };
+		7590E74925AA1128005E1280 /* GameBoyKitTests-macOS.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "GameBoyKitTests-macOS.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		7590E74B25AA1128005E1280 /* GameBoyKitTests_macOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameBoyKitTests_macOS.swift; sourceTree = "<group>"; };
+		7590E74D25AA1128005E1280 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		75B3AD05229DEEA500A03C5A /* GameBoy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GameBoy.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		75B3AD08229DEEA500A03C5A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		75B3AD0A229DEEA500A03C5A /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -259,10 +286,13 @@
 		75CAF08D22BE772F00E04FAC /* InstructionTimingTests+Timings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "InstructionTimingTests+Timings.swift"; sourceTree = "<group>"; };
 		75CAF08F22BE7B2500E04FAC /* AppConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConfig.swift; sourceTree = "<group>"; };
 		75CAF0D322BEC84D00E04FAC /* MockMMU.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockMMU.swift; sourceTree = "<group>"; };
+		75CAF0D622C0207600E04FAC /* CPU+TestHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CPU+TestHelpers.swift"; sourceTree = "<group>"; };
 		75D0E53B22B1C7BC0049BF6D /* WRAM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WRAM.swift; sourceTree = "<group>"; };
 		75D0E53E22B1C9CB0049BF6D /* HRAM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HRAM.swift; sourceTree = "<group>"; };
 		75D0E54122B26E670049BF6D /* cpu_instrs.gb */ = {isa = PBXFileReference; lastKnownFileType = file; path = cpu_instrs.gb; sourceTree = "<group>"; };
 		75D0E54A22B30C790049BF6D /* VRAM+Debug.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "VRAM+Debug.swift"; sourceTree = "<group>"; };
+		75F61DA624FC269700FA095F /* call_timing.gb */ = {isa = PBXFileReference; lastKnownFileType = file; path = call_timing.gb; sourceTree = "<group>"; };
+		75F61DA824FC26A100FA095F /* call_timing2.gb */ = {isa = PBXFileReference; lastKnownFileType = file; path = call_timing2.gb; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -270,7 +300,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				757F38F422B1C66200BBB570 /* GameBoyKit_macOS.framework in Frameworks */,
+				757F38F422B1C66200BBB570 /* GameBoyKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -278,6 +308,14 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		7590E74625AA1128005E1280 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7590E74E25AA1128005E1280 /* GameBoyKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -333,7 +371,7 @@
 		757F38EE22B1C66200BBB570 /* GameBoyKit-macOS */ = {
 			isa = PBXGroup;
 			children = (
-				757F38EF22B1C66200BBB570 /* GameBoyKit_macOS.h */,
+				757F38EF22B1C66200BBB570 /* GameBoyKit.h */,
 				757F38F022B1C66200BBB570 /* Info.plist */,
 			);
 			path = "GameBoyKit-macOS";
@@ -359,6 +397,15 @@
 			path = "test-roms";
 			sourceTree = "<group>";
 		};
+		7590E74A25AA1128005E1280 /* GameBoyKitTests-macOS */ = {
+			isa = PBXGroup;
+			children = (
+				7590E74B25AA1128005E1280 /* GameBoyKitTests_macOS.swift */,
+				7590E74D25AA1128005E1280 /* Info.plist */,
+			);
+			path = "GameBoyKitTests-macOS";
+			sourceTree = "<group>";
+		};
 		75B3ACFC229DEEA500A03C5A = {
 			isa = PBXGroup;
 			children = (
@@ -367,6 +414,7 @@
 				75B3AD2E229DEED400A03C5A /* GameBoyKit */,
 				757F38EE22B1C66200BBB570 /* GameBoyKit-macOS */,
 				75B3AD3B229DEED400A03C5A /* GameBoyKitTests */,
+				7590E74A25AA1128005E1280 /* GameBoyKitTests-macOS */,
 				75B3AD06229DEEA500A03C5A /* Products */,
 			);
 			sourceTree = "<group>";
@@ -378,7 +426,8 @@
 				75B3AD2D229DEED400A03C5A /* GameBoyKit.framework */,
 				75B3AD35229DEED400A03C5A /* GameBoyKitTests.xctest */,
 				757F38D822B1BBA500BBB570 /* GameBoy-macOS.app */,
-				757F38ED22B1C66200BBB570 /* GameBoyKit_macOS.framework */,
+				757F38ED22B1C66200BBB570 /* GameBoyKit.framework */,
+				7590E74925AA1128005E1280 /* GameBoyKitTests-macOS.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -386,6 +435,7 @@
 		75B3AD07229DEEA500A03C5A /* GameBoy */ = {
 			isa = PBXGroup;
 			children = (
+				75F61DA524FC203900FA095F /* mooneye_test_roms */,
 				75CAF0D522BED0F300E04FAC /* roms */,
 				758D865D22B6E81D00C28791 /* test-roms */,
 				75B3AD08229DEEA500A03C5A /* AppDelegate.swift */,
@@ -517,6 +567,7 @@
 				75CAF08322BD031100E04FAC /* OpcodeTests.swift */,
 				75CAF08B22BE760200E04FAC /* InstructionTimingTests.swift */,
 				75CAF08D22BE772F00E04FAC /* InstructionTimingTests+Timings.swift */,
+				75CAF0D622C0207600E04FAC /* CPU+TestHelpers.swift */,
 			);
 			path = CPU;
 			sourceTree = "<group>";
@@ -534,6 +585,15 @@
 			path = roms;
 			sourceTree = "<group>";
 		};
+		75F61DA524FC203900FA095F /* mooneye_test_roms */ = {
+			isa = PBXGroup;
+			children = (
+				75F61DA624FC269700FA095F /* call_timing.gb */,
+				75F61DA824FC26A100FA095F /* call_timing2.gb */,
+			);
+			path = mooneye_test_roms;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -541,7 +601,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				757F38F122B1C66200BBB570 /* GameBoyKit_macOS.h in Headers */,
+				757F38F122B1C66200BBB570 /* GameBoyKit.h in Headers */,
 				757F38FC22B1C69400BBB570 /* AAPLShaderTypes.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -592,8 +652,27 @@
 			);
 			name = "GameBoyKit-macOS";
 			productName = "GameBoyKit-macOS";
-			productReference = 757F38ED22B1C66200BBB570 /* GameBoyKit_macOS.framework */;
+			productReference = 757F38ED22B1C66200BBB570 /* GameBoyKit.framework */;
 			productType = "com.apple.product-type.framework";
+		};
+		7590E74825AA1128005E1280 /* GameBoyKitTests-macOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7590E75125AA1128005E1280 /* Build configuration list for PBXNativeTarget "GameBoyKitTests-macOS" */;
+			buildPhases = (
+				7590E74525AA1128005E1280 /* Sources */,
+				7590E74625AA1128005E1280 /* Frameworks */,
+				7590E74725AA1128005E1280 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				7590E75025AA1128005E1280 /* PBXTargetDependency */,
+				7590E77225AA1178005E1280 /* PBXTargetDependency */,
+			);
+			name = "GameBoyKitTests-macOS";
+			productName = "GameBoyKitTests-macOS";
+			productReference = 7590E74925AA1128005E1280 /* GameBoyKitTests-macOS.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
 		};
 		75B3AD04229DEEA500A03C5A /* GameBoy */ = {
 			isa = PBXNativeTarget;
@@ -657,7 +736,7 @@
 		75B3ACFD229DEEA500A03C5A /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 1020;
+				LastSwiftUpdateCheck = 1220;
 				LastUpgradeCheck = 1020;
 				ORGANIZATIONNAME = "Dalton Claybrook";
 				TargetAttributes = {
@@ -666,6 +745,10 @@
 					};
 					757F38EC22B1C66200BBB570 = {
 						CreatedOnToolsVersion = 10.2.1;
+					};
+					7590E74825AA1128005E1280 = {
+						CreatedOnToolsVersion = 12.2;
+						TestTargetID = 757F38D722B1BBA500BBB570;
 					};
 					75B3AD04229DEEA500A03C5A = {
 						CreatedOnToolsVersion = 10.2.1;
@@ -698,6 +781,7 @@
 				75B3AD2C229DEED400A03C5A /* GameBoyKit */,
 				757F38EC22B1C66200BBB570 /* GameBoyKit-macOS */,
 				75B3AD34229DEED400A03C5A /* GameBoyKitTests */,
+				7590E74825AA1128005E1280 /* GameBoyKitTests-macOS */,
 			);
 		};
 /* End PBXProject section */
@@ -708,6 +792,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				758D867E22B6E82900C28791 /* 01-special.gb in Resources */,
+				75F61DA924FC26A100FA095F /* call_timing2.gb in Resources */,
 				75CAF08A22BD8CE700E04FAC /* interrupt_time.gb in Resources */,
 				758D865C22B6D86A00C28791 /* reimp.gbc in Resources */,
 				758D865322B69FE200C28791 /* hello_old.gbc in Resources */,
@@ -725,6 +810,7 @@
 				757F391222B1C73900BBB570 /* tetris.gb in Resources */,
 				758D866E22B6E82900C28791 /* 03-op sp,hl.gb in Resources */,
 				758D867222B6E82900C28791 /* 09-op r,r.gb in Resources */,
+				75F61DA724FC269700FA095F /* call_timing.gb in Resources */,
 				758D867022B6E82900C28791 /* 02-interrupts.gb in Resources */,
 				758D867C22B6E82900C28791 /* 11-op a,(hl).gb in Resources */,
 				758D865622B6AEF200C28791 /* hello.gbc in Resources */,
@@ -736,6 +822,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				757F38FA22B1C68D00BBB570 /* AAPL_LICENSE.txt in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		7590E74725AA1128005E1280 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -830,6 +923,19 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		7590E74525AA1128005E1280 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7590E76225AA1139005E1280 /* InstructionTimingTests.swift in Sources */,
+				7590E75D25AA1137005E1280 /* OpcodeTests.swift in Sources */,
+				7590E74C25AA1128005E1280 /* GameBoyKitTests_macOS.swift in Sources */,
+				7590E76725AA113C005E1280 /* InstructionTimingTests+Timings.swift in Sources */,
+				7590E76C25AA113E005E1280 /* CPU+TestHelpers.swift in Sources */,
+				7590E75825AA1134005E1280 /* MockMMU.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		75B3AD01229DEEA500A03C5A /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -883,6 +989,7 @@
 				75CAF08C22BE760200E04FAC /* InstructionTimingTests.swift in Sources */,
 				75B3AD3D229DEED400A03C5A /* GameBoyKitTests.swift in Sources */,
 				75CAF08E22BE772F00E04FAC /* InstructionTimingTests+Timings.swift in Sources */,
+				75CAF0D722C0207600E04FAC /* CPU+TestHelpers.swift in Sources */,
 				75CAF08422BD031100E04FAC /* OpcodeTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -894,6 +1001,16 @@
 			isa = PBXTargetDependency;
 			target = 757F38EC22B1C66200BBB570 /* GameBoyKit-macOS */;
 			targetProxy = 757F38F222B1C66200BBB570 /* PBXContainerItemProxy */;
+		};
+		7590E75025AA1128005E1280 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 757F38EC22B1C66200BBB570 /* GameBoyKit-macOS */;
+			targetProxy = 7590E74F25AA1128005E1280 /* PBXContainerItemProxy */;
+		};
+		7590E77225AA1178005E1280 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 757F38D722B1BBA500BBB570 /* GameBoy-macOS */;
+			targetProxy = 7590E77125AA1178005E1280 /* PBXContainerItemProxy */;
 		};
 		75B3AD38229DEED400A03C5A /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -1006,9 +1123,8 @@
 					"@executable_path/../Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.daltonclaybrook.GameBoyKit-macOS";
-				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				PRODUCT_NAME = GameBoyKit;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 5.0;
@@ -1037,14 +1153,57 @@
 					"@executable_path/../Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.daltonclaybrook.GameBoyKit-macOS";
-				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				PRODUCT_NAME = GameBoyKit;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		7590E75225AA1128005E1280 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = ELT5AES94A;
+				INFOPLIST_FILE = "GameBoyKitTests-macOS/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.daltonclaybrook.GameBoyKitTests-macOS";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/GameBoy-macOS.app/Contents/MacOS/GameBoy-macOS";
+			};
+			name = Debug;
+		};
+		7590E75325AA1128005E1280 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = ELT5AES94A;
+				INFOPLIST_FILE = "GameBoyKitTests-macOS/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.daltonclaybrook.GameBoyKitTests-macOS";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/GameBoy-macOS.app/Contents/MacOS/GameBoy-macOS";
 			};
 			name = Release;
 		};
@@ -1100,6 +1259,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.2;
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -1155,6 +1315,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.2;
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -1318,6 +1479,15 @@
 			buildConfigurations = (
 				757F38F722B1C66200BBB570 /* Debug */,
 				757F38F822B1C66200BBB570 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		7590E75125AA1128005E1280 /* Build configuration list for PBXNativeTarget "GameBoyKitTests-macOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7590E75225AA1128005E1280 /* Debug */,
+				7590E75325AA1128005E1280 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

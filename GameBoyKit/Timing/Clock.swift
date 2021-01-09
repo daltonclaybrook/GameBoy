@@ -1,3 +1,5 @@
+import Foundation
+
 /// Machine cycles, or m-cycles
 public typealias Cycles = UInt64
 public typealias CyclesPerSecond = UInt64
@@ -16,7 +18,7 @@ public final class Clock {
 	let machineSpeed: CyclesPerSecond
 
 	private let queue: DispatchQueue
-	private let cyclesPerBatch: Cycles = 10_000
+	private let cyclesPerBatch: Cycles
 	private let secondsPerMCycle: TimeInterval
 
 	/// - Parameters:
@@ -28,6 +30,7 @@ public final class Clock {
 		self.queue = queue
 		machineSpeed = timeSpeed / 4
 		secondsPerMCycle = 1.0 / TimeInterval(machineSpeed)
+		cyclesPerBatch = machineSpeed / 120
 	}
 
 	func start(stepBlock: @escaping () -> Cycles) {

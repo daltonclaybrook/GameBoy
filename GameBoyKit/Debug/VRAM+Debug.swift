@@ -1,4 +1,5 @@
 import CoreGraphics
+import Foundation
 #if os(iOS)
 import MobileCoreServices
 #endif

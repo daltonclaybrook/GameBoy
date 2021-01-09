@@ -1,3 +1,5 @@
+import Foundation
+
 public struct InterruptVectors {
 	public static let vBlank: Address = 0x0040
 	public static let lcdStat: Address = 0x0048

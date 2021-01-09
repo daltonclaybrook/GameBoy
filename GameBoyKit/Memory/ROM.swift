@@ -1,3 +1,5 @@
+import Foundation
+
 public final class ROM: MemoryAddressable {
 	private var bytes = [Byte](repeating: 0, count: MemoryMap.ROM.count)
 

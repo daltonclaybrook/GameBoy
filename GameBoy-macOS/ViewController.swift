@@ -1,5 +1,5 @@
 import Cocoa
-import GameBoyKit_macOS
+import GameBoyKit
 import MetalKit
 
 class ViewController: NSViewController {
@@ -30,6 +30,7 @@ class ViewController: NSViewController {
 
 	private func makeROMData() throws -> Data {
 		let testRoms = [
+            // blargg
 			"cpu_instrs", // fails
 			"01-special",
 			"02-interrupts",
@@ -43,9 +44,12 @@ class ViewController: NSViewController {
 			"10-bit ops",
 			"11-op a,(hl)",
 			"instr_timing",
-			"interrupt_time"
+			"interrupt_time",
+            // mooneye
+            "call_timing",
+            "call_timing2"
 		]
-		let fileURL = Bundle.main.url(forResource: testRoms[12], withExtension: "gb")!
+		let fileURL = Bundle.main.url(forResource: testRoms[14], withExtension: "gb")!
 		return try Data(contentsOf: fileURL)
 	}
 }

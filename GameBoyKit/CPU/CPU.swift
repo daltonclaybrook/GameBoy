@@ -9,6 +9,7 @@ public struct Flags: OptionSet {
 	public static let zero = Flags(rawValue: 1 << 7)
 
 	public init(rawValue: UInt8) {
+		// The lower nibble must always be zero
 		self.rawValue = rawValue & 0xf0
 	}
 }

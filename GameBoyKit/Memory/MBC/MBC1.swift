@@ -14,6 +14,7 @@ public final class MBC1: MemoryAddressable {
 
     private var romBanks: [BankNumber: [Byte]]
     private var ramBanks: [BankNumber: [Byte]]
+    /// This is initially bank 1 because bank 0 is always available at 0x0000...0x3fff
     private var currentROMBank: BankNumber = 0x01
     private var currentRAMBank: BankNumber = 0x00
     private var currentBankingMode: BankingMode = .ROM
@@ -32,12 +33,11 @@ public final class MBC1: MemoryAddressable {
         case 0x0000...0x1fff: // Set RAM enabled/disabled
             isRAMEnabled = byte & 0x0F == 0x0a
         case 0x2000...0x3fff: // Set ROM bank number (lower 5 bits)
-            currentROMBank = (currentROMBank & 0b01100000) | (byte & 0b00011111)
-            break // todo
+            updateROMBank(number: (currentROMBank & 0b01100000) | (byte & 0b00011111))
         case 0x4000...0x5fff: // Set RAM bank number ~or~ upper 2 bits of ROM bank number depending on current mode
             switch currentBankingMode {
             case .ROM:
-                currentROMBank = (currentROMBank & 0b00011111) | ((byte & 0x03) << 5)
+                updateROMBank(number: (currentROMBank & 0b00011111) | ((byte & 0x03) << 5))
             case .RAM:
                 currentRAMBank = byte & 0x03
             }
@@ -64,6 +64,16 @@ public final class MBC1: MemoryAddressable {
     }
 
     // MARK: - Helpers
+
+    private func updateROMBank(number: BankNumber) {
+        switch number {
+        case 0x00, 0x20, 0x40, 0x60:
+            // These banks are unavailable so the next bank is selected
+            currentROMBank = number + 1
+        default:
+            currentROMBank = number
+        }
+    }
 
     private static func createROMBanks() -> [BankNumber: [Byte]] {
         createMemoryBanks(

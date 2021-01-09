@@ -87,6 +87,8 @@
 		7590E76225AA1139005E1280 /* InstructionTimingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75CAF08B22BE760200E04FAC /* InstructionTimingTests.swift */; };
 		7590E76725AA113C005E1280 /* InstructionTimingTests+Timings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75CAF08D22BE772F00E04FAC /* InstructionTimingTests+Timings.swift */; };
 		7590E76C25AA113E005E1280 /* CPU+TestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75CAF0D622C0207600E04FAC /* CPU+TestHelpers.swift */; };
+		7590E7B625AA5703005E1280 /* MBC1.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7590E7B525AA5703005E1280 /* MBC1.swift */; };
+		7590E7B725AA5703005E1280 /* MBC1.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7590E7B525AA5703005E1280 /* MBC1.swift */; };
 		75B3AD09229DEEA500A03C5A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B3AD08229DEEA500A03C5A /* AppDelegate.swift */; };
 		75B3AD0B229DEEA500A03C5A /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B3AD0A229DEEA500A03C5A /* ViewController.swift */; };
 		75B3AD0E229DEEA500A03C5A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 75B3AD0C229DEEA500A03C5A /* Main.storyboard */; };
@@ -248,6 +250,7 @@
 		7590E74925AA1128005E1280 /* GameBoyKitTests-macOS.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "GameBoyKitTests-macOS.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		7590E74B25AA1128005E1280 /* GameBoyKitTests_macOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameBoyKitTests_macOS.swift; sourceTree = "<group>"; };
 		7590E74D25AA1128005E1280 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		7590E7B525AA5703005E1280 /* MBC1.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBC1.swift; sourceTree = "<group>"; };
 		75B3AD05229DEEA500A03C5A /* GameBoy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GameBoy.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		75B3AD08229DEEA500A03C5A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		75B3AD0A229DEEA500A03C5A /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -406,6 +409,14 @@
 			path = "GameBoyKitTests-macOS";
 			sourceTree = "<group>";
 		};
+		7590E7B425AA56F2005E1280 /* MBC */ = {
+			isa = PBXGroup;
+			children = (
+				7590E7B525AA5703005E1280 /* MBC1.swift */,
+			);
+			path = MBC;
+			sourceTree = "<group>";
+		};
 		75B3ACFC229DEEA500A03C5A = {
 			isa = PBXGroup;
 			children = (
@@ -487,6 +498,7 @@
 		75CAF07A22BCFEA300E04FAC /* Memory */ = {
 			isa = PBXGroup;
 			children = (
+				7590E7B425AA56F2005E1280 /* MBC */,
 				758D863F22B4892500C28791 /* MemoryMap.swift */,
 				75B3AD4F229DFA7C00A03C5A /* MemoryProtocols.swift */,
 				75BD98B922A40D6000CFFB68 /* IO.swift */,
@@ -909,6 +921,7 @@
 				757F390022B1C69F00BBB570 /* CPU+Instructions.swift in Sources */,
 				75D0E54022B1C9F50049BF6D /* HRAM.swift in Sources */,
 				757F390522B1C69F00BBB570 /* Opcode.swift in Sources */,
+				7590E7B725AA5703005E1280 /* MBC1.swift in Sources */,
 				758D864A22B53AF000C28791 /* Interrupts.swift in Sources */,
 				758834DB22BB17BB00B80FD0 /* TimerControl.swift in Sources */,
 				757F38FB22B1C69000BBB570 /* AAPLShaders.metal in Sources */,
@@ -967,6 +980,7 @@
 				75D0E53F22B1C9CB0049BF6D /* HRAM.swift in Sources */,
 				75BD98B222A0AA8600CFFB68 /* Opcode.swift in Sources */,
 				758D864922B53A0200C28791 /* Interrupts.swift in Sources */,
+				7590E7B625AA5703005E1280 /* MBC1.swift in Sources */,
 				75BD98C222A41DDC00CFFB68 /* ColorPalette.swift in Sources */,
 				758834DA22BB12DF00B80FD0 /* TimerControl.swift in Sources */,
 				75BD98C022A413AA00CFFB68 /* LCDControl.swift in Sources */,

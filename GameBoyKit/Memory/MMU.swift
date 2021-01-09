@@ -22,7 +22,7 @@ public final class MMU: MemoryAddressable {
 			return rom.read(address: address)
 		case MemoryMap.VRAM:
 			return vram.read(address: address)
-		case MemoryMap.ExternalRAM:
+		case MemoryMap.externalRAM:
 			return 0 // todo
 		case MemoryMap.WRAM:
 			return wram.read(address: address)
@@ -30,14 +30,14 @@ public final class MMU: MemoryAddressable {
 			return wram.read(address: address - 0x2000)
 		case MemoryMap.OAM:
 			return oam.read(address: address)
-		case MemoryMap.Unusable:
+		case MemoryMap.unusable:
 			assertionFailure("attempting to access unusable memory")
 			return 0
 		case MemoryMap.IO:
 			return io.read(address: address)
 		case MemoryMap.HRAM:
 			return hram.read(address: address)
-		case MemoryMap.InterruptEnable:
+		case MemoryMap.interruptEnable:
 			return interruptEnable.rawValue
 		default:
 			assertionFailure("Failed to read address: \(address)")
@@ -51,7 +51,7 @@ public final class MMU: MemoryAddressable {
 			rom.write(byte: byte, to: address)
 		case MemoryMap.VRAM:
 			vram.write(byte: byte, to: address)
-		case MemoryMap.ExternalRAM:
+		case MemoryMap.externalRAM:
 			break // todo
 		case MemoryMap.WRAM:
 			wram.write(byte: byte, to: address)
@@ -59,14 +59,14 @@ public final class MMU: MemoryAddressable {
 			wram.write(byte: byte, to: address - 0x2000)
 		case MemoryMap.OAM:
 			oam.write(byte: byte, to: address)
-		case MemoryMap.Unusable:
+		case MemoryMap.unusable:
 			assertionFailure("attempting to access unusable memory")
 			break
 		case MemoryMap.IO:
 			io.write(byte: byte, to: address)
 		case MemoryMap.HRAM:
 			hram.write(byte: byte, to: address)
-		case MemoryMap.InterruptEnable:
+		case MemoryMap.interruptEnable:
 			interruptEnable = Interrupts(rawValue: byte)
 		default:
 			assertionFailure("Failed to write address: \(address)")

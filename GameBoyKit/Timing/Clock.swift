@@ -18,25 +18,24 @@ public final class Clock {
 	let machineSpeed: CyclesPerSecond
 
 	private let queue: DispatchQueue
-	private let cyclesPerBatch: Cycles
-	private let secondsPerMCycle: TimeInterval
+	private let cyclesPerFrame: Cycles
+    private let framesPerSecond: UInt64 = 60
+    private let frameDuration: TimeInterval
 
 	/// - Parameters:
 	///   - queue: The dispatch queue where the clock will be advanced and the
 	///   block will be executed
-	///   - advanceBlock: The block which will be executed on each new clock
-	///   cycle. Returns the number of cycles to advance the clock.
 	init(queue: DispatchQueue) {
 		self.queue = queue
+        frameDuration = 1.0 / TimeInterval(framesPerSecond)
 		machineSpeed = timeSpeed / 4
-		secondsPerMCycle = 1.0 / TimeInterval(machineSpeed)
-		cyclesPerBatch = machineSpeed / 120
+        cyclesPerFrame = machineSpeed / framesPerSecond
 	}
 
 	func start(stepBlock: @escaping () -> Cycles) {
 		queue.async {
 			self.isRunning = true
-			self.advanceClock(stepBlock: stepBlock)
+			self.emulateFrame(stepBlock: stepBlock)
 		}
 	}
 
@@ -46,29 +45,25 @@ public final class Clock {
 		}
 	}
 
-//	private var delays: [TimeInterval] = []
-	private func advanceClock(stepBlock: @escaping () -> Cycles) {
+	private func emulateFrame(stepBlock: @escaping () -> Cycles) {
 		let startDate = Date()
+
 		var cycles: Cycles = 0
-		while cycles < cyclesPerBatch {
+		while cycles < cyclesPerFrame {
 			let stepCycles = stepBlock()
 			cycles += stepCycles
 			self.cycles += stepCycles
 		}
 		let timeElapsed = -startDate.timeIntervalSinceNow
-		let delay = TimeInterval(cycles) * secondsPerMCycle - timeElapsed
-//		print("advancing with delay: \(delay)")
-//		delays.append(delay)
-//		if delays.count == 600 {
-//			print("delay average: \(delays.reduce(0, +) / TimeInterval(delays.count))")
-//		}
+        let delay = max(frameDuration - timeElapsed, 0)
 		scheduleAdvanceClockIfRunning(afterDelay: delay, stepBlock: stepBlock)
 	}
 
 	private func scheduleAdvanceClockIfRunning(afterDelay: TimeInterval, stepBlock: @escaping () -> Cycles) {
+        precondition(afterDelay >= 0)
 		guard isRunning else { return }
-		queue.asyncAfter(deadline: .now() + max(afterDelay, 0)) { [weak self] in
-			self?.advanceClock(stepBlock: stepBlock)
+		queue.asyncAfter(deadline: .now() + afterDelay) { [weak self] in
+			self?.emulateFrame(stepBlock: stepBlock)
 		}
 	}
 }

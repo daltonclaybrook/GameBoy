@@ -11,11 +11,11 @@ public final class ROM: CartridgeType {
         self.bytes = bytes
     }
 
-	public func read(address: Address) -> UInt8 {
-		bytes.read(address: address, in: .ROM)
-	}
+    public func read(address: Address) -> UInt8 {
+        bytes.read(address: address, in: .ROM)
+    }
 
-	public func write(byte: Byte, to address: Address) {
-		// no-op
-	}
+    public func write(byte: Byte, to address: Address) {
+        // no-op
+    }
 }

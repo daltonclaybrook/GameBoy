@@ -95,7 +95,7 @@ public final class MBC1: CartridgeType {
             return 0
         }
     }
-
+    
     // MARK: - Helpers
 
     private func getAdjustedROMBankNumberIfNecessary(for bankNumber: BankNumber) -> BankNumber {

@@ -21,11 +21,18 @@ class ViewController: NSViewController {
         do {
             let renderer = try MetalRenderer(view: mtkView, device: device)
             let gameBoy = GameBoy(renderer: renderer)
-            gameBoy.load(cartridge: try makeCartridge())
+            let cartridge = try makeCartridge()
+            self.title = cartridge.title
+            gameBoy.load(cartridge: cartridge)
             self.gameBoy = gameBoy
         } catch let error {
             return assertionFailure("error creating renderer: \(error)")
         }
+    }
+
+    override func viewDidAppear() {
+        super.viewDidAppear()
+        self.view.window?.title = self.title ?? "Game Boy"
     }
 
     private func makeCartridge() throws -> CartridgeType {
@@ -52,6 +59,7 @@ class ViewController: NSViewController {
             "tetris"
         ]
         let fileURL = Bundle.main.url(forResource: testRoms[0], withExtension: "gb")!
+//        let fileURL = Bundle.main.url(forResource: "pokemon-yellow", withExtension: "gbc")!
         let fileData = try Data(contentsOf: fileURL)
         let cartridge = CartridgeFactory.makeCartridge(romBytes: [Byte](fileData))
         return cartridge

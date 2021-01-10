@@ -93,6 +93,8 @@
 		7590E7BE25AACE15005E1280 /* CartridgeType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7590E7BC25AACE15005E1280 /* CartridgeType.swift */; };
 		7590E7C425AACEC6005E1280 /* CartridgeFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7590E7C325AACEC6005E1280 /* CartridgeFactory.swift */; };
 		7590E7C525AACEC6005E1280 /* CartridgeFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7590E7C325AACEC6005E1280 /* CartridgeFactory.swift */; };
+		7590E7CF25AB8FF0005E1280 /* pokemon-yellow.gbc in Resources */ = {isa = PBXBuildFile; fileRef = 7590E7CE25AB8FF0005E1280 /* pokemon-yellow.gbc */; };
+		7590E7D025AB8FF0005E1280 /* pokemon-yellow.gbc in Resources */ = {isa = PBXBuildFile; fileRef = 7590E7CE25AB8FF0005E1280 /* pokemon-yellow.gbc */; };
 		75B3AD09229DEEA500A03C5A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B3AD08229DEEA500A03C5A /* AppDelegate.swift */; };
 		75B3AD0B229DEEA500A03C5A /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B3AD0A229DEEA500A03C5A /* ViewController.swift */; };
 		75B3AD0E229DEEA500A03C5A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 75B3AD0C229DEEA500A03C5A /* Main.storyboard */; };
@@ -257,6 +259,7 @@
 		7590E7B525AA5703005E1280 /* MBC1.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBC1.swift; sourceTree = "<group>"; };
 		7590E7BC25AACE15005E1280 /* CartridgeType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartridgeType.swift; sourceTree = "<group>"; };
 		7590E7C325AACEC6005E1280 /* CartridgeFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartridgeFactory.swift; sourceTree = "<group>"; };
+		7590E7CE25AB8FF0005E1280 /* pokemon-yellow.gbc */ = {isa = PBXFileReference; lastKnownFileType = file; path = "pokemon-yellow.gbc"; sourceTree = "<group>"; };
 		75B3AD05229DEEA500A03C5A /* GameBoy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GameBoy.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		75B3AD08229DEEA500A03C5A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		75B3AD0A229DEEA500A03C5A /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -595,6 +598,7 @@
 		75CAF0D522BED0F300E04FAC /* roms */ = {
 			isa = PBXGroup;
 			children = (
+				7590E7CE25AB8FF0005E1280 /* pokemon-yellow.gbc */,
 				757F38D222B1BAC800BBB570 /* tetris.gb */,
 				75D0E54122B26E670049BF6D /* cpu_instrs.gb */,
 				758D865A22B6D86900C28791 /* reimp.gbc */,
@@ -825,6 +829,7 @@
 				75CAF08722BD8C7C00E04FAC /* instr_timing.gb in Resources */,
 				75D0E54322B26E670049BF6D /* cpu_instrs.gb in Resources */,
 				758D864422B495BD00C28791 /* load.gb in Resources */,
+				7590E7D025AB8FF0005E1280 /* pokemon-yellow.gbc in Resources */,
 				758D866A22B6E82900C28791 /* 05-op rp.gb in Resources */,
 				758D867422B6E82900C28791 /* 08-misc instrs.gb in Resources */,
 				757F391222B1C73900BBB570 /* tetris.gb in Resources */,
@@ -863,6 +868,7 @@
 				758D866D22B6E82900C28791 /* 03-op sp,hl.gb in Resources */,
 				75CAF08622BD8C7C00E04FAC /* instr_timing.gb in Resources */,
 				758D865222B69FE200C28791 /* hello_old.gbc in Resources */,
+				7590E7CF25AB8FF0005E1280 /* pokemon-yellow.gbc in Resources */,
 				758D867522B6E82900C28791 /* 04-op r,imm.gb in Resources */,
 				758D867D22B6E82900C28791 /* 01-special.gb in Resources */,
 				75B3AD10229DEEA700A03C5A /* Assets.xcassets in Resources */,

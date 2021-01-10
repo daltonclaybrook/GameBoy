@@ -4,12 +4,7 @@ public struct CartridgeFactory {
             fatalError("ROM is too small")
         }
 
-        var titleBytes = romBytes[0x0134...0x0143]
-        while titleBytes.last == 0x00 {
-            titleBytes.removeLast()
-        }
-        let titleData = Data(bytes: &titleBytes, count: titleBytes.count)
-        let titleString = String(data: titleData, encoding: .ascii) ?? ""
+        let titleString = getCartridgeTitle(from: romBytes)
 
         let cartridgeType = romBytes[0x0147]
         switch cartridgeType {
@@ -18,7 +13,18 @@ public struct CartridgeFactory {
         case 0x01...0x03:
             return MBC1(title: titleString, bytes: romBytes)
         default:
-            fatalError("Unsupported cartridge type: \(cartridgeType)")
+            fatalError("Unsupported cartridge type: \(String(format: "%02X", cartridgeType))")
         }
+    }
+
+    // MARK: - Helpers
+
+    private static func getCartridgeTitle(from romBytes: [Byte]) -> String {
+        var titleByteRegion = romBytes[0x0134...0x0143]
+        var titleBytes: [Byte] = []
+        while !titleByteRegion.isEmpty && titleByteRegion.first != 0x00 { // null terminator
+            titleBytes.append(titleByteRegion.removeFirst())
+        }
+        return String(bytes: titleBytes, encoding: .ascii) ?? ""
     }
 }

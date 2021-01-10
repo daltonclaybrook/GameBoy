@@ -21,14 +21,14 @@ class ViewController: NSViewController {
 		do {
 			let renderer = try MetalRenderer(view: mtkView, device: device)
 			let gameBoy = GameBoy(renderer: renderer)
-			gameBoy.loadROM(data: try makeROMData())
+            gameBoy.load(cartridge: try makeCartridge())
 			self.gameBoy = gameBoy
 		} catch let error {
 			return assertionFailure("error creating renderer: \(error)")
 		}
 	}
 
-	private func makeROMData() throws -> Data {
+	private func makeCartridge() throws -> CartridgeType {
 		let testRoms = [
             // blargg
 			"cpu_instrs", // fails
@@ -49,8 +49,10 @@ class ViewController: NSViewController {
             "call_timing",
             "call_timing2"
 		]
-		let fileURL = Bundle.main.url(forResource: testRoms[14], withExtension: "gb")!
-		return try Data(contentsOf: fileURL)
+		let fileURL = Bundle.main.url(forResource: testRoms[0], withExtension: "gb")!
+		let fileData = try Data(contentsOf: fileURL)
+        let cartridge = CartridgeFactory.makeCartridge(romBytes: [Byte](fileData))
+        return cartridge
 	}
 }
 

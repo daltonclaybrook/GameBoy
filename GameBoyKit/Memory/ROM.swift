@@ -1,22 +1,21 @@
 import Foundation
 
-public final class ROM: MemoryAddressable {
-	private var bytes = [Byte](repeating: 0, count: MemoryMap.ROM.count)
+/// The most primitive ROM type. It contains no support for
+/// bank switching and supports only 32KB of data.
+public final class ROM: CartridgeType {
+    public let title: String
+    private var bytes: [Byte]
 
-	public func loadROM(data: Data) {
-		// todo: rom banks
-		if self.bytes.count > data.count {
-			self.bytes[0..<data.count] = ArraySlice<Byte>(data)
-		} else {
-			self.bytes = [Byte](data)
-		}
-	}
+    public init(title: String, bytes: [Byte]) {
+        self.title = title
+        self.bytes = bytes
+    }
 
 	public func read(address: Address) -> UInt8 {
-		return bytes.read(address: address, in: .ROM)
+		bytes.read(address: address, in: .ROM)
 	}
 
 	public func write(byte: Byte, to address: Address) {
-		// no-op (at the moment)
+		// no-op
 	}
 }

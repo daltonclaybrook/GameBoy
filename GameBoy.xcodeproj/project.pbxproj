@@ -89,6 +89,10 @@
 		7590E76C25AA113E005E1280 /* CPU+TestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75CAF0D622C0207600E04FAC /* CPU+TestHelpers.swift */; };
 		7590E7B625AA5703005E1280 /* MBC1.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7590E7B525AA5703005E1280 /* MBC1.swift */; };
 		7590E7B725AA5703005E1280 /* MBC1.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7590E7B525AA5703005E1280 /* MBC1.swift */; };
+		7590E7BD25AACE15005E1280 /* CartridgeType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7590E7BC25AACE15005E1280 /* CartridgeType.swift */; };
+		7590E7BE25AACE15005E1280 /* CartridgeType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7590E7BC25AACE15005E1280 /* CartridgeType.swift */; };
+		7590E7C425AACEC6005E1280 /* CartridgeFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7590E7C325AACEC6005E1280 /* CartridgeFactory.swift */; };
+		7590E7C525AACEC6005E1280 /* CartridgeFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7590E7C325AACEC6005E1280 /* CartridgeFactory.swift */; };
 		75B3AD09229DEEA500A03C5A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B3AD08229DEEA500A03C5A /* AppDelegate.swift */; };
 		75B3AD0B229DEEA500A03C5A /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B3AD0A229DEEA500A03C5A /* ViewController.swift */; };
 		75B3AD0E229DEEA500A03C5A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 75B3AD0C229DEEA500A03C5A /* Main.storyboard */; };
@@ -251,6 +255,8 @@
 		7590E74B25AA1128005E1280 /* GameBoyKitTests_macOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameBoyKitTests_macOS.swift; sourceTree = "<group>"; };
 		7590E74D25AA1128005E1280 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7590E7B525AA5703005E1280 /* MBC1.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBC1.swift; sourceTree = "<group>"; };
+		7590E7BC25AACE15005E1280 /* CartridgeType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartridgeType.swift; sourceTree = "<group>"; };
+		7590E7C325AACEC6005E1280 /* CartridgeFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartridgeFactory.swift; sourceTree = "<group>"; };
 		75B3AD05229DEEA500A03C5A /* GameBoy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GameBoy.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		75B3AD08229DEEA500A03C5A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		75B3AD0A229DEEA500A03C5A /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -508,6 +514,8 @@
 				75D0E53E22B1C9CB0049BF6D /* HRAM.swift */,
 				75B3AD53229E128900A03C5A /* VRAM.swift */,
 				75B3AD51229DFC1700A03C5A /* ROM.swift */,
+				7590E7BC25AACE15005E1280 /* CartridgeType.swift */,
+				7590E7C325AACEC6005E1280 /* CartridgeFactory.swift */,
 			);
 			path = Memory;
 			sourceTree = "<group>";
@@ -913,6 +921,7 @@
 				757F390822B1C69F00BBB570 /* LCDStatus.swift in Sources */,
 				757F391022B1C69F00BBB570 /* ROM.swift in Sources */,
 				757F390322B1C69F00BBB570 /* OAM.swift in Sources */,
+				7590E7BE25AACE15005E1280 /* CartridgeType.swift in Sources */,
 				757F38FE22B1C69F00BBB570 /* CPU+Opcodes.swift in Sources */,
 				757F391122B1C69F00BBB570 /* MemoryProtocols.swift in Sources */,
 				75CAF08022BD00D700E04FAC /* Constants.swift in Sources */,
@@ -923,6 +932,7 @@
 				757F390522B1C69F00BBB570 /* Opcode.swift in Sources */,
 				7590E7B725AA5703005E1280 /* MBC1.swift in Sources */,
 				758D864A22B53AF000C28791 /* Interrupts.swift in Sources */,
+				7590E7C525AACEC6005E1280 /* CartridgeFactory.swift in Sources */,
 				758834DB22BB17BB00B80FD0 /* TimerControl.swift in Sources */,
 				757F38FB22B1C69000BBB570 /* AAPLShaders.metal in Sources */,
 				757F390F22B1C69F00BBB570 /* Clock.swift in Sources */,
@@ -972,6 +982,7 @@
 				75BD98B022A0A93B00CFFB68 /* CPU+Opcodes.swift in Sources */,
 				75BD98B622A2F37C00CFFB68 /* CPU+Opcodes+CB.swift in Sources */,
 				75B3AD50229DFA7C00A03C5A /* MemoryProtocols.swift in Sources */,
+				7590E7BD25AACE15005E1280 /* CartridgeType.swift in Sources */,
 				757F38C422B0731E00BBB570 /* Renderer.swift in Sources */,
 				75BD98BA22A40D6000CFFB68 /* IO.swift in Sources */,
 				75B3AD5A229EA57700A03C5A /* Clock.swift in Sources */,
@@ -982,6 +993,7 @@
 				758D864922B53A0200C28791 /* Interrupts.swift in Sources */,
 				7590E7B625AA5703005E1280 /* MBC1.swift in Sources */,
 				75BD98C222A41DDC00CFFB68 /* ColorPalette.swift in Sources */,
+				7590E7C425AACEC6005E1280 /* CartridgeFactory.swift in Sources */,
 				758834DA22BB12DF00B80FD0 /* TimerControl.swift in Sources */,
 				75BD98C022A413AA00CFFB68 /* LCDControl.swift in Sources */,
 				757F38CA22B08A5500BBB570 /* AAPLShaders.metal in Sources */,

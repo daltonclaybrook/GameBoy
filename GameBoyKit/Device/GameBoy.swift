@@ -20,9 +20,9 @@ public final class GameBoy {
 	private let io: IO
 	private let mmu: MMU
 
-	private let rom = ROM()
 	private let vram = VRAM()
 	private let palette = ColorPalette()
+    private var cartridge: CartridgeType?
 
 	/// Advance by this amount each step if the CPU is halted
 	private let haltedCycleStep: Cycles = 2
@@ -33,16 +33,17 @@ public final class GameBoy {
 		let oam = OAM()
 		io = IO(palette: palette, oam: oam, timer: timer)
 		ppu = PPU(renderer: renderer, io: io, vram: vram)
-		mmu = MMU(rom: rom, vram: vram, wram: WRAM(), oam: oam, io: io, hram: HRAM())
+		mmu = MMU(vram: vram, wram: WRAM(), oam: oam, io: io, hram: HRAM())
 		io.mmu = mmu
 		cpu = CPU(mmu: mmu)
 	}
 
-	public func loadROM(data: Data) {
-		rom.loadROM(data: data)
-		bootstrap()
-		clock.start(stepBlock: stepAndReturnCycles)
-	}
+    public func load(cartridge: CartridgeType) {
+        self.cartridge = cartridge
+        mmu.load(cartridge: cartridge)
+        bootstrap()
+        clock.start(stepBlock: stepAndReturnCycles)
+    }
 
 	private func stepAndReturnCycles() -> Cycles {
 //		if cpu.pc == 0xC2B9 { // interrupt test #2

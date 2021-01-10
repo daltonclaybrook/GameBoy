@@ -3,8 +3,10 @@ import Foundation
 /// This is the implementation of the first Memory Bank Controller for Game Boy.
 /// It enables a ROM to support up to 2MB of data instead of just the 32KB of
 /// addressable data by using bank switching.
-public final class MBC1: MemoryAddressable {
+public final class MBC1: CartridgeType {
     private typealias BankNumber = UInt8
+
+    public let title: String
 
     /// This mode determines whether writing to 0x4000...0x5fff sets the
     /// RAM bank number or the upper bits of the ROM bank number
@@ -49,7 +51,8 @@ public final class MBC1: MemoryAddressable {
         }
     }
 
-    public init(bytes: [Byte]) {
+    public init(title: String, bytes: [Byte]) {
+        self.title = title
         self.romBytes = bytes
         // There can be up to 4 banks of RAM. When RAM banking is enabled,
         // each bank is 8KB.

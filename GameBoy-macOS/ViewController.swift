@@ -31,7 +31,7 @@ class ViewController: NSViewController {
 	private func makeCartridge() throws -> CartridgeType {
 		let testRoms = [
             // blargg
-			"cpu_instrs", // fails
+			"cpu_instrs",
 			"01-special",
 			"02-interrupts",
 			"03-op sp,hl",

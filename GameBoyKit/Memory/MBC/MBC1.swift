@@ -12,8 +12,10 @@ public final class MBC1: MemoryAddressable {
         case ROM, RAM
     }
 
-    private var romBanks: [BankNumber: [Byte]]
-    private var ramBanks: [BankNumber: [Byte]]
+    private let romBankSize: UInt16 = 0x4000 // 16KB
+    private let ramBankSize: UInt16 = 0x2000 // 8KB
+    private let romBytes: [Byte]
+    private var ramBytes: [Byte]
 
     /// Determines whether the the variable register is applied to the RAM bank number
     /// or the upper 2 bits of the ROM bank number
@@ -47,16 +49,21 @@ public final class MBC1: MemoryAddressable {
         }
     }
 
-    public init() {
-        self.romBanks = Self.createROMBanks()
-        self.ramBanks = Self.createRAMBanks()
+    public init(bytes: [Byte]) {
+        self.romBytes = bytes
+        // There can be up to 4 banks of RAM. When RAM banking is enabled,
+        // each bank is 8KB.
+        // To-do: RAM should be saved between runs of the program if
+        // there's a battery in the cartridge.
+        self.ramBytes = [Byte](repeating: 0, count: Int(ramBankSize) * 4)
     }
 
     public func write(byte: Byte, to address: Address) {
         switch address {
         case 0xa000...0xbfff: // Write to selected RAM bank
             guard isRAMEnabled else { return }
-            ramBanks[currentRAMBank]!.write(byte: byte, to: address, in: .externalRAM)
+            let adjustedAddress = (address - 0xa000) + (Address(currentRAMBank) * ramBankSize)
+            ramBytes.write(byte: byte, to: adjustedAddress)
         case 0x0000...0x1fff: // Set RAM enabled/disabled
             isRAMEnabled = byte & 0x0F == 0x0a
         case 0x2000...0x3fff: // Set ROM bank number (lower 5 bits)
@@ -73,12 +80,14 @@ public final class MBC1: MemoryAddressable {
     public func read(address: Address) -> Byte {
         switch address {
         case 0x0000...0x3fff: // Always Bank 0x00
-            return romBanks[0]!.read(address: address, in: .ROMBank0)
+            return romBytes.read(address: address)
         case 0x4000...0x7fff: // Selected Bank 0x01-0x7f
-            return romBanks[currentROMBank]!.read(address: address, in: .ROMBankN)
+            let adjustedAddress = (address - 0x4000) + (Address(currentROMBank) * romBankSize)
+            return romBytes.read(address: adjustedAddress)
         case 0xa000...0xbfff: // Selected RAM Bank 0x00-0x03
             guard isRAMEnabled else { return 0 } // Is returning zero correct?
-            return ramBanks[currentRAMBank]!.read(address: address, in: .externalRAM)
+            let adjustedAddress = (address - 0xa000) + (Address(currentRAMBank) * ramBankSize)
+            return ramBytes.read(address: adjustedAddress)
         default:
             return 0
         }
@@ -94,27 +103,5 @@ public final class MBC1: MemoryAddressable {
         default:
             return bankNumber
         }
-    }
-
-    private static func createROMBanks() -> [BankNumber: [Byte]] {
-        createMemoryBanks(
-            count: 128,
-            bytesPerBank: 0x4000, // 16KB
-            skipBankNumbers: [0x20, 0x40, 0x60]
-        )
-    }
-
-    private static func createRAMBanks() -> [BankNumber: [Byte]] {
-        // 4 banks, 8KB each
-        createMemoryBanks(count: 4, bytesPerBank: 0x2000)
-    }
-
-    private static func createMemoryBanks(count: BankNumber, bytesPerBank: Int, skipBankNumbers: Set<BankNumber> = []) -> [BankNumber: [Byte]] {
-        var memoryBanks: [BankNumber: [Byte]] = [:]
-        (0..<count).forEach { bankNumber in
-            guard !skipBankNumbers.contains(bankNumber) else { return }
-            memoryBanks[bankNumber] = [Byte](repeating: 0, count: bytesPerBank)
-        }
-        return memoryBanks
     }
 }

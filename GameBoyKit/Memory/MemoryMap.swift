@@ -2,8 +2,6 @@ public typealias MemoryMap = ClosedRange<Address>
 
 extension ClosedRange where Bound == Address {
 	public static let ROM: ClosedRange<Address> = 0x0000...0x7fff
-    public static let ROMBank0: ClosedRange<Address> = 0x0000...0x3fff
-    public static let ROMBankN: ClosedRange<Address> = 0x4000...0x7fff
 	public static let VRAM: ClosedRange<Address> = 0x8000...0x9fff
 	public static let externalRAM: ClosedRange<Address> = 0xa000...0xbfff
 	public static let WRAM: ClosedRange<Address> = 0xc000...0xdfff
@@ -16,9 +14,17 @@ extension ClosedRange where Bound == Address {
 }
 
 extension Array where Element == Byte {
+    func read(address: Address) -> Byte {
+        return self[Int(address)]
+    }
+
 	func read(address: Address, in range: ClosedRange<Address>) -> Byte {
 		return self[Int(address - range.lowerBound)]
 	}
+
+    mutating func write(byte: Byte, to address: Address) {
+        self[Int(address)] = byte
+    }
 
 	mutating func write(byte: Byte, to address: Address, in range: ClosedRange<Address>) {
 		self[Int(address - range.lowerBound)] = byte

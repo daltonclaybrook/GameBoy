@@ -41,7 +41,8 @@ public final class GameBoy {
     public func load(cartridge: CartridgeType) {
         self.cartridge = cartridge
         mmu.load(cartridge: cartridge)
-        bootstrap()
+        mmu.mask = try! BootROM.dmgBootRom()
+//        bootstrap()
         clock.start(stepBlock: stepAndReturnCycles)
     }
 
@@ -62,6 +63,13 @@ public final class GameBoy {
         //		if cpu.pc == 2004 {
         //			print("break")
         //		}
+        if mmu.mask != nil && cpu.pc == 0x100 {
+            // Boot ROM execution has finished. By setting the MMU mask to nil,
+            // we are effectively unloading the boot ROM and making 0x00...0xff
+            // accessible on the cartridge ROM.
+            mmu.mask = nil
+        }
+
         timer.step(clock: clock.cycles)
         ppu.step(clock: clock.cycles)
         let cycles: Cycles
@@ -83,6 +91,10 @@ public final class GameBoy {
         return cycles
     }
 
+    /// This is used to bypass the boot rom. All necessary CPU and memory
+    /// registers are updated with values that would normally be set by
+    /// the boot rom. Notably, the PC register is set to 0x100, which is
+    /// where the cartridge ROM takes over and begins execution.
     private func bootstrap() {
         cpu.a = 0x01
         cpu.flags = Flags(rawValue: 0xb0)

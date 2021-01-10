@@ -1,4 +1,6 @@
 public final class MMU: MemoryAddressable {
+    public var mask: MemoryMasking?
+
     private(set) var cartridge: CartridgeType?
     let vram: VRAM
     let wram: WRAM
@@ -20,6 +22,10 @@ public final class MMU: MemoryAddressable {
     }
 
     public func read(address: Address) -> Byte {
+        if let mask = mask, mask.maskRange.contains(address) {
+            return mask.read(address: address)
+        }
+
         switch address {
         case MemoryMap.ROM:
             return cartridge?.read(address: address) ?? 0
@@ -49,6 +55,11 @@ public final class MMU: MemoryAddressable {
     }
 
     public func write(byte: Byte, to address: Address) {
+        if let mask = mask, mask.maskRange.contains(address) {
+            mask.write(byte: byte, to: address)
+            return
+        }
+
         switch address {
         case MemoryMap.ROM:
             cartridge?.write(byte: byte, to: address)

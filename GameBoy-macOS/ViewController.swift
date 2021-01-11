@@ -5,10 +5,12 @@ import MetalKit
 class ViewController: NSViewController {
     private let mtkView = MTKView()
     private var gameBoy: GameBoy?
+    private let viewSize = CGSize(width: 400, height: 360)
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        view.frame.size = viewSize
         view.addSubview(mtkView)
         mtkView.frame = view.bounds
         mtkView.autoresizingMask = [.width, .height]
@@ -60,6 +62,7 @@ class ViewController: NSViewController {
         ]
         let fileURL = Bundle.main.url(forResource: testRoms[0], withExtension: "gb")!
 //        let fileURL = Bundle.main.url(forResource: "pokemon-yellow", withExtension: "gbc")!
+//        let fileURL = Bundle.main.url(forResource: "tetris", withExtension: "gb")!
         let fileData = try Data(contentsOf: fileURL)
         let cartridge = CartridgeFactory.makeCartridge(romBytes: [Byte](fileData))
         return cartridge

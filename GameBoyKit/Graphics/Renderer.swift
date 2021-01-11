@@ -96,18 +96,30 @@ public final class MetalRenderer: NSObject, Renderer {
     }
 
     private func updateForDrawableSizeChange(_ size: CGSize) {
-        let minSize = Float(min(size.width, size.height)) / 2
+        let targetRatio = CGFloat(Constants.screenWidth) / CGFloat(Constants.screenHeight)
+        let drawableRatio = size.width / size.height
+
+        let vertexWidth: Float
+        let vertexHeight: Float
+        if drawableRatio < targetRatio {
+            vertexWidth = Float(size.width) / 2
+            vertexHeight = Float(size.width / targetRatio) / 2
+        } else {
+            vertexWidth = Float(size.height * targetRatio) / 2
+            vertexHeight = Float(size.height) / 2
+        }
+
         viewportSize.x = UInt32(size.width)
         viewportSize.y = UInt32(size.height)
 
         let quadVertices: [AAPLVertex] = [
-            AAPLVertex(position: vector_float2(minSize, -minSize), textureCoordinate: vector_float2(1.0, 1.0)),
-            AAPLVertex(position: vector_float2(-minSize, -minSize), textureCoordinate: vector_float2(0.0, 1.0)),
-            AAPLVertex(position: vector_float2(-minSize, minSize), textureCoordinate: vector_float2(0.0, 0.0)),
+            AAPLVertex(position: vector_float2(vertexWidth, -vertexHeight), textureCoordinate: vector_float2(1.0, 1.0)),
+            AAPLVertex(position: vector_float2(-vertexWidth, -vertexHeight), textureCoordinate: vector_float2(0.0, 1.0)),
+            AAPLVertex(position: vector_float2(-vertexWidth, vertexHeight), textureCoordinate: vector_float2(0.0, 0.0)),
 
-            AAPLVertex(position: vector_float2(minSize, -minSize), textureCoordinate: vector_float2(1.0, 1.0)),
-            AAPLVertex(position: vector_float2(-minSize, minSize), textureCoordinate: vector_float2(0.0, 0.0)),
-            AAPLVertex(position: vector_float2(minSize, minSize), textureCoordinate: vector_float2(1.0, 0.0))
+            AAPLVertex(position: vector_float2(vertexWidth, -vertexHeight), textureCoordinate: vector_float2(1.0, 1.0)),
+            AAPLVertex(position: vector_float2(-vertexWidth, vertexHeight), textureCoordinate: vector_float2(0.0, 0.0)),
+            AAPLVertex(position: vector_float2(vertexWidth, vertexHeight), textureCoordinate: vector_float2(1.0, 0.0))
         ]
         numberOfVertices = quadVertices.count
 

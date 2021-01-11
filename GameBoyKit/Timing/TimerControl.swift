@@ -2,10 +2,10 @@ import Foundation
 
 public struct TimerControl: RawRepresentable {
     enum InputClock: Byte {
-        case slow
-        case fast
-        case midFast
-        case midSlow
+        case slow // 4096 Hz
+        case fast // 262144 Hz
+        case midFast // 65536 Hz
+        case midSlow // 16384 Hz
     }
 
     private(set) public var rawValue: Byte

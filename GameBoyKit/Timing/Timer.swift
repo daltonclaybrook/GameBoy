@@ -70,13 +70,15 @@ public final class Timer: MemoryAddressable {
             return
         }
 
+        var counterOverflow = false
         let counterIncrementRate = control.inputClock.counterIncrementRate
         if counterIntermediate + delta >= counterIncrementRate {
             counter &+= 1
+            counterOverflow = counter == 0x00
         }
         counterIntermediate = (counterIntermediate + delta) % counterIncrementRate
 
-        if counter == 0 {
+        if counterOverflow {
             // Counter overflowed, request interrupt
             counter = modulo
             delegate?.timer(self, didRequest: .timer)

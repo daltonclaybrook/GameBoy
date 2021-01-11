@@ -7,6 +7,10 @@ public final class MMU: MemoryAddressable {
     let oam: OAM
     let io: IO
     let hram: HRAM
+    /// Does this make sense as a plain field on the MMU,
+    /// or should it have an object like the other regions?
+    /// Maybe pull `interruptFlags` out of `IO` and create
+    /// an `Interrupts` type?
     private(set) var interruptEnable: Interrupts = []
 
     init(vram: VRAM, wram: WRAM, oam: OAM, io: IO, hram: HRAM) {

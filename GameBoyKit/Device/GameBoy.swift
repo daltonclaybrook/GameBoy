@@ -68,6 +68,9 @@ public final class GameBoy {
             // we are effectively unloading the boot ROM and making 0x00...0xff
             // accessible on the cartridge ROM.
             mmu.mask = nil
+            #if DEBUG
+//            cpu.assertRegistersAreCorrectAfterBoot()
+            #endif
         }
 
         timer.step(clock: clock.cycles)

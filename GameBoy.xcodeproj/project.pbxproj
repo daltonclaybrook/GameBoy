@@ -101,6 +101,14 @@
 		7590E7ED25ABA935005E1280 /* MemoryMasking.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7590E7EB25ABA935005E1280 /* MemoryMasking.swift */; };
 		7590E7F325ABA96F005E1280 /* BootROM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7590E7F225ABA96F005E1280 /* BootROM.swift */; };
 		7590E7F425ABA96F005E1280 /* BootROM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7590E7F225ABA96F005E1280 /* BootROM.swift */; };
+		7590E7FA25ABE242005E1280 /* Numbers+Debug.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7590E7F925ABE242005E1280 /* Numbers+Debug.swift */; };
+		7590E7FB25ABE242005E1280 /* Numbers+Debug.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7590E7F925ABE242005E1280 /* Numbers+Debug.swift */; };
+		7590E80125ABE353005E1280 /* CPU+Assertions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7590E80025ABE353005E1280 /* CPU+Assertions.swift */; };
+		7590E80225ABE353005E1280 /* CPU+Assertions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7590E80025ABE353005E1280 /* CPU+Assertions.swift */; };
+		7590E80825ABF301005E1280 /* mario.gb in Resources */ = {isa = PBXBuildFile; fileRef = 7590E80725ABF301005E1280 /* mario.gb */; };
+		7590E80925ABF301005E1280 /* mario.gb in Resources */ = {isa = PBXBuildFile; fileRef = 7590E80725ABF301005E1280 /* mario.gb */; };
+		7590E81725AC0BF7005E1280 /* dmg-acid2.gb in Resources */ = {isa = PBXBuildFile; fileRef = 7590E81625AC0BF7005E1280 /* dmg-acid2.gb */; };
+		7590E81825AC0BF7005E1280 /* dmg-acid2.gb in Resources */ = {isa = PBXBuildFile; fileRef = 7590E81625AC0BF7005E1280 /* dmg-acid2.gb */; };
 		75B3AD09229DEEA500A03C5A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B3AD08229DEEA500A03C5A /* AppDelegate.swift */; };
 		75B3AD0B229DEEA500A03C5A /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B3AD0A229DEEA500A03C5A /* ViewController.swift */; };
 		75B3AD0E229DEEA500A03C5A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 75B3AD0C229DEEA500A03C5A /* Main.storyboard */; };
@@ -269,6 +277,10 @@
 		7590E7D525ABA514005E1280 /* bootrom.gb */ = {isa = PBXFileReference; lastKnownFileType = file; path = bootrom.gb; sourceTree = "<group>"; };
 		7590E7EB25ABA935005E1280 /* MemoryMasking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoryMasking.swift; sourceTree = "<group>"; };
 		7590E7F225ABA96F005E1280 /* BootROM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BootROM.swift; sourceTree = "<group>"; };
+		7590E7F925ABE242005E1280 /* Numbers+Debug.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Numbers+Debug.swift"; sourceTree = "<group>"; };
+		7590E80025ABE353005E1280 /* CPU+Assertions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CPU+Assertions.swift"; sourceTree = "<group>"; };
+		7590E80725ABF301005E1280 /* mario.gb */ = {isa = PBXFileReference; lastKnownFileType = file; path = mario.gb; sourceTree = "<group>"; };
+		7590E81625AC0BF7005E1280 /* dmg-acid2.gb */ = {isa = PBXFileReference; lastKnownFileType = file; path = "dmg-acid2.gb"; sourceTree = "<group>"; };
 		75B3AD05229DEEA500A03C5A /* GameBoy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GameBoy.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		75B3AD08229DEEA500A03C5A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		75B3AD0A229DEEA500A03C5A /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -583,6 +595,8 @@
 			isa = PBXGroup;
 			children = (
 				75D0E54A22B30C790049BF6D /* VRAM+Debug.swift */,
+				7590E7F925ABE242005E1280 /* Numbers+Debug.swift */,
+				7590E80025ABE353005E1280 /* CPU+Assertions.swift */,
 			);
 			path = Debug;
 			sourceTree = "<group>";
@@ -618,6 +632,8 @@
 		75CAF0D522BED0F300E04FAC /* roms */ = {
 			isa = PBXGroup;
 			children = (
+				7590E81625AC0BF7005E1280 /* dmg-acid2.gb */,
+				7590E80725ABF301005E1280 /* mario.gb */,
 				7590E7CE25AB8FF0005E1280 /* pokemon-yellow.gbc */,
 				757F38D222B1BAC800BBB570 /* tetris.gb */,
 				75D0E54122B26E670049BF6D /* cpu_instrs.gb */,
@@ -852,9 +868,11 @@
 				7590E7D025AB8FF0005E1280 /* pokemon-yellow.gbc in Resources */,
 				758D866A22B6E82900C28791 /* 05-op rp.gb in Resources */,
 				758D867422B6E82900C28791 /* 08-misc instrs.gb in Resources */,
+				7590E81825AC0BF7005E1280 /* dmg-acid2.gb in Resources */,
 				757F391222B1C73900BBB570 /* tetris.gb in Resources */,
 				758D866E22B6E82900C28791 /* 03-op sp,hl.gb in Resources */,
 				758D867222B6E82900C28791 /* 09-op r,r.gb in Resources */,
+				7590E80925ABF301005E1280 /* mario.gb in Resources */,
 				75F61DA724FC269700FA095F /* call_timing.gb in Resources */,
 				758D867022B6E82900C28791 /* 02-interrupts.gb in Resources */,
 				758D867C22B6E82900C28791 /* 11-op a,(hl).gb in Resources */,
@@ -899,9 +917,11 @@
 				758D867322B6E82900C28791 /* 08-misc instrs.gb in Resources */,
 				758D866B22B6E82900C28791 /* 07-jr,jp,call,ret,rst.gb in Resources */,
 				75D0E54222B26E670049BF6D /* cpu_instrs.gb in Resources */,
+				7590E80825ABF301005E1280 /* mario.gb in Resources */,
 				758D867122B6E82900C28791 /* 09-op r,r.gb in Resources */,
 				75B3AD0E229DEEA500A03C5A /* Main.storyboard in Resources */,
 				758D864322B495BD00C28791 /* load.gb in Resources */,
+				7590E81725AC0BF7005E1280 /* dmg-acid2.gb in Resources */,
 				758D867B22B6E82900C28791 /* 11-op a,(hl).gb in Resources */,
 				758D867922B6E82900C28791 /* 06-ld r,r.gb in Resources */,
 				757F38D322B1BAC800BBB570 /* tetris.gb in Resources */,
@@ -946,6 +966,7 @@
 				757F38FD22B1C69F00BBB570 /* CPU.swift in Sources */,
 				757F390622B1C69F00BBB570 /* MMU.swift in Sources */,
 				757F390E22B1C69F00BBB570 /* GameBoy.swift in Sources */,
+				7590E7FB25ABE242005E1280 /* Numbers+Debug.swift in Sources */,
 				757F390822B1C69F00BBB570 /* LCDStatus.swift in Sources */,
 				757F391022B1C69F00BBB570 /* ROM.swift in Sources */,
 				757F390322B1C69F00BBB570 /* OAM.swift in Sources */,
@@ -954,6 +975,7 @@
 				7590E7F425ABA96F005E1280 /* BootROM.swift in Sources */,
 				757F391122B1C69F00BBB570 /* MemoryProtocols.swift in Sources */,
 				75CAF08022BD00D700E04FAC /* Constants.swift in Sources */,
+				7590E80225ABE353005E1280 /* CPU+Assertions.swift in Sources */,
 				757F390A22B1C69F00BBB570 /* ColorPalette.swift in Sources */,
 				757F390122B1C69F00BBB570 /* CPU+Instructions+CB.swift in Sources */,
 				757F390022B1C69F00BBB570 /* CPU+Instructions.swift in Sources */,
@@ -1009,6 +1031,7 @@
 				75BD98BE22A4135900CFFB68 /* LCDStatus.swift in Sources */,
 				75BD98B422A0AD9600CFFB68 /* CPU+Instructions.swift in Sources */,
 				75BD98C422A49C0C00CFFB68 /* OAM.swift in Sources */,
+				7590E7FA25ABE242005E1280 /* Numbers+Debug.swift in Sources */,
 				75BD98B022A0A93B00CFFB68 /* CPU+Opcodes.swift in Sources */,
 				75BD98B622A2F37C00CFFB68 /* CPU+Opcodes+CB.swift in Sources */,
 				75B3AD50229DFA7C00A03C5A /* MemoryProtocols.swift in Sources */,
@@ -1017,6 +1040,7 @@
 				7590E7F325ABA96F005E1280 /* BootROM.swift in Sources */,
 				75BD98BA22A40D6000CFFB68 /* IO.swift in Sources */,
 				75B3AD5A229EA57700A03C5A /* Clock.swift in Sources */,
+				7590E80125ABE353005E1280 /* CPU+Assertions.swift in Sources */,
 				757F38C622B0765E00BBB570 /* Constants.swift in Sources */,
 				75B3AD56229E13B700A03C5A /* PPU.swift in Sources */,
 				75D0E53F22B1C9CB0049BF6D /* HRAM.swift in Sources */,

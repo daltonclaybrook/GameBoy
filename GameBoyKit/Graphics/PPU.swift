@@ -16,12 +16,6 @@ public final class PPU {
     private let cyclesPerFrame: Cycles
     private var isDisplayEnabled = true
 
-    private let semaphore = DispatchSemaphore(value: 0)
-    private let queue = DispatchQueue(
-        label: "com.daltonclaybrook.GameBoy.PPU",
-        qos: .userInteractive
-    )
-
     init(renderer: Renderer, io: IO, vram: VRAM) {
         self.renderer = renderer
         self.io = io
@@ -56,9 +50,10 @@ public final class PPU {
 
         switch (previousMode, nextMode) {
         case (.searchingOAMRAM, .transferingToLCD):
-            queue.async { self.render(line: line) }
+            vram.isLocked = true
+            render(line: line)
         case (.transferingToLCD, .horizontalBlank):
-            semaphore.wait() // If the transfer hasn't completed, wait for it to complete
+            vram.isLocked = false
             if io.lcdStatus.hBlankInterruptEnabled {
                 io.interruptFlags.formUnion(.lcdStat)
             }
@@ -97,6 +92,7 @@ public final class PPU {
         clearPixelBuffer()
         io.lcdYCoordinate = 0
         io.lcdStatus.mode = .searchingOAMRAM
+        vram.isLocked = false
     }
 
     private func clearPixelBuffer() {
@@ -110,8 +106,6 @@ public final class PPU {
     /// - display window
     /// - display sprites
     private func render(line: UInt64) {
-        defer { semaphore.signal() } // signal across threads that the LCD transfer has completed
-
         let scrollX = io.scrollX
         let scrollY = io.scrollY
         let currentLine = Int(truncatingIfNeeded: line)
@@ -122,14 +116,16 @@ public final class PPU {
         let map = lcdControl.backgroundTileMapDisplay
         let tiles = lcdControl.selectedTileDataForBackgroundAndWindow
 
-        let lineBuffer = (0..<Constants.screenWidth).reduce(into: [Byte]()) { result, screenX in
+        var lineBuffer = [Byte]()
+        lineBuffer.reserveCapacity(Constants.screenWidth * 4) // each pixel RGBA
+        (0..<Constants.screenWidth).forEach { screenX in
             let mapX = UInt8(truncatingIfNeeded: screenX) &+ scrollX
             let pixelXInTile = mapX % 8 // tile width in pixels
             let tileAddress = getTileAddress(map: map, tiles: tiles, pixelX: UInt16(mapX), pixelY: UInt16(mapY))
             let pixelColorNumber = getPixelColorNumber(tileAddress: tileAddress, xOffsetInTile: UInt16(pixelXInTile), yOffsetInTile: UInt16(pixelYInTile))
 
             let pixelColor = io.palette.monochromeBGColor(for: UInt8(truncatingIfNeeded: pixelColorNumber))
-            result.append(contentsOf: pixelColor.rgbaBytes)
+            lineBuffer.append(contentsOf: pixelColor.rgbaBytes)
         }
 
         let region = PixelRegion(x: 0, y: currentLine, width: Constants.screenWidth, height: 1)
@@ -141,12 +137,12 @@ public final class PPU {
         let tileY = pixelY / 8
         let tileOffsetInMap = tileY * mapWidthInTiles + tileX
         let tileAddressInMap = map.mapDataRange.lowerBound + tileOffsetInMap
-        let tileIndex = vram.read(address: tileAddressInMap)
+        let tileIndex = vram.read(address: tileAddressInMap, privileged: true)
         return tiles.tileAddress(atIndex: tileIndex)
     }
 
     private func getPixelColorNumber(tileAddress: Address, xOffsetInTile: UInt16, yOffsetInTile: UInt16) -> UInt8 {
-        let pixelWord = vram.readWord(address: tileAddress + yOffsetInTile * 2)
+        let pixelWord = vram.readWord(address: tileAddress + yOffsetInTile * 2, privileged: true)
         let lowShift = 7 - xOffsetInTile
         let highShift = lowShift + 8 - 1
         let pixelColorNumber = (pixelWord >> highShift) & 0x02 | (pixelWord >> lowShift) & 0x01

@@ -15,6 +15,7 @@ public final class IO: MemoryAddressable {
     }
 
     public let palette: ColorPalette
+    /// The `MMU` owns the `IO`, so this needs to be a weak reference
     public weak var mmu: MMU?
 
     public var interruptFlags: Interrupts = []
@@ -68,11 +69,10 @@ public final class IO: MemoryAddressable {
         case palette.monochromeAddressRange, palette.colorAddressRange:
             palette.write(byte: byte, to: address)
         case Registers.dmaTransfer:
-            if let mmu = mmu {
-                oam.dmaTransfer(byte: byte, mmu: mmu)
-            } else {
+            guard let mmu = mmu else {
                 fatalError("DMA transfer could not be initiated because MMU is nil")
             }
+            oam.dmaTransfer(byte: byte, mmu: mmu)
         default:
             bytes.write(byte: byte, to: address, in: .IO)
         }

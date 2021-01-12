@@ -60,10 +60,12 @@ class ViewController: NSViewController {
             // games
             "tetris"
         ]
-//        let fileURL = Bundle.main.url(forResource: testRoms[13], withExtension: "gb")!
+        let fileURL = Bundle.main.url(forResource: testRoms[0], withExtension: "gb")!
 //        let fileURL = Bundle.main.url(forResource: "pokemon-yellow", withExtension: "gbc")!
 //        let fileURL = Bundle.main.url(forResource: "tetris", withExtension: "gb")!
-        let fileURL = Bundle.main.url(forResource: "dmg-acid2", withExtension: "gb")!
+//        let fileURL = Bundle.main.url(forResource: "dmg-acid2", withExtension: "gb")!
+//        let fileURL = Bundle.main.url(forResource: "cpu_instrs", withExtension: "gb")!
+//        let fileURL = Bundle.main.url(forResource: "instr_timing", withExtension: "gb")!
         let fileData = try Data(contentsOf: fileURL)
         let cartridge = CartridgeFactory.makeCartridge(romBytes: [Byte](fileData))
         return cartridge

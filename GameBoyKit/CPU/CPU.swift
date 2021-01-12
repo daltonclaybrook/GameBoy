@@ -39,19 +39,21 @@ public final class CPU {
 extension CPU {
     /// Fetches a byte from the address at `PC`, and increments `PC`
     func fetchByte() -> Byte {
-        defer { pc &+= 1 }
-        return mmu.read(address: pc)
+        let address = pc
+        pc &+= 1
+        return mmu.read(address: address)
     }
 
     /// Fetches a word from the address at `PC`, and increments `PC` by 2
     func fetchWord() -> Word {
-        defer { pc &+= 2 }
-        return mmu.readWord(address: pc)
+        let low = fetchByte()
+        let high = fetchByte()
+        return Word(high << 8) | Word(low)
     }
 
     /// Pushes the provided value onto the stack and decrements `SP`
     func pushStack(value: Word) {
-        let low = Byte(value & 0xff)
+        let low = Byte(truncatingIfNeeded: value)
         let high = Byte(value >> 8)
         sp &-= 1
         mmu.write(byte: high, to: sp)

@@ -37,6 +37,39 @@ public final class CPU {
 }
 
 extension CPU {
+    /// Fetches a byte from the address at `PC`, and increments `PC`
+    func fetchByte() -> Byte {
+        defer { pc &+= 1 }
+        return mmu.read(address: pc)
+    }
+
+    /// Fetches a word from the address at `PC`, and increments `PC` by 2
+    func fetchWord() -> Word {
+        defer { pc &+= 2 }
+        return mmu.readWord(address: pc)
+    }
+
+    /// Pushes the provided value onto the stack and decrements `SP`
+    func pushStack(value: Word) {
+        let low = Byte(value & 0xff)
+        let high = Byte(value >> 8)
+        sp &-= 1
+        mmu.write(byte: high, to: sp)
+        sp &-= 1
+        mmu.write(byte: low, to: sp)
+    }
+
+    /// Pops a value off of the stack and increments `SP`
+    func popStack() -> Word {
+        let low = mmu.read(address: sp)
+        sp &+= 1
+        let high = mmu.read(address: sp)
+        sp &+= 1
+        return Word(high << 8) | Word(low)
+    }
+}
+
+extension CPU {
     var af: UInt16 {
         get {
             return UInt16(a) << 8 | UInt16(flags.rawValue)

@@ -77,7 +77,7 @@ public final class GameBoy {
         ppu.step(clock: clock.cycles)
         let cycles: Cycles
         if !cpu.isHalted {
-            let opcodeByte = mmu.read(address: cpu.pc)
+            let opcodeByte = cpu.fetchByte()
             let opcode = CPU.allOpcodes[Int(opcodeByte)]
             //			print("\(opcode.mnemonic) PC: \(cpu.pc)")
             cycles = opcode.block(cpu)

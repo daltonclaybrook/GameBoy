@@ -5,3 +5,13 @@ extension FixedWidthInteger {
         return didOverflow
     }
 }
+
+extension Word {
+    func wrappingAdd(_ value: Int8) -> Word {
+        if value >= 0 {
+            return self &+ Word(value)
+        } else {
+            return self &- Word(abs(value))
+        }
+    }
+}

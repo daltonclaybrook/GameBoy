@@ -11,7 +11,7 @@ public final class Timer: MemoryAddressable {
     }
 
     weak var delegate: TimerDelegate?
-    private var previousCycleCount: Cycles = 0
+    private var previousClock: Cycles = 0
     private let dividerIncrementRate: Cycles = 64
 
     private var dividerIntermediate: Cycles = 0
@@ -56,29 +56,30 @@ public final class Timer: MemoryAddressable {
     }
 
     public func step(clock: Cycles) {
-        let delta = clock - previousCycleCount
-        previousCycleCount = clock
+        let delta = clock - previousClock
+        previousClock = clock
 
-        if dividerIntermediate + delta >= dividerIncrementRate {
+        dividerIntermediate += delta
+        if dividerIntermediate >= dividerIncrementRate {
             divider &+= 1
+            dividerIntermediate %= dividerIncrementRate
         }
-        dividerIntermediate = (dividerIntermediate + delta) % dividerIncrementRate
 
-        guard control.timerIsStarted else {
+        guard control.isTimerStarted else {
             counterIntermediate = 0
             counter = 0
             return
         }
 
-        var counterOverflow = false
+        var counterDidOverflow = false
+        counterIntermediate += delta
         let counterIncrementRate = control.inputClock.counterIncrementRate
-        if counterIntermediate + delta >= counterIncrementRate {
-            counter &+= 1
-            counterOverflow = counter == 0x00
+        if counterIntermediate >= counterIncrementRate {
+            counterDidOverflow = counter.incrementReportingOverflow()
+            counterIntermediate %= counterIncrementRate
         }
-        counterIntermediate = (counterIntermediate + delta) % counterIncrementRate
 
-        if counterOverflow {
+        if counterDidOverflow {
             // Counter overflowed, request interrupt
             counter = modulo
             delegate?.timer(self, didRequest: .timer)

@@ -10,7 +10,7 @@ public protocol MemoryAddressable {
 extension MemoryAddressable {
     public func readWord(address: Address) -> Word {
         let little = read(address: address)
-        let big = read(address: address + 1)
+        let big = read(address: address &+ 1)
         return (UInt16(big) << 8) | UInt16(little)
     }
 
@@ -18,6 +18,6 @@ extension MemoryAddressable {
         let little = UInt8(truncatingIfNeeded: word)
         let big = word >> 8
         write(byte: Byte(little), to: address)
-        write(byte: Byte(big), to: address + 1)
+        write(byte: Byte(big), to: address &+ 1)
     }
 }

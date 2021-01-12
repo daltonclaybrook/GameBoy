@@ -2,10 +2,10 @@ import Foundation
 
 public struct TimerControl: RawRepresentable {
     enum InputClock: Byte {
-        case slow // 4096 Hz
-        case fast // 262144 Hz
-        case midFast // 65536 Hz
-        case midSlow // 16384 Hz
+        case slow = 0b00 // 4096 Hz
+        case fast = 0b01 // 262144 Hz
+        case midFast = 0b10 // 65536 Hz
+        case midSlow = 0b11 // 16384 Hz
     }
 
     private(set) public var rawValue: Byte
@@ -17,14 +17,12 @@ public struct TimerControl: RawRepresentable {
 }
 
 extension TimerControl {
-    var timerIsStarted: Bool {
-        get { return rawValue & 0x04 != 0 }
-        set { rawValue = newValue ? rawValue | 0x04 : rawValue & 0xfb }
+    var isTimerStarted: Bool {
+        rawValue & 0b0100 != 0
     }
 
     var inputClock: InputClock {
-        get { return InputClock(rawValue: rawValue & 0x03) ?? .slow }
-        set { rawValue = (rawValue & 0x04) | newValue.rawValue }
+        InputClock(rawValue: rawValue & 0b11) ?? .slow
     }
 }
 

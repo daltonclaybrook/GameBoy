@@ -2,7 +2,7 @@ typealias BitIndex = UInt8
 
 extension CPU {
     func prefixCB() -> Cycles {
-        let opcodeIndex = Int(mmu.read(address: pc &+ 1))
+        let opcodeIndex = Int(fetchByte())
         let opcode = CPU.cbOpcodes[opcodeIndex]
         return opcode.block(self)
     }
@@ -13,7 +13,6 @@ extension CPU {
         if carry != 0 { flags.formUnion(.fullCarry) }
         value = value << 1 | carry
         if value == 0 { flags.formUnion(.zero) }
-        pc &+= 2
         return 2
     }
 
@@ -30,7 +29,6 @@ extension CPU {
         if carry != 0 { flags.formUnion(.fullCarry) }
         value = value >> 1 | carry
         if value == 0 { flags.formUnion(.zero) }
-        pc &+= 2
         return 2
     }
 
@@ -47,7 +45,6 @@ extension CPU {
         if value & 0x80 != 0 { flags.formUnion(.fullCarry) }
         value = value << 1 | carry
         if value == 0 { flags.formUnion(.zero) }
-        pc &+= 2
         return 2
     }
 
@@ -64,7 +61,6 @@ extension CPU {
         if value & 0x01 != 0 { flags.formUnion(.fullCarry) }
         value = value >> 1 | carry
         if value == 0 { flags.formUnion(.zero) }
-        pc &+= 2
         return 2
     }
 
@@ -79,7 +75,6 @@ extension CPU {
         flags = value & 0x80 != 0 ? .fullCarry : []
         value <<= 1
         if value == 0 { flags.formUnion(.zero) }
-        pc &+= 2
         return 2
     }
 
@@ -94,7 +89,6 @@ extension CPU {
         flags = value & 0x01 != 0 ? .fullCarry : []
         value = (value & 0x80) | (value >> 1)
         if value == 0 { flags.formUnion(.zero) }
-        pc &+= 2
         return 2
     }
 
@@ -108,7 +102,6 @@ extension CPU {
     func swap(value: inout Byte) -> Cycles {
         value = (value << 4) | (value >> 4)
         flags = value == 0 ? .zero : []
-        pc &+= 2
         return 2
     }
 
@@ -123,7 +116,6 @@ extension CPU {
         flags = value & 0x01 != 0 ? .fullCarry : []
         value >>= 1
         if value == 0 { flags.formUnion(.zero) }
-        pc &+= 2
         return 2
     }
 
@@ -138,7 +130,6 @@ extension CPU {
         flags.formIntersection(.fullCarry) // preserve old carry flag
         flags.formUnion(.halfCarry)
         if (1 << index) & byte == 0 { flags.formUnion(.zero) }
-        pc &+= 2
         return 2
     }
 
@@ -150,7 +141,6 @@ extension CPU {
 
     func resetBit(index: BitIndex, of byte: inout Byte) -> Cycles {
         byte &= ~(1 << index)
-        pc &+= 2
         return 2
     }
 
@@ -163,7 +153,6 @@ extension CPU {
 
     func setBit(index: BitIndex, of byte: inout Byte) -> Cycles {
         byte |= 1 << index
-        pc &+= 2
         return 2
     }
 

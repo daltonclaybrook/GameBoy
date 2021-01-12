@@ -48,7 +48,7 @@ extension CPU {
     func fetchWord() -> Word {
         let low = fetchByte()
         let high = fetchByte()
-        return Word(high << 8) | Word(low)
+        return (Word(high) << 8) | Word(low)
     }
 
     /// Pushes the provided value onto the stack and decrements `SP`
@@ -67,7 +67,7 @@ extension CPU {
         sp &+= 1
         let high = mmu.read(address: sp)
         sp &+= 1
-        return Word(high << 8) | Word(low)
+        return (Word(high) << 8) | Word(low)
     }
 }
 

@@ -41,8 +41,8 @@ public final class GameBoy {
     public func load(cartridge: CartridgeType) {
         self.cartridge = cartridge
         mmu.load(cartridge: cartridge)
-//        mmu.mask = try! BootROM.dmgBootRom()
-        bootstrap()
+        mmu.mask = try! BootROM.dmgBootRom()
+//        bootstrap()
         clock.start(stepBlock: stepAndReturnCycles)
     }
 
@@ -68,6 +68,7 @@ public final class GameBoy {
             // we are effectively unloading the boot ROM and making 0x00...0xff
             // accessible on the cartridge ROM.
             mmu.mask = nil
+            bootstrap()
             #if DEBUG
 //            cpu.assertRegistersAreCorrectAfterBoot()
             #endif
@@ -79,7 +80,7 @@ public final class GameBoy {
         if !cpu.isHalted {
             let opcodeByte = cpu.fetchByte()
             let opcode = CPU.allOpcodes[Int(opcodeByte)]
-            //			print("\(opcode.mnemonic) PC: \(cpu.pc)")
+//			print("\(opcode.mnemonic) PC: \(cpu.pc)")
             cycles = opcode.block(cpu)
         } else {
             cycles = haltedCycleStep

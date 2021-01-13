@@ -50,6 +50,7 @@ public final class Timer: MemoryAddressable {
             modulo = byte
         case Registers.control:
             control = TimerControl(rawValue: byte)
+            resetCounter()
         default:
             assertionFailure("Failed to write address: \(address)")
         }
@@ -66,8 +67,7 @@ public final class Timer: MemoryAddressable {
         }
 
         guard control.isTimerStarted else {
-            counterIntermediate = 0
-            counter = 0
+            resetCounter()
             return
         }
 
@@ -84,5 +84,12 @@ public final class Timer: MemoryAddressable {
             counter = modulo
             delegate?.timer(self, didRequest: .timer)
         }
+    }
+
+    // MARK: - Helpers
+
+    private func resetCounter() {
+        counterIntermediate = 0
+        counter = 0
     }
 }

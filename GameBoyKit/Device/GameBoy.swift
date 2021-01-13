@@ -41,8 +41,8 @@ public final class GameBoy {
     public func load(cartridge: CartridgeType) {
         self.cartridge = cartridge
         mmu.load(cartridge: cartridge)
-        mmu.mask = try! BootROM.dmgBootRom()
-//        bootstrap()
+//        mmu.mask = try! BootROM.dmgBootRom()
+        bootstrap()
         clock.start(stepBlock: stepAndReturnCycles)
     }
 

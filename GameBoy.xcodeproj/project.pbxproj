@@ -45,6 +45,10 @@
 		757F391222B1C73900BBB570 /* tetris.gb in Resources */ = {isa = PBXBuildFile; fileRef = 757F38D222B1BAC800BBB570 /* tetris.gb */; };
 		75862E7425AD387E004AACA4 /* Numbers+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75862E7325AD387E004AACA4 /* Numbers+Additions.swift */; };
 		75862E7525AD387E004AACA4 /* Numbers+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75862E7325AD387E004AACA4 /* Numbers+Additions.swift */; };
+		7586A14325AD6B8A008DAD32 /* intr_timing.gb in Resources */ = {isa = PBXBuildFile; fileRef = 7586A14225AD6B8A008DAD32 /* intr_timing.gb */; };
+		7586A14425AD6B8A008DAD32 /* intr_timing.gb in Resources */ = {isa = PBXBuildFile; fileRef = 7586A14225AD6B8A008DAD32 /* intr_timing.gb */; };
+		7586A14A25ADF2E7008DAD32 /* tim00.gb in Resources */ = {isa = PBXBuildFile; fileRef = 7586A14925ADF2E7008DAD32 /* tim00.gb */; };
+		7586A14B25ADF2E7008DAD32 /* tim00.gb in Resources */ = {isa = PBXBuildFile; fileRef = 7586A14925ADF2E7008DAD32 /* tim00.gb */; };
 		758834DA22BB12DF00B80FD0 /* TimerControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 758834D922BB12DF00B80FD0 /* TimerControl.swift */; };
 		758834DB22BB17BB00B80FD0 /* TimerControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 758834D922BB12DF00B80FD0 /* TimerControl.swift */; };
 		758D864022B4892500C28791 /* MemoryMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 758D863F22B4892500C28791 /* MemoryMap.swift */; };
@@ -251,6 +255,8 @@
 		757F38EF22B1C66200BBB570 /* GameBoyKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GameBoyKit.h; sourceTree = "<group>"; };
 		757F38F022B1C66200BBB570 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		75862E7325AD387E004AACA4 /* Numbers+Additions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Numbers+Additions.swift"; sourceTree = "<group>"; };
+		7586A14225AD6B8A008DAD32 /* intr_timing.gb */ = {isa = PBXFileReference; lastKnownFileType = file; path = intr_timing.gb; sourceTree = "<group>"; };
+		7586A14925ADF2E7008DAD32 /* tim00.gb */ = {isa = PBXFileReference; lastKnownFileType = file; path = tim00.gb; sourceTree = "<group>"; };
 		758834D922BB12DF00B80FD0 /* TimerControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerControl.swift; sourceTree = "<group>"; };
 		758D863F22B4892500C28791 /* MemoryMap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoryMap.swift; sourceTree = "<group>"; };
 		758D864222B495BD00C28791 /* load.gb */ = {isa = PBXFileReference; lastKnownFileType = file; path = load.gb; sourceTree = "<group>"; };
@@ -660,6 +666,8 @@
 		75F61DA524FC203900FA095F /* mooneye_test_roms */ = {
 			isa = PBXGroup;
 			children = (
+				7586A14925ADF2E7008DAD32 /* tim00.gb */,
+				7586A14225AD6B8A008DAD32 /* intr_timing.gb */,
 				75F61DA624FC269700FA095F /* call_timing.gb */,
 				75F61DA824FC26A100FA095F /* call_timing2.gb */,
 			);
@@ -876,12 +884,14 @@
 				757F38E222B1BBA800BBB570 /* Main.storyboard in Resources */,
 				75CAF08722BD8C7C00E04FAC /* instr_timing.gb in Resources */,
 				75D0E54322B26E670049BF6D /* cpu_instrs.gb in Resources */,
+				7586A14B25ADF2E7008DAD32 /* tim00.gb in Resources */,
 				758D864422B495BD00C28791 /* load.gb in Resources */,
 				7590E7D025AB8FF0005E1280 /* pokemon-yellow.gbc in Resources */,
 				758D866A22B6E82900C28791 /* 05-op rp.gb in Resources */,
 				758D867422B6E82900C28791 /* 08-misc instrs.gb in Resources */,
 				7590E81825AC0BF7005E1280 /* dmg-acid2.gb in Resources */,
 				757F391222B1C73900BBB570 /* tetris.gb in Resources */,
+				7586A14425AD6B8A008DAD32 /* intr_timing.gb in Resources */,
 				758D866E22B6E82900C28791 /* 03-op sp,hl.gb in Resources */,
 				758D867222B6E82900C28791 /* 09-op r,r.gb in Resources */,
 				7590E80925ABF301005E1280 /* mario.gb in Resources */,
@@ -915,6 +925,7 @@
 				758D865522B6AEF200C28791 /* hello.gbc in Resources */,
 				758D865B22B6D86A00C28791 /* reimp.gbc in Resources */,
 				758D866F22B6E82900C28791 /* 02-interrupts.gb in Resources */,
+				7586A14325AD6B8A008DAD32 /* intr_timing.gb in Resources */,
 				75B3AD13229DEEA700A03C5A /* LaunchScreen.storyboard in Resources */,
 				758D866D22B6E82900C28791 /* 03-op sp,hl.gb in Resources */,
 				75CAF08622BD8C7C00E04FAC /* instr_timing.gb in Resources */,
@@ -931,6 +942,7 @@
 				75D0E54222B26E670049BF6D /* cpu_instrs.gb in Resources */,
 				7590E80825ABF301005E1280 /* mario.gb in Resources */,
 				758D867122B6E82900C28791 /* 09-op r,r.gb in Resources */,
+				7586A14A25ADF2E7008DAD32 /* tim00.gb in Resources */,
 				75B3AD0E229DEEA500A03C5A /* Main.storyboard in Resources */,
 				758D864322B495BD00C28791 /* load.gb in Resources */,
 				7590E81725AC0BF7005E1280 /* dmg-acid2.gb in Resources */,

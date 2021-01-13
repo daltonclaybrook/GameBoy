@@ -163,6 +163,8 @@
 		75D0E54322B26E670049BF6D /* cpu_instrs.gb in Resources */ = {isa = PBXBuildFile; fileRef = 75D0E54122B26E670049BF6D /* cpu_instrs.gb */; };
 		75D0E54B22B30C7A0049BF6D /* VRAM+Debug.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75D0E54A22B30C790049BF6D /* VRAM+Debug.swift */; };
 		75D0E54C22B32DFE0049BF6D /* VRAM+Debug.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75D0E54A22B30C790049BF6D /* VRAM+Debug.swift */; };
+		75E85C6F25AE8C9300DD9A9F /* CPUContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75E85C6E25AE8C9300DD9A9F /* CPUContext.swift */; };
+		75E85C7025AE8C9300DD9A9F /* CPUContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75E85C6E25AE8C9300DD9A9F /* CPUContext.swift */; };
 		75F61DA724FC269700FA095F /* call_timing.gb in Resources */ = {isa = PBXBuildFile; fileRef = 75F61DA624FC269700FA095F /* call_timing.gb */; };
 		75F61DA924FC26A100FA095F /* call_timing2.gb in Resources */ = {isa = PBXBuildFile; fileRef = 75F61DA824FC26A100FA095F /* call_timing2.gb */; };
 /* End PBXBuildFile section */
@@ -333,6 +335,7 @@
 		75D0E53E22B1C9CB0049BF6D /* HRAM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HRAM.swift; sourceTree = "<group>"; };
 		75D0E54122B26E670049BF6D /* cpu_instrs.gb */ = {isa = PBXFileReference; lastKnownFileType = file; path = cpu_instrs.gb; sourceTree = "<group>"; };
 		75D0E54A22B30C790049BF6D /* VRAM+Debug.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "VRAM+Debug.swift"; sourceTree = "<group>"; };
+		75E85C6E25AE8C9300DD9A9F /* CPUContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CPUContext.swift; sourceTree = "<group>"; };
 		75F61DA624FC269700FA095F /* call_timing.gb */ = {isa = PBXFileReference; lastKnownFileType = file; path = call_timing.gb; sourceTree = "<group>"; };
 		75F61DA824FC26A100FA095F /* call_timing2.gb */ = {isa = PBXFileReference; lastKnownFileType = file; path = call_timing2.gb; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -605,6 +608,7 @@
 				75BD98B322A0AD9600CFFB68 /* CPU+Instructions.swift */,
 				75BD98B722A2F44300CFFB68 /* CPU+Instructions+CB.swift */,
 				75BD98B122A0AA8500CFFB68 /* Opcode.swift */,
+				75E85C6E25AE8C9300DD9A9F /* CPUContext.swift */,
 			);
 			path = CPU;
 			sourceTree = "<group>";
@@ -1019,6 +1023,7 @@
 				75862E7525AD387E004AACA4 /* Numbers+Additions.swift in Sources */,
 				757F390722B1C69F00BBB570 /* VRAM.swift in Sources */,
 				757F390D22B1C69F00BBB570 /* Renderer.swift in Sources */,
+				75E85C7025AE8C9300DD9A9F /* CPUContext.swift in Sources */,
 				757F390922B1C69F00BBB570 /* LCDControl.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1085,6 +1090,7 @@
 				75862E7425AD387E004AACA4 /* Numbers+Additions.swift in Sources */,
 				75B3AD52229DFC1700A03C5A /* ROM.swift in Sources */,
 				75BD98B822A2F44300CFFB68 /* CPU+Instructions+CB.swift in Sources */,
+				75E85C6F25AE8C9300DD9A9F /* CPUContext.swift in Sources */,
 				75B3AD4E229DEFB400A03C5A /* MMU.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

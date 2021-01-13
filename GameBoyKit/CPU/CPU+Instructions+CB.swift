@@ -1,10 +1,10 @@
 typealias BitIndex = UInt8
 
 extension CPU {
-    func prefixCB() -> Cycles {
-        let opcodeIndex = Int(fetchByte())
+    func prefixCB(context: CPUContext) -> Cycles {
+        let opcodeIndex = Int(fetchByte(context: context))
         let opcode = CPU.cbOpcodes[opcodeIndex]
-        return opcode.block(self)
+        return opcode.block(self, context)
     }
 
     func rotateLeftCarry(value: inout Byte) -> Cycles {
@@ -16,10 +16,10 @@ extension CPU {
         return 2
     }
 
-    func rotateLeftCarry(address: Address) -> Cycles {
-        var value = mmu.read(address: address)
+    func rotateLeftCarry(address: Address, context: CPUContext) -> Cycles {
+        var value = context.readCycle(address: address)
         _ = rotateLeftCarry(value: &value)
-        mmu.write(byte: value, to: address)
+        context.writeCycle(byte: value, to: address)
         return 4
     }
 
@@ -32,10 +32,10 @@ extension CPU {
         return 2
     }
 
-    func rotateRightCarry(address: Address) -> Cycles {
-        var value = mmu.read(address: address)
+    func rotateRightCarry(address: Address, context: CPUContext) -> Cycles {
+        var value = context.readCycle(address: address)
         _ = rotateRightCarry(value: &value)
-        mmu.write(byte: value, to: address)
+        context.writeCycle(byte: value, to: address)
         return 4
     }
 
@@ -48,10 +48,10 @@ extension CPU {
         return 2
     }
 
-    func rotateLeft(address: Address) -> Cycles {
-        var value = mmu.read(address: address)
+    func rotateLeft(address: Address, context: CPUContext) -> Cycles {
+        var value = context.readCycle(address: address)
         _ = rotateLeft(value: &value)
-        mmu.write(byte: value, to: address)
+        context.writeCycle(byte: value, to: address)
         return 4
     }
 
@@ -64,10 +64,10 @@ extension CPU {
         return 2
     }
 
-    func rotateRight(address: Address) -> Cycles {
-        var value = mmu.read(address: address)
+    func rotateRight(address: Address, context: CPUContext) -> Cycles {
+        var value = context.readCycle(address: address)
         _ = rotateRight(value: &value)
-        mmu.write(byte: value, to: address)
+        context.writeCycle(byte: value, to: address)
         return 4
     }
 
@@ -78,10 +78,10 @@ extension CPU {
         return 2
     }
 
-    func shiftLeftArithmetic(address: Address) -> Cycles {
-        var value = mmu.read(address: address)
+    func shiftLeftArithmetic(address: Address, context: CPUContext) -> Cycles {
+        var value = context.readCycle(address: address)
         _ = shiftLeftArithmetic(value: &value)
-        mmu.write(byte: value, to: address)
+        context.writeCycle(byte: value, to: address)
         return 4
     }
 
@@ -92,10 +92,10 @@ extension CPU {
         return 2
     }
 
-    func shiftRightArithmetic(address: Address) -> Cycles {
-        var value = mmu.read(address: address)
+    func shiftRightArithmetic(address: Address, context: CPUContext) -> Cycles {
+        var value = context.readCycle(address: address)
         _ = shiftRightArithmetic(value: &value)
-        mmu.write(byte: value, to: address)
+        context.writeCycle(byte: value, to: address)
         return 4
     }
 
@@ -105,10 +105,10 @@ extension CPU {
         return 2
     }
 
-    func swap(address: Address) -> Cycles {
-        var value = mmu.read(address: address)
+    func swap(address: Address, context: CPUContext) -> Cycles {
+        var value = context.readCycle(address: address)
         _ = swap(value: &value)
-        mmu.write(byte: value, to: address)
+        context.writeCycle(byte: value, to: address)
         return 4
     }
 
@@ -119,10 +119,10 @@ extension CPU {
         return 2
     }
 
-    func shiftRightLogical(address: Address) -> Cycles {
-        var value = mmu.read(address: address)
+    func shiftRightLogical(address: Address, context: CPUContext) -> Cycles {
+        var value = context.readCycle(address: address)
         _ = shiftRightLogical(value: &value)
-        mmu.write(byte: value, to: address)
+        context.writeCycle(byte: value, to: address)
         return 4
     }
 
@@ -133,8 +133,8 @@ extension CPU {
         return 2
     }
 
-    func checkBit(index: BitIndex, of address: Address) -> Cycles {
-        let byte = mmu.read(address: address)
+    func checkBit(index: BitIndex, of address: Address, context: CPUContext) -> Cycles {
+        let byte = context.readCycle(address: address)
         _ = checkBit(index: index, of: byte)
         return 3
     }
@@ -144,10 +144,10 @@ extension CPU {
         return 2
     }
 
-    func resetBit(index: BitIndex, of address: Address) -> Cycles {
-        var byte = mmu.read(address: address)
+    func resetBit(index: BitIndex, of address: Address, context: CPUContext) -> Cycles {
+        var byte = context.readCycle(address: address)
         _ = resetBit(index: index, of: &byte)
-        mmu.write(byte: byte, to: address)
+        context.writeCycle(byte: byte, to: address)
         return 4
     }
 
@@ -156,10 +156,10 @@ extension CPU {
         return 2
     }
 
-    func setBit(index: BitIndex, of address: Address) -> Cycles {
-        var byte = mmu.read(address: address)
+    func setBit(index: BitIndex, of address: Address, context: CPUContext) -> Cycles {
+        var byte = context.readCycle(address: address)
         _ = setBit(index: index, of: &byte)
-        mmu.write(byte: byte, to: address)
+        context.writeCycle(byte: byte, to: address)
         return 4
     }
 }

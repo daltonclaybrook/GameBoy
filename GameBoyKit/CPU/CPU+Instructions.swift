@@ -2,64 +2,64 @@ extension CPU {
 
     // MARK: 8-bit Loads
 
-    func load(value: Byte, into address: Address) -> Cycles {
-        mmu.write(byte: value, to: address)
+    func load(value: Byte, into address: Address, context: CPUContext) -> Cycles {
+        context.writeCycle(byte: value, to: address)
         return 2
     }
 
-    func loadOperand(into register: inout Byte) -> Cycles {
-        register = fetchByte()
+    func loadOperand(into register: inout Byte, context: CPUContext) -> Cycles {
+        register = fetchByte(context: context)
         return 2
     }
 
-    func loadFromHRAMOperand(int register: inout Byte) -> Cycles {
-        let offset = fetchByte()
-        register = mmu.read(address: 0xff00 | Word(offset))
+    func loadFromHRAMOperand(int register: inout Byte, context: CPUContext) -> Cycles {
+        let offset = fetchByte(context: context)
+        register = context.readCycle(address: 0xff00 | Word(offset))
         return 3
     }
 
-    func loadFromHRAMAddress(withLoadByte lowByte: Byte, into register: inout Byte) -> Cycles {
-        register = mmu.read(address: 0xff00 | Word(lowByte))
+    func loadFromHRAMAddress(withLoadByte lowByte: Byte, into register: inout Byte, context: CPUContext) -> Cycles {
+        register = context.readCycle(address: 0xff00 | Word(lowByte))
         return 2
     }
 
-    func loadFromAddressOperand(into register: inout Byte) -> Cycles {
-        let address = fetchWord()
-        register = mmu.read(address: address)
+    func loadFromAddressOperand(into register: inout Byte, context: CPUContext) -> Cycles {
+        let address = fetchWord(context: context)
+        register = context.readCycle(address: address)
         return 4
     }
 
-    func load(address: Address, into register: inout Byte) -> Cycles {
-        register = mmu.read(address: address)
+    func load(address: Address, into register: inout Byte, context: CPUContext) -> Cycles {
+        register = context.readCycle(address: address)
         return 2
     }
 
-    func loadAddressAndIncrementHL(from register: Byte) -> Cycles {
-        mmu.write(byte: register, to: hl)
+    func loadAddressAndIncrementHL(from register: Byte, context: CPUContext) -> Cycles {
+        context.writeCycle(byte: register, to: hl)
         hl &+= 1
         return 2
     }
 
-    func loadFromAddressAndIncrementHL(to register: inout Byte) -> Cycles {
-        register = mmu.read(address: hl)
+    func loadFromAddressAndIncrementHL(to register: inout Byte, context: CPUContext) -> Cycles {
+        register = context.readCycle(address: hl)
         hl &+= 1
         return 2
     }
 
-    func loadAddressAndDecrementHL(from register: Byte) -> Cycles {
-        mmu.write(byte: register, to: hl)
+    func loadAddressAndDecrementHL(from register: Byte, context: CPUContext) -> Cycles {
+        context.writeCycle(byte: register, to: hl)
         hl &-= 1
         return 2
     }
 
-    func loadOperand(into address: Address) -> Cycles {
-        let value = fetchByte()
-        mmu.write(byte: value, to: address)
+    func loadOperand(into address: Address, context: CPUContext) -> Cycles {
+        let value = fetchByte(context: context)
+        context.writeCycle(byte: value, to: address)
         return 3
     }
 
-    func loadFromAddressAndDecrementHL(to register: inout Byte) -> Cycles {
-        register = mmu.read(address: hl)
+    func loadFromAddressAndDecrementHL(to register: inout Byte, context: CPUContext) -> Cycles {
+        register = context.readCycle(address: hl)
         hl &-= 1
         return 2
     }
@@ -69,33 +69,33 @@ extension CPU {
         return 1
     }
 
-    func loadHRAMOperand(from register: Byte) -> Cycles {
-        let lowByte = fetchByte()
-        mmu.write(byte: register, to: 0xff00 | Word(lowByte))
+    func loadHRAMOperand(from register: Byte, context: CPUContext) -> Cycles {
+        let lowByte = fetchByte(context: context)
+        context.writeCycle(byte: register, to: 0xff00 | Word(lowByte))
         return 3
     }
 
-    func loadHRAM(from register: Byte, intoAddressWithLowByte lowByte: Byte) -> Cycles {
-        mmu.write(byte: register, to: 0xff00 | Word(lowByte))
+    func loadHRAM(from register: Byte, intoAddressWithLowByte lowByte: Byte, context: CPUContext) -> Cycles {
+        context.writeCycle(byte: register, to: 0xff00 | Word(lowByte))
         return 2
     }
 
-    func loadIntoAddressOperand(byte: Byte) -> Cycles {
-        let address = fetchWord()
-        mmu.write(byte: byte, to: address)
+    func loadIntoAddressOperand(byte: Byte, context: CPUContext) -> Cycles {
+        let address = fetchWord(context: context)
+        context.writeCycle(byte: byte, to: address)
         return 4
     }
 
     // MARK: 16-bit Loads
 
-    func loadOperand(into pair: inout Word) -> Cycles {
-        pair = fetchWord()
+    func loadOperand(into pair: inout Word, context: CPUContext) -> Cycles {
+        pair = fetchWord(context: context)
         return 3
     }
 
-    func loadIntoAddressOperand(word: Word) -> Cycles {
-        let address = fetchWord()
-        mmu.write(word: word, to: address)
+    func loadIntoAddressOperand(word: Word, context: CPUContext) -> Cycles {
+        let address = fetchWord(context: context)
+        context.writeCycle(word: word, to: address)
         return 5
     }
 
@@ -104,21 +104,21 @@ extension CPU {
         return 2
     }
 
-    func pop(pair: inout Word) -> Cycles {
-        pair = popStack()
+    func pop(pair: inout Word, context: CPUContext) -> Cycles {
+        pair = popStack(context: context)
         return 3
     }
 
-    func push(pair: Word) -> Cycles {
-        pushStack(value: pair)
+    func push(pair: Word, context: CPUContext) -> Cycles {
+        pushStack(value: pair, context: context)
         return 4
     }
 
     /// Add signed operand to SP and store the result in HL
-    func addSignedOperandToStackPointer(storeIn pair: inout Word) -> Cycles {
+    func addSignedOperandToStackPointer(storeIn pair: inout Word, context: CPUContext) -> Cycles {
         flags = []
 
-        let toAdd = Int8(bitPattern: fetchByte())
+        let toAdd = Int8(bitPattern: fetchByte(context: context))
         pair = sp.wrappingAdd(toAdd)
 
         let sp32 = Int32(sp)
@@ -179,12 +179,12 @@ extension CPU {
         return 1
     }
 
-    func incrementValue(at address: Address) -> Cycles {
+    func incrementValue(at address: Address, context: CPUContext) -> Cycles {
         flags.formIntersection(.fullCarry) // preserve the carry flag
-        let value = mmu.read(address: address)
+        let value = context.readCycle(address: address)
         if value & 0x0f == 0x0f { flags.formUnion(.halfCarry) }
         if value == 0xff { flags.formUnion(.zero) }
-        mmu.write(byte: value &+ 1, to: address)
+        context.writeCycle(byte: value &+ 1, to: address)
         return 3
     }
 
@@ -197,13 +197,13 @@ extension CPU {
         return 1
     }
 
-    func decrementValue(at address: Address) -> Cycles {
+    func decrementValue(at address: Address, context: CPUContext) -> Cycles {
         flags.formIntersection(.fullCarry)
         flags.formUnion(.subtract)
-        let value = mmu.read(address: address)
+        let value = context.readCycle(address: address)
         if value & 0x0f == 0 { flags.formUnion(.halfCarry) }
         if value == 1 { flags.formUnion(.zero) }
-        mmu.write(byte: value &- 1, to: address)
+        context.writeCycle(byte: value &- 1, to: address)
         return 3
     }
 
@@ -234,8 +234,8 @@ extension CPU {
         return 1
     }
 
-    func add(address: Address, to register: inout Byte) -> Cycles {
-        let value = mmu.read(address: address)
+    func add(address: Address, to register: inout Byte, context: CPUContext) -> Cycles {
+        let value = context.readCycle(address: address)
         _ = add(value: value, to: &register)
         return 2
     }
@@ -253,20 +253,20 @@ extension CPU {
         return 1
     }
 
-    func addWithCarry(address: Address, to register: inout Byte) -> Cycles {
-        let value = mmu.read(address: address)
+    func addWithCarry(address: Address, to register: inout Byte, context: CPUContext) -> Cycles {
+        let value = context.readCycle(address: address)
         _ = addWithCarry(value: value, to: &register)
         return 2
     }
 
-    func addOperand(to register: inout Byte) -> Cycles {
-        let value = fetchByte()
+    func addOperand(to register: inout Byte, context: CPUContext) -> Cycles {
+        let value = fetchByte(context: context)
         _ = add(value: value, to: &register)
         return 2
     }
 
-    func addOperandWithCarry(to register: inout Byte) -> Cycles {
-        let value = fetchByte()
+    func addOperandWithCarry(to register: inout Byte, context: CPUContext) -> Cycles {
+        let value = fetchByte(context: context)
         _ = addWithCarry(value: value, to: &register)
         return 2
     }
@@ -280,8 +280,8 @@ extension CPU {
         return 1
     }
 
-    func subtract(address: Address, from register: inout Byte) -> Cycles {
-        let value = mmu.read(address: address)
+    func subtract(address: Address, from register: inout Byte, context: CPUContext) -> Cycles {
+        let value = context.readCycle(address: address)
         _ = subtract(value: value, from: &register)
         return 2
     }
@@ -299,20 +299,20 @@ extension CPU {
         return 1
     }
 
-    func subtractWithCarry(address: Address, from register: inout Byte) -> Cycles {
-        let value = mmu.read(address: address)
+    func subtractWithCarry(address: Address, from register: inout Byte, context: CPUContext) -> Cycles {
+        let value = context.readCycle(address: address)
         _ = subtractWithCarry(value: value, from: &register)
         return 2
     }
 
-    func subtractOperand(from register: inout Byte) -> Cycles {
-        let value = fetchByte()
+    func subtractOperand(from register: inout Byte, context: CPUContext) -> Cycles {
+        let value = fetchByte(context: context)
         _ = subtract(value: value, from: &register)
         return 2
     }
 
-    func subtractOperandWithCarry(from register: inout Byte) -> Cycles {
-        let value = fetchByte()
+    func subtractOperandWithCarry(from register: inout Byte, context: CPUContext) -> Cycles {
+        let value = fetchByte(context: context)
         _ = subtractWithCarry(value: value, from: &register)
         return 2
     }
@@ -323,15 +323,15 @@ extension CPU {
         return 1
     }
 
-    func and(address: Address, into register: inout Byte) -> Cycles {
-        let value = mmu.read(address: address)
+    func and(address: Address, into register: inout Byte, context: CPUContext) -> Cycles {
+        let value = context.readCycle(address: address)
         _ = and(value: value, into: &register)
         return 2
     }
 
-    func andOperand(into register: inout Byte) -> Cycles {
+    func andOperand(into register: inout Byte, context: CPUContext) -> Cycles {
         flags = .halfCarry
-        register &= fetchByte()
+        register &= fetchByte(context: context)
         if register == 0 { flags.formUnion(.zero) }
         return 2
     }
@@ -342,14 +342,14 @@ extension CPU {
         return 1
     }
 
-    func or(address: Address, into register: inout Byte) -> Cycles {
-        let value = mmu.read(address: address)
+    func or(address: Address, into register: inout Byte, context: CPUContext) -> Cycles {
+        let value = context.readCycle(address: address)
         _ = or(value: value, into: &register)
         return 2
     }
 
-    func orOperand(into register: inout Byte) -> Cycles {
-        let value = fetchByte()
+    func orOperand(into register: inout Byte, context: CPUContext) -> Cycles {
+        let value = fetchByte(context: context)
         register |= value
         flags = register == 0 ? .zero : []
         return 2
@@ -361,21 +361,21 @@ extension CPU {
         return 1
     }
 
-    func xor(address: Address, into register: inout Byte) -> Cycles {
-        let value = mmu.read(address: address)
+    func xor(address: Address, into register: inout Byte, context: CPUContext) -> Cycles {
+        let value = context.readCycle(address: address)
         _ = xor(value: value, into: &register)
         return 2
     }
 
-    func xorOperand(into register: inout Byte) -> Cycles {
-        let value = fetchByte()
+    func xorOperand(into register: inout Byte, context: CPUContext) -> Cycles {
+        let value = fetchByte(context: context)
         register ^= value
         flags = register == 0 ? .zero : []
         return 2
     }
 
-    func compare(address: Address, with register: Byte) -> Cycles {
-        let value = mmu.read(address: address)
+    func compare(address: Address, with register: Byte, context: CPUContext) -> Cycles {
+        let value = context.readCycle(address: address)
         _ = compare(value: value, with: register)
         return 2
     }
@@ -388,8 +388,8 @@ extension CPU {
         return 1
     }
 
-    func compareOperand(with register: Byte) -> Cycles {
-        let value = fetchByte()
+    func compareOperand(with register: Byte, context: CPUContext) -> Cycles {
+        let value = fetchByte(context: context)
         _ = compare(value: value, with: register)
         return 2
     }
@@ -414,9 +414,9 @@ extension CPU {
         return 2
     }
 
-    func addSignedOperandToStackPointer() -> Cycles {
+    func addSignedOperandToStackPointer(context: CPUContext) -> Cycles {
         flags = []
-        let toAdd = Int8(bitPattern: fetchByte())
+        let toAdd = Int8(bitPattern: fetchByte(context: context))
         let newSP = sp.wrappingAdd(toAdd)
 
         let toAdd32 = Int32(toAdd)
@@ -434,8 +434,8 @@ extension CPU {
 
     // MARK: Jumps/Calls
 
-    func jump() -> Cycles {
-        pc = fetchWord()
+    func jump(context: CPUContext) -> Cycles {
+        pc = fetchWord(context: context)
         return 4
     }
 
@@ -444,8 +444,8 @@ extension CPU {
         return 1
     }
 
-    func jump(condition: Bool) -> Cycles {
-        let address = fetchWord()
+    func jump(condition: Bool, context: CPUContext) -> Cycles {
+        let address = fetchWord(context: context)
         if condition {
             pc = address
             return 4
@@ -456,14 +456,14 @@ extension CPU {
 
     /// Jump relative to the current `pc` rather than to an absolute address.
     /// Slightly more efficient than a normal jump.
-    func jumpRelative() -> Cycles {
-        let distance = Int8(bitPattern: fetchByte())
+    func jumpRelative(context: CPUContext) -> Cycles {
+        let distance = Int8(bitPattern: fetchByte(context: context))
         pc = pc.wrappingAdd(distance)
         return 3
     }
 
-    func jumpRelative(condition: Bool) -> Cycles {
-        let distance = Int8(bitPattern: fetchByte())
+    func jumpRelative(condition: Bool, context: CPUContext) -> Cycles {
+        let distance = Int8(bitPattern: fetchByte(context: context))
         if condition {
             pc = pc.wrappingAdd(distance)
             return 3
@@ -472,36 +472,36 @@ extension CPU {
         }
     }
 
-    func `return`() -> Cycles {
-        pc = popStack()
+    func `return`(context: CPUContext) -> Cycles {
+        pc = popStack(context: context)
         return 4
     }
 
-    func `return`(condition: Bool) -> Cycles {
+    func `return`(condition: Bool, context: CPUContext) -> Cycles {
         if condition {
-            _ = `return`()
+            _ = `return`(context: context)
             return 5
         } else {
             return 2
         }
     }
 
-    func returnEnableInterrupts() -> Cycles {
+    func returnEnableInterrupts(context: CPUContext) -> Cycles {
         interuptsEnabled = true
-        return `return`()
+        return `return`(context: context)
     }
 
-    func call() -> Cycles {
-        let address = fetchWord()
-        pushStack(value: pc)
+    func call(context: CPUContext) -> Cycles {
+        let address = fetchWord(context: context)
+        pushStack(value: pc, context: context)
         pc = address
         return 6
     }
 
-    func call(condition: Bool) -> Cycles {
-        let address = fetchWord()
+    func call(condition: Bool, context: CPUContext) -> Cycles {
+        let address = fetchWord(context: context)
         if condition {
-            pushStack(value: pc)
+            pushStack(value: pc, context: context)
             pc = address
             return 6
         } else {
@@ -509,8 +509,8 @@ extension CPU {
         }
     }
 
-    func reset(vector: Byte) -> Cycles {
-        pushStack(value: pc)
+    func reset(vector: Byte, context: CPUContext) -> Cycles {
+        pushStack(value: pc, context: context)
         pc = Word(vector)
         return 4
     }

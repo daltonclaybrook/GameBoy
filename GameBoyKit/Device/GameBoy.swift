@@ -35,14 +35,14 @@ public final class GameBoy {
         ppu = PPU(renderer: renderer, io: io, vram: vram)
         mmu = MMU(vram: vram, wram: WRAM(), oam: oam, io: io, hram: HRAM())
         io.mmu = mmu
-        cpu = CPU(mmu: mmu)
+        cpu = CPU()
     }
 
     public func load(cartridge: CartridgeType) {
         self.cartridge = cartridge
         mmu.load(cartridge: cartridge)
-//        mmu.mask = try! BootROM.dmgBootRom()
-        bootstrap()
+        mmu.mask = try! BootROM.dmgBootRom()
+//        bootstrap()
         clock.start(stepBlock: stepAndReturnCycles)
     }
 
@@ -78,10 +78,10 @@ public final class GameBoy {
         ppu.step(clock: clock.cycles)
         let cycles: Cycles
         if !cpu.isHalted {
-            let opcodeByte = cpu.fetchByte()
+            let opcodeByte = cpu.fetchByte(context: self)
             let opcode = CPU.allOpcodes[Int(opcodeByte)]
 //			print("\(opcode.mnemonic) PC: \(cpu.pc)")
-            cycles = opcode.block(cpu)
+            cycles = opcode.block(cpu, self)
         } else {
             cycles = haltedCycleStep
         }
@@ -159,5 +159,19 @@ public final class GameBoy {
         mmu.write(word: cpu.pc, to: cpu.sp - 2)
         cpu.sp &-= 2
         cpu.pc = vector
+    }
+}
+
+extension GameBoy: CPUContext {
+    public func readCycle(address: Address) -> Byte {
+        mmu.read(address: address)
+    }
+
+    public func writeCycle(byte: Byte, to address: Address) {
+        mmu.write(byte: byte, to: address)
+    }
+
+    public func tickCycle() {
+        // no-op
     }
 }

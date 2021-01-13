@@ -29,43 +29,39 @@ public final class CPU {
     internal(set) public var interuptsEnabled = false
     internal(set) public var isHalted = false
 
-    let mmu: MemoryAddressable
-
-    init(mmu: MemoryAddressable) {
-        self.mmu = mmu
-    }
+    public init() {}
 }
 
 extension CPU {
     /// Fetches a byte from the address at `PC`, and increments `PC`
-    func fetchByte() -> Byte {
+    func fetchByte(context: CPUContext) -> Byte {
         let address = pc
         pc &+= 1
-        return mmu.read(address: address)
+        return context.readCycle(address: address)
     }
 
     /// Fetches a word from the address at `PC`, and increments `PC` by 2
-    func fetchWord() -> Word {
-        let low = fetchByte()
-        let high = fetchByte()
+    func fetchWord(context: CPUContext) -> Word {
+        let low = fetchByte(context: context)
+        let high = fetchByte(context: context)
         return (Word(high) << 8) | Word(low)
     }
 
     /// Pushes the provided value onto the stack and decrements `SP`
-    func pushStack(value: Word) {
+    func pushStack(value: Word, context: CPUContext) {
         let low = Byte(truncatingIfNeeded: value)
         let high = Byte(value >> 8)
         sp &-= 1
-        mmu.write(byte: high, to: sp)
+        context.writeCycle(byte: high, to: sp)
         sp &-= 1
-        mmu.write(byte: low, to: sp)
+        context.writeCycle(byte: low, to: sp)
     }
 
     /// Pops a value off of the stack and increments `SP`
-    func popStack() -> Word {
-        let low = mmu.read(address: sp)
+    func popStack(context: CPUContext) -> Word {
+        let low = context.readCycle(address: sp)
         sp &+= 1
-        let high = mmu.read(address: sp)
+        let high = context.readCycle(address: sp)
         sp &+= 1
         return (Word(high) << 8) | Word(low)
     }

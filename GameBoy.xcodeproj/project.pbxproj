@@ -115,6 +115,7 @@
 		7590E80925ABF301005E1280 /* mario.gb in Resources */ = {isa = PBXBuildFile; fileRef = 7590E80725ABF301005E1280 /* mario.gb */; };
 		7590E81725AC0BF7005E1280 /* dmg-acid2.gb in Resources */ = {isa = PBXBuildFile; fileRef = 7590E81625AC0BF7005E1280 /* dmg-acid2.gb */; };
 		7590E81825AC0BF7005E1280 /* dmg-acid2.gb in Resources */ = {isa = PBXBuildFile; fileRef = 7590E81625AC0BF7005E1280 /* dmg-acid2.gb */; };
+		75AC8EE025AFEFEF00C4A1DA /* DisplayLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75AC8EDE25AFEFEF00C4A1DA /* DisplayLink.swift */; };
 		75B3AD09229DEEA500A03C5A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B3AD08229DEEA500A03C5A /* AppDelegate.swift */; };
 		75B3AD0B229DEEA500A03C5A /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B3AD0A229DEEA500A03C5A /* ViewController.swift */; };
 		75B3AD0E229DEEA500A03C5A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 75B3AD0C229DEEA500A03C5A /* Main.storyboard */; };
@@ -292,6 +293,7 @@
 		7590E80025ABE353005E1280 /* CPU+Assertions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CPU+Assertions.swift"; sourceTree = "<group>"; };
 		7590E80725ABF301005E1280 /* mario.gb */ = {isa = PBXFileReference; lastKnownFileType = file; path = mario.gb; sourceTree = "<group>"; };
 		7590E81625AC0BF7005E1280 /* dmg-acid2.gb */ = {isa = PBXFileReference; lastKnownFileType = file; path = "dmg-acid2.gb"; sourceTree = "<group>"; };
+		75AC8EDE25AFEFEF00C4A1DA /* DisplayLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayLink.swift; sourceTree = "<group>"; };
 		75B3AD05229DEEA500A03C5A /* GameBoy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GameBoy.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		75B3AD08229DEEA500A03C5A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		75B3AD0A229DEEA500A03C5A /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -594,6 +596,7 @@
 				75B3AD59229EA57700A03C5A /* Clock.swift */,
 				758834D922BB12DF00B80FD0 /* TimerControl.swift */,
 				758D867F22B86B8800C28791 /* Timer.swift */,
+				75AC8EDE25AFEFEF00C4A1DA /* DisplayLink.swift */,
 			);
 			path = Timing;
 			sourceTree = "<group>";
@@ -1018,6 +1021,7 @@
 				757F390F22B1C69F00BBB570 /* Clock.swift in Sources */,
 				757F390222B1C69F00BBB570 /* IO.swift in Sources */,
 				75D0E53D22B1C8430049BF6D /* WRAM.swift in Sources */,
+				75AC8EE025AFEFEF00C4A1DA /* DisplayLink.swift in Sources */,
 				75B6D62A22BA6D67009E6E82 /* Timer.swift in Sources */,
 				757F38FF22B1C69F00BBB570 /* CPU+Opcodes+CB.swift in Sources */,
 				75862E7525AD387E004AACA4 /* Numbers+Additions.swift in Sources */,

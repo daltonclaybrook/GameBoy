@@ -6,6 +6,7 @@ class ViewController: NSViewController {
     private let mtkView = MTKView()
     private var gameBoy: GameBoy?
     private let viewSize = CGSize(width: 400, height: 360)
+    private let displayLink = try! DisplayLink()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -20,13 +21,32 @@ class ViewController: NSViewController {
         }
         mtkView.device = device
 
+        var countCalled = 0
+        var currentFPS: Double = 0
+        let lock = NSLock()
+
+        displayLink.setRenderCallback { fps in
+            lock.lock()
+            countCalled += 1
+            currentFPS = fps
+            lock.unlock()
+        }
+        displayLink.start()
+
+        Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
+            lock.lock()
+            print("times called: \(countCalled), fps: \(currentFPS)")
+            countCalled = 0
+            lock.unlock()
+        }
+
         do {
-            let renderer = try MetalRenderer(view: mtkView, device: device)
-            let gameBoy = GameBoy(renderer: renderer)
-            let cartridge = try makeCartridge()
-            self.title = cartridge.title
-            gameBoy.load(cartridge: cartridge)
-            self.gameBoy = gameBoy
+//            let renderer = try MetalRenderer(view: mtkView, device: device)
+//            let gameBoy = GameBoy(renderer: renderer)
+//            let cartridge = try makeCartridge()
+//            self.title = cartridge.title
+//            gameBoy.load(cartridge: cartridge)
+//            self.gameBoy = gameBoy
         } catch let error {
             return assertionFailure("error creating renderer: \(error)")
         }

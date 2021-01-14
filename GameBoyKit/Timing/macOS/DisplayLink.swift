@@ -1,13 +1,5 @@
 import CoreVideo
 
-public typealias FramesPerSecond = Double
-
-public protocol DisplayLinkType: AnyObject {
-    func start()
-    func stop()
-    func setRenderCallback(_ callback: @escaping (_ rate: FramesPerSecond) -> Void)
-}
-
 public final class DisplayLink: DisplayLinkType {
     enum Error: Swift.Error {
         case errorCreatingDisplayLink
@@ -16,7 +8,7 @@ public final class DisplayLink: DisplayLinkType {
 
     private let displayLink: CVDisplayLink
     private var notificationToken: NSObjectProtocol?
-    private var renderCallback: ((_ rate: FramesPerSecond) -> Void)?
+    private var renderCallback: ((FramesPerSecond) -> Void)?
 
     public init() throws {
         var outLink: CVDisplayLink?
@@ -60,7 +52,7 @@ public final class DisplayLink: DisplayLinkType {
         CVDisplayLinkStop(displayLink)
     }
 
-    public func setRenderCallback(_ callback: @escaping (_ rate: FramesPerSecond) -> Void) {
+    public func setRenderCallback(_ callback: @escaping (FramesPerSecond) -> Void) {
         self.renderCallback = callback
     }
 

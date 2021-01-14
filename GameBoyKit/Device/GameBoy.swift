@@ -95,6 +95,13 @@ public final class GameBoy {
         return cycles
     }
 
+    /// This function is called each time the system should advance by 1 M-cycle.
+    /// These cases include MMU reads/writes and when the CPU performs an internal
+    /// function necessitating a cycle, such as a jump.
+    private func emulateCycle() {
+        // to-do: implement me
+    }
+
     /// This is used to bypass the boot rom. All necessary CPU and memory
     /// registers are updated with values that would normally be set by
     /// the boot rom. Notably, the PC register is set to 0x100, which is

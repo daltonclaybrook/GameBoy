@@ -22,24 +22,35 @@ final class InstructionTimingTests: XCTestCase {
         testTimings(
             opcodes: CPU.cbOpcodes,
             setupBlocks: makeNopSetupBlocks(),
-            timings: InstructionTimingTests.cbPrefixedTimings
+            timings: InstructionTimingTests.cbPrefixedTimings,
+            opcodeFetchCycles: 2
         )
     }
 
     // MARK: - Private
 
-    private func testTimings(opcodes: [Opcode], setupBlocks: [(CPU) -> Void], timings: [Cycles], file: StaticString = #file, line: UInt = #line) {
-        let mmu = MockMMU()
+    /// Assert that the timings recorded by the cpu context match the expected timings
+    /// - Parameters:
+    ///   - opcodes: The set of opcodes to test
+    ///   - setupBlocks: Blocks used to configure whether conditional instructions evaluate
+    ///   to true or false
+    ///   - timings: Expected timings for each instruction
+    ///   - opcodeFetchCycles: The amount of cycles it takes to fetch the opcode for this set
+    ///   of instructions. The main instructions take 1 cycle to fetch. CB instructions take 2.
+    private func testTimings(opcodes: [Opcode], setupBlocks: [(CPU) -> Void], timings: [Cycles], opcodeFetchCycles: Cycles = 1, file: StaticString = #file, line: UInt = #line) {
         for opcodeIndex in (0...Int(Byte.max)) {
+            let context = MockCPUContext()
             let expectedTiming = timings[opcodeIndex]
             guard expectedTiming != 0 else { continue }
-            let subject = CPU(mmu: mmu)
+            let subject = CPU()
             setupBlocks[opcodeIndex](subject)
             let opcode = opcodes[opcodeIndex]
-            let cycles = opcode.block(subject)
+            let cycles = opcode.block(subject, context)
+            // Add cycles to account for fetching the opcode
+            let measuredCount = context.totalCycleCount + opcodeFetchCycles
 
             let hex = String(format: "%02X", opcodeIndex)
-            XCTAssertEqual(cycles, expectedTiming, "Opcode: 0x\(hex), expected time: \(expectedTiming), actual: \(cycles)", file: file, line: line)
+            XCTAssertEqual(measuredCount, expectedTiming, "Opcode: 0x\(hex), expected time: \(expectedTiming), actual: \(measuredCount), old cycle count: \(cycles)", file: file, line: line)
         }
     }
 

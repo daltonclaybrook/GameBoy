@@ -50,6 +50,10 @@ public final class Clock {
         }
     }
 
+    func tickCycle() {
+        cycles += 1
+    }
+
     // MARK: - Helpers
 
     private func displayLinkDidFire(framesPerSecond: FramesPerSecond) {

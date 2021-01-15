@@ -171,14 +171,25 @@ public final class GameBoy {
 
 extension GameBoy: CPUContext {
     public func readCycle(address: Address) -> Byte {
-        mmu.read(address: address)
+        // advance clock
+        clock.tickCycle()
+        // emulate internal components
+        // tick timer
+        return mmu.read(address: address)
     }
 
     public func writeCycle(byte: Byte, to address: Address) {
+        // advance clock
+        clock.tickCycle()
+        // emulate internal components
+        // tick timer
         mmu.write(byte: byte, to: address)
     }
 
     public func tickCycle() {
-        // no-op
+        // advance clock
+        clock.tickCycle()
+        // emulate internal components
+        // tick timer
     }
 }

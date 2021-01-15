@@ -27,8 +27,8 @@ public final class GameBoy {
     /// Advance by this amount each step if the CPU is halted
     private let haltedCycleStep: Cycles = 2
 
-    public init(renderer: Renderer) {
-        clock = Clock(queue: queue)
+    public init(renderer: Renderer, displayLink: DisplayLinkType) {
+        clock = Clock(queue: queue, displayLink: displayLink)
         timer = Timer()
         let oam = OAM()
         io = IO(palette: palette, oam: oam, timer: timer)

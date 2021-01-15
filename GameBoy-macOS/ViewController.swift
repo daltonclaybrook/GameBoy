@@ -21,32 +21,13 @@ class ViewController: NSViewController {
         }
         mtkView.device = device
 
-        var countCalled = 0
-        var currentFPS: Double = 0
-        let lock = NSLock()
-
-        displayLink.setRenderCallback { fps in
-            lock.lock()
-            countCalled += 1
-            currentFPS = fps
-            lock.unlock()
-        }
-        displayLink.start()
-
-        Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
-            lock.lock()
-            print("times called: \(countCalled), fps: \(currentFPS)")
-            countCalled = 0
-            lock.unlock()
-        }
-
         do {
-//            let renderer = try MetalRenderer(view: mtkView, device: device)
-//            let gameBoy = GameBoy(renderer: renderer)
-//            let cartridge = try makeCartridge()
-//            self.title = cartridge.title
-//            gameBoy.load(cartridge: cartridge)
-//            self.gameBoy = gameBoy
+            let renderer = try MetalRenderer(view: mtkView, device: device)
+            let gameBoy = GameBoy(renderer: renderer, displayLink: try! DisplayLink())
+            let cartridge = try makeCartridge()
+            self.title = cartridge.title
+            gameBoy.load(cartridge: cartridge)
+            self.gameBoy = gameBoy
         } catch let error {
             return assertionFailure("error creating renderer: \(error)")
         }
@@ -84,10 +65,10 @@ class ViewController: NSViewController {
 //        let fileURL = Bundle.main.url(forResource: "pokemon-yellow", withExtension: "gbc")!
 //        let fileURL = Bundle.main.url(forResource: "tetris", withExtension: "gb")!
 //        let fileURL = Bundle.main.url(forResource: "dmg-acid2", withExtension: "gb")!
-//        let fileURL = Bundle.main.url(forResource: "cpu_instrs", withExtension: "gb")!
+        let fileURL = Bundle.main.url(forResource: "cpu_instrs", withExtension: "gb")!
 //        let fileURL = Bundle.main.url(forResource: "call_timing", withExtension: "gb")!
 //        let fileURL = Bundle.main.url(forResource: "intr_timing", withExtension: "gb")!
-        let fileURL = Bundle.main.url(forResource: "tim00", withExtension: "gb")!
+//        let fileURL = Bundle.main.url(forResource: "tim00", withExtension: "gb")!
         let fileData = try Data(contentsOf: fileURL)
         let cartridge = CartridgeFactory.makeCartridge(romBytes: [Byte](fileData))
         return cartridge

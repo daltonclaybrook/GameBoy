@@ -43,6 +43,7 @@ public final class Timer: MemoryAddressable {
         switch address {
         case Registers.divider:
             divider = 0 // byte is ignored and divider is reset
+            resetCounter()
         case Registers.counter:
             counter = byte
         case Registers.modulo:
@@ -86,6 +87,6 @@ public final class Timer: MemoryAddressable {
 
     private func resetCounter() {
         counterIntermediate = 0
-        counter = 0
+        counter = modulo
     }
 }

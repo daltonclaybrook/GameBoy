@@ -41,8 +41,8 @@ public final class GameBoy {
     public func load(cartridge: CartridgeType) {
         self.cartridge = cartridge
         mmu.load(cartridge: cartridge)
-        mmu.mask = try! BootROM.dmgBootRom()
-//        bootstrap()
+//        mmu.mask = try! BootROM.dmgBootRom()
+        bootstrap()
         clock.start { [weak self] in
             self?.fetchAndExecuteNextInstruction()
         }
@@ -58,8 +58,10 @@ public final class GameBoy {
         }
 
         if !cpu.isHalted {
+            let pc = cpu.pc
             let opcodeByte = cpu.fetchByte(context: self)
             let opcode = CPU.allOpcodes[Int(opcodeByte)]
+//            print("PC: \(pc.hexString), \(opcode.mnemonic)")
             opcode.executeBlock(cpu, self)
         } else {
             (0..<haltedCycleStep).forEach { _ in tickCycle() }
@@ -124,26 +126,26 @@ public final class GameBoy {
         }
 
         guard cpu.interuptsEnabled else { return }
-        defer { io.interruptFlags = [] }
 
         if mmu.interruptEnable.contains(.vBlank) && io.interruptFlags.contains(.vBlank) {
-            callInterrupt(vector: InterruptVectors.vBlank)
+            callInterrupt(vector: InterruptVectors.vBlank, flag: .vBlank)
         } else if mmu.interruptEnable.contains(.lcdStat) && io.interruptFlags.contains(.lcdStat) {
-            callInterrupt(vector: InterruptVectors.lcdStat)
+            callInterrupt(vector: InterruptVectors.lcdStat, flag: .lcdStat)
         } else if mmu.interruptEnable.contains(.timer) && io.interruptFlags.contains(.timer) {
-            callInterrupt(vector: InterruptVectors.timer)
+            callInterrupt(vector: InterruptVectors.timer, flag: .timer)
         } else if mmu.interruptEnable.contains(.serial) && io.interruptFlags.contains(.serial) {
-            callInterrupt(vector: InterruptVectors.serial)
+            callInterrupt(vector: InterruptVectors.serial, flag: .serial)
         } else if mmu.interruptEnable.contains(.joypad) && io.interruptFlags.contains(.joypad) {
-            callInterrupt(vector: InterruptVectors.joypad)
+            callInterrupt(vector: InterruptVectors.joypad, flag: .joypad)
         }
     }
 
-    private func callInterrupt(vector: Address) {
+    private func callInterrupt(vector: Address, flag: Interrupts) {
+        io.interruptFlags.remove(flag)
         cpu.interuptsEnabled = false
         cpu.isHalted = false
-        mmu.write(word: cpu.pc, to: cpu.sp - 2)
-        cpu.sp &-= 2
+        tickCycle()
+        cpu.pushStack(value: cpu.pc, context: self)
         cpu.pc = vector
     }
 }

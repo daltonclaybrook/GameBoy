@@ -18,20 +18,18 @@ public final class Clock {
     let machineSpeed: CyclesPerSecond
 
     private let queue: DispatchQueue
-    private let displayLink: DisplayLinkType
-    private var emulateBlock: (() -> Void)?
-    private var lastCycleOverflow: Cycles = 0
+    private let cyclesPerFrame: Cycles
+    private let framesPerSecond: UInt64 = 60
+    private let frameDuration: TimeInterval
 
     /// - Parameters:
     ///   - queue: The dispatch queue where the clock will be advanced and the
     ///   block will be executed
     init(queue: DispatchQueue, displayLink: DisplayLinkType) {
         self.queue = queue
-        self.displayLink = displayLink
-        self.machineSpeed = timeSpeed / 4
-        displayLink.setRenderCallback { [weak self] framesPerSecond in
-            self?.displayLinkDidFire(framesPerSecond: framesPerSecond)
-        }
+        frameDuration = 1.0 / TimeInterval(framesPerSecond)
+        machineSpeed = timeSpeed / 4
+        cyclesPerFrame = machineSpeed / framesPerSecond
     }
 
     /// Begin emulation by starting the display link. The provided `emulateBlock`
@@ -41,16 +39,13 @@ public final class Clock {
     func start(emulateBlock: @escaping () -> Void) {
         queue.async {
             self.isRunning = true
-            self.emulateBlock = emulateBlock
-            self.displayLink.start()
+            self.emulateFrame(stepBlock: emulateBlock)
         }
     }
 
     func stop() {
         queue.async {
             self.isRunning = false
-            self.emulateBlock = nil
-            self.displayLink.stop()
         }
     }
 
@@ -58,18 +53,23 @@ public final class Clock {
         cycles += 1
     }
 
-    // MARK: - Helpers
+    private func emulateFrame(stepBlock: @escaping () -> Void) {
+        let startDate = Date()
 
-    private func displayLinkDidFire(framesPerSecond: FramesPerSecond) {
-        queue.async {
-            let currentFrameCycles = Cycles(Double(self.machineSpeed) / framesPerSecond)
-            let targetCycles = currentFrameCycles - self.lastCycleOverflow
+        let cyclesAtStart = cycles
+        while cycles - cyclesAtStart < cyclesPerFrame {
+            stepBlock()
+        }
+        let timeElapsed = -startDate.timeIntervalSinceNow
+        let delay = max(frameDuration - timeElapsed, 0)
+        scheduleAdvanceClockIfRunning(afterDelay: delay, stepBlock: stepBlock)
+    }
 
-            let startCycles = self.cycles
-            while self.cycles - startCycles < targetCycles {
-                self.emulateBlock?()
-            }
-            self.lastCycleOverflow = self.cycles - startCycles - targetCycles
+    private func scheduleAdvanceClockIfRunning(afterDelay: TimeInterval, stepBlock: @escaping () -> Void) {
+        precondition(afterDelay >= 0)
+        guard isRunning else { return }
+        queue.asyncAfter(deadline: .now() + afterDelay) { [weak self] in
+            self?.emulateFrame(stepBlock: stepBlock)
         }
     }
 }

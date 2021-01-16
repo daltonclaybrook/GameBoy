@@ -12,7 +12,8 @@ public final class PPU {
     private let mapWidthInTiles: UInt16 = 32 // map is 32x32 tiles
 
     private let vBlankDuration: Cycles
-    private var isDisplayEnabled = true
+    private let cyclesPerLine: Cycles
+    private var isDisplayEnabled = false
     private var cyclesRemaining: Cycles
 
     init(renderer: Renderer, io: IO, vram: VRAM) {
@@ -22,13 +23,14 @@ public final class PPU {
         self.cyclesRemaining = oamSearchDuration
         io.lcdStatus.mode = .searchingOAMRAM
 
-        let cyclesPerLine = oamSearchDuration + lcdTransferDuration + hBlankDuration
+        cyclesPerLine = oamSearchDuration + lcdTransferDuration + hBlankDuration
         vBlankDuration = cyclesPerLine * UInt64(vBlankLineCount)
         clearPixelBuffer()
     }
 
     func emulate() {
         guard io.lcdControl.displayEnabled else {
+            disableDisplayIfNecessary()
             return
         }
 
@@ -59,7 +61,7 @@ public final class PPU {
                 io.lcdYCoordinate = 0
                 changeMode(next: .searchingOAMRAM)
             } else {
-                cyclesRemaining = vBlankDuration
+                cyclesRemaining = getCycles(for: .verticalBlank)
             }
             checkAndHandleYCoincidence()
         }
@@ -67,7 +69,8 @@ public final class PPU {
 
     // MARK: - Helpers
 
-    private func disableDisplay() {
+    private func disableDisplayIfNecessary() {
+        guard isDisplayEnabled else { return }
         isDisplayEnabled = false
         clearPixelBuffer()
         io.lcdYCoordinate = 0
@@ -127,7 +130,8 @@ public final class PPU {
         case .horizontalBlank:
             return hBlankDuration
         case .verticalBlank:
-            return vBlankDuration
+            // This returns the cycles for one line of v-blank, not the full v-blank duration
+            return cyclesPerLine
         }
     }
 

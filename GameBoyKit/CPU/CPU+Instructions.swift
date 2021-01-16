@@ -29,18 +29,21 @@ extension CPU {
     }
 
     func loadAddressAndIncrementHL(from register: Byte, context: CPUContext) {
-        context.writeCycle(byte: register, to: hl)
+        let address = hl
         hl &+= 1
+        context.writeCycle(byte: register, to: address)
     }
 
     func loadFromAddressAndIncrementHL(to register: inout Byte, context: CPUContext) {
-        register = context.readCycle(address: hl)
+        let address = hl
         hl &+= 1
+        register = context.readCycle(address: address)
     }
 
     func loadAddressAndDecrementHL(from register: Byte, context: CPUContext) {
-        context.writeCycle(byte: register, to: hl)
+        let address = hl
         hl &-= 1
+        context.writeCycle(byte: register, to: address)
     }
 
     func loadOperand(into address: Address, context: CPUContext) {
@@ -49,8 +52,9 @@ extension CPU {
     }
 
     func loadFromAddressAndDecrementHL(to register: inout Byte, context: CPUContext) {
-        register = context.readCycle(address: hl)
+        let address = hl
         hl &-= 1
+        register = context.readCycle(address: address)
     }
 
     func load(value: Byte, into register: inout Byte) {

@@ -19,7 +19,7 @@ public final class Clock {
 
     private let queue: DispatchQueue
     private let displayLink: DisplayLinkType
-    private var stepBlock: (() -> Cycles)?
+    private var emulateBlock: (() -> Void)?
     private var lastCycleOverflow: Cycles = 0
 
     /// - Parameters:
@@ -34,10 +34,14 @@ public final class Clock {
         }
     }
 
-    func start(stepBlock: @escaping () -> Cycles) {
+    /// Begin emulation by starting the display link. The provided `emulateBlock`
+    /// will be called periodically on the dispatch queue provided in the initializer.
+    /// The Game Boy should read/evaluate a CPU instruction each time this block is
+    /// called, and should advance the other components of the system accordingly.
+    func start(emulateBlock: @escaping () -> Void) {
         queue.async {
             self.isRunning = true
-            self.stepBlock = stepBlock
+            self.emulateBlock = emulateBlock
             self.displayLink.start()
         }
     }
@@ -45,7 +49,7 @@ public final class Clock {
     func stop() {
         queue.async {
             self.isRunning = false
-            self.stepBlock = nil
+            self.emulateBlock = nil
             self.displayLink.stop()
         }
     }
@@ -61,13 +65,11 @@ public final class Clock {
             let currentFrameCycles = Cycles(Double(self.machineSpeed) / framesPerSecond)
             let targetCycles = currentFrameCycles - self.lastCycleOverflow
 
-            var cycles: Cycles = 0
-            while cycles < targetCycles {
-                let stepCycles = self.stepBlock?() ?? 0
-                cycles += stepCycles
-                self.cycles += stepCycles
+            let startCycles = self.cycles
+            while self.cycles - startCycles < targetCycles {
+                self.emulateBlock?()
             }
-            self.lastCycleOverflow = cycles - targetCycles
+            self.lastCycleOverflow = self.cycles - startCycles - targetCycles
         }
     }
 }

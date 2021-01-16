@@ -43,63 +43,42 @@ public final class GameBoy {
         mmu.load(cartridge: cartridge)
         mmu.mask = try! BootROM.dmgBootRom()
 //        bootstrap()
-        clock.start(stepBlock: stepAndReturnCycles)
+        clock.start { [weak self] in
+            self?.fetchAndExecuteNextInstruction()
+        }
     }
 
-    private func stepAndReturnCycles() -> Cycles {
-        //		if cpu.pc == 0xC2B9 { // interrupt test #2
-        //		if cpu.pc == 49856 {
-        //			print("test 1")
-        //		}
-        //		if cpu.pc == 49845 {
-        //			print("test 2")
-        //		}
-        //		if cpu.pc == 0xC2E4 { // interrupt test #3
-        //			print("test 3")
-        //		}
-        //		if cpu.pc == 50789 {
-        //			print("test 4")
-        //		}
-        //		if cpu.pc == 2004 {
-        //			print("break")
-        //		}
+    private func fetchAndExecuteNextInstruction() {
         if mmu.mask != nil && cpu.pc == 0x100 {
             // Boot ROM execution has finished. By setting the MMU mask to nil,
             // we are effectively unloading the boot ROM and making 0x00...0xff
             // accessible on the cartridge ROM.
             mmu.mask = nil
             bootstrap()
-            #if DEBUG
-//            cpu.assertRegistersAreCorrectAfterBoot()
-            #endif
         }
 
-        timer.step(clock: clock.cycles)
-        ppu.step(clock: clock.cycles)
-        let cycles: Cycles
         if !cpu.isHalted {
             let opcodeByte = cpu.fetchByte(context: self)
             let opcode = CPU.allOpcodes[Int(opcodeByte)]
-//			print("\(opcode.mnemonic) PC: \(cpu.pc)")
-            cycles = opcode.block(cpu, self)
+            opcode.executeBlock(cpu, self)
         } else {
-            cycles = haltedCycleStep
+            (0..<haltedCycleStep).forEach { _ in tickCycle() }
         }
 
+        // todo: evaluate when it's appropriate to do this. This should probably
+        // occur on a step of its own, not after a step has occurred.
         processInterruptIfNecessary()
-
-        let threshold = 3_000_000
-        if clock.cycles < threshold && clock.cycles + cycles >= threshold {
-            vram.writeDebugImagesAndDataToDisk(io: io)
-        }
-        return cycles
     }
 
     /// This function is called each time the system should advance by 1 M-cycle.
     /// These cases include MMU reads/writes and when the CPU performs an internal
     /// function necessitating a cycle, such as a jump.
     private func emulateCycle() {
-        // to-do: implement me
+        clock.tickCycle()
+        // emulate components
+        ppu.emulate()
+        // emulate timer
+        timer.step(clock: clock.cycles)
     }
 
     /// This is used to bypass the boot rom. All necessary CPU and memory
@@ -171,25 +150,16 @@ public final class GameBoy {
 
 extension GameBoy: CPUContext {
     public func readCycle(address: Address) -> Byte {
-        // advance clock
-        clock.tickCycle()
-        // emulate internal components
-        // tick timer
+        emulateCycle()
         return mmu.read(address: address)
     }
 
     public func writeCycle(byte: Byte, to address: Address) {
-        // advance clock
-        clock.tickCycle()
-        // emulate internal components
-        // tick timer
+        emulateCycle()
         mmu.write(byte: byte, to: address)
     }
 
     public func tickCycle() {
-        // advance clock
-        clock.tickCycle()
-        // emulate internal components
-        // tick timer
+        emulateCycle()
     }
 }

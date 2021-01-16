@@ -45,12 +45,12 @@ final class InstructionTimingTests: XCTestCase {
             let subject = CPU()
             setupBlocks[opcodeIndex](subject)
             let opcode = opcodes[opcodeIndex]
-            let cycles = opcode.block(subject, context)
+            opcode.executeBlock(subject, context)
             // Add cycles to account for fetching the opcode
             let measuredCount = context.totalCycleCount + opcodeFetchCycles
 
             let hex = String(format: "%02X", opcodeIndex)
-            XCTAssertEqual(measuredCount, expectedTiming, "Opcode: 0x\(hex), expected time: \(expectedTiming), actual: \(measuredCount), old cycle count: \(cycles)", file: file, line: line)
+            XCTAssertEqual(measuredCount, expectedTiming, "Opcode: 0x\(hex), expected time: \(expectedTiming), actual: \(measuredCount)", file: file, line: line)
         }
     }
 

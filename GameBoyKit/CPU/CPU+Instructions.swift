@@ -99,8 +99,9 @@ extension CPU {
         return 5
     }
 
-    func load(value: Word, into pair: inout Word) -> Cycles {
+    func load(value: Word, into pair: inout Word, context: CPUContext) -> Cycles {
         pair = value
+        context.tickCycle()
         return 2
     }
 
@@ -130,6 +131,7 @@ extension CPU {
         if sp32 & 0x0f + toAdd32 & 0x0f > 0x0f {
             flags.formUnion(.halfCarry)
         }
+        context.tickCycle()
         return 3
     }
 
@@ -396,21 +398,24 @@ extension CPU {
 
     // MARK: 16-bit Arithmetic/Logical
 
-    func increment(pair: inout Word) -> Cycles {
+    func increment(pair: inout Word, context: CPUContext) -> Cycles {
         pair &+= 1
+        context.tickCycle()
         return 2
     }
 
-    func decrement(pair: inout Word) -> Cycles {
+    func decrement(pair: inout Word, context: CPUContext) -> Cycles {
         pair &-= 1
+        context.tickCycle()
         return 2
     }
 
-    func add(value: Word, to pair: inout Word) -> Cycles {
+    func add(value: Word, to pair: inout Word, context: CPUContext) -> Cycles {
         flags.formIntersection(.zero) // preserve old zero flag
         if pair & 0x0fff + value & 0x0fff > 0x0fff { flags.formUnion(.halfCarry) }
         if pair > pair &+ value { flags.formUnion(.fullCarry) }
         pair &+= value
+        context.tickCycle()
         return 2
     }
 
@@ -429,6 +434,8 @@ extension CPU {
             flags.formUnion(.halfCarry)
         }
         sp = newSP
+        context.tickCycle()
+        context.tickCycle()
         return 4
     }
 
@@ -436,6 +443,7 @@ extension CPU {
 
     func jump(context: CPUContext) -> Cycles {
         pc = fetchWord(context: context)
+        context.tickCycle()
         return 4
     }
 
@@ -448,6 +456,7 @@ extension CPU {
         let address = fetchWord(context: context)
         if condition {
             pc = address
+            context.tickCycle()
             return 4
         } else {
             return 3
@@ -459,6 +468,7 @@ extension CPU {
     func jumpRelative(context: CPUContext) -> Cycles {
         let distance = Int8(bitPattern: fetchByte(context: context))
         pc = pc.wrappingAdd(distance)
+        context.tickCycle()
         return 3
     }
 
@@ -466,6 +476,7 @@ extension CPU {
         let distance = Int8(bitPattern: fetchByte(context: context))
         if condition {
             pc = pc.wrappingAdd(distance)
+            context.tickCycle()
             return 3
         } else {
             return 2
@@ -474,10 +485,12 @@ extension CPU {
 
     func `return`(context: CPUContext) -> Cycles {
         pc = popStack(context: context)
+        context.tickCycle()
         return 4
     }
 
     func `return`(condition: Bool, context: CPUContext) -> Cycles {
+        context.tickCycle()
         if condition {
             _ = `return`(context: context)
             return 5

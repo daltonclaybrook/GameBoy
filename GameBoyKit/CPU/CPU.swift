@@ -51,6 +51,7 @@ extension CPU {
     func pushStack(value: Word, context: CPUContext) {
         let low = Byte(truncatingIfNeeded: value)
         let high = Byte(value >> 8)
+        context.tickCycle()
         sp &-= 1
         context.writeCycle(byte: high, to: sp)
         sp &-= 1

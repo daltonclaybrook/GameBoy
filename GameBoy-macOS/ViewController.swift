@@ -6,6 +6,7 @@ class ViewController: NSViewController {
     private let mtkView = MTKView()
     private var gameBoy: GameBoy?
     private let viewSize = CGSize(width: 400, height: 360)
+    private let displayLink = try! DisplayLink()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -22,7 +23,7 @@ class ViewController: NSViewController {
 
         do {
             let renderer = try MetalRenderer(view: mtkView, device: device)
-            let gameBoy = GameBoy(renderer: renderer)
+            let gameBoy = GameBoy(renderer: renderer, displayLink: try! DisplayLink())
             let cartridge = try makeCartridge()
             self.title = cartridge.title
             gameBoy.load(cartridge: cartridge)
@@ -64,10 +65,10 @@ class ViewController: NSViewController {
 //        let fileURL = Bundle.main.url(forResource: "pokemon-yellow", withExtension: "gbc")!
 //        let fileURL = Bundle.main.url(forResource: "tetris", withExtension: "gb")!
 //        let fileURL = Bundle.main.url(forResource: "dmg-acid2", withExtension: "gb")!
-//        let fileURL = Bundle.main.url(forResource: "cpu_instrs", withExtension: "gb")!
+        let fileURL = Bundle.main.url(forResource: "cpu_instrs", withExtension: "gb")!
 //        let fileURL = Bundle.main.url(forResource: "call_timing", withExtension: "gb")!
 //        let fileURL = Bundle.main.url(forResource: "intr_timing", withExtension: "gb")!
-        let fileURL = Bundle.main.url(forResource: "tim00", withExtension: "gb")!
+//        let fileURL = Bundle.main.url(forResource: "tim00", withExtension: "gb")!
         let fileData = try Data(contentsOf: fileURL)
         let cartridge = CartridgeFactory.makeCartridge(romBytes: [Byte](fileData))
         return cartridge

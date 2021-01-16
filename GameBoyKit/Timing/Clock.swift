@@ -25,17 +25,21 @@ public final class Clock {
     /// - Parameters:
     ///   - queue: The dispatch queue where the clock will be advanced and the
     ///   block will be executed
-    init(queue: DispatchQueue) {
+    init(queue: DispatchQueue, displayLink: DisplayLinkType) {
         self.queue = queue
         frameDuration = 1.0 / TimeInterval(framesPerSecond)
         machineSpeed = timeSpeed / 4
         cyclesPerFrame = machineSpeed / framesPerSecond
     }
 
-    func start(stepBlock: @escaping () -> Cycles) {
+    /// Begin emulation by starting the display link. The provided `emulateBlock`
+    /// will be called periodically on the dispatch queue provided in the initializer.
+    /// The Game Boy should read/evaluate a CPU instruction each time this block is
+    /// called, and should advance the other components of the system accordingly.
+    func start(emulateBlock: @escaping () -> Void) {
         queue.async {
             self.isRunning = true
-            self.emulateFrame(stepBlock: stepBlock)
+            self.emulateFrame(stepBlock: emulateBlock)
         }
     }
 
@@ -45,21 +49,23 @@ public final class Clock {
         }
     }
 
-    private func emulateFrame(stepBlock: @escaping () -> Cycles) {
+    func tickCycle() {
+        cycles += 1
+    }
+
+    private func emulateFrame(stepBlock: @escaping () -> Void) {
         let startDate = Date()
 
-        var cycles: Cycles = 0
-        while cycles < cyclesPerFrame {
-            let stepCycles = stepBlock()
-            cycles += stepCycles
-            self.cycles += stepCycles
+        let cyclesAtStart = cycles
+        while cycles - cyclesAtStart < cyclesPerFrame {
+            stepBlock()
         }
         let timeElapsed = -startDate.timeIntervalSinceNow
         let delay = max(frameDuration - timeElapsed, 0)
         scheduleAdvanceClockIfRunning(afterDelay: delay, stepBlock: stepBlock)
     }
 
-    private func scheduleAdvanceClockIfRunning(afterDelay: TimeInterval, stepBlock: @escaping () -> Cycles) {
+    private func scheduleAdvanceClockIfRunning(afterDelay: TimeInterval, stepBlock: @escaping () -> Void) {
         precondition(afterDelay >= 0)
         guard isRunning else { return }
         queue.asyncAfter(deadline: .now() + afterDelay) { [weak self] in

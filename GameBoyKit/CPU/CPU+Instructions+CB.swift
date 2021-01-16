@@ -1,165 +1,143 @@
 typealias BitIndex = UInt8
 
 extension CPU {
-    func prefixCB() -> Cycles {
-        let opcodeIndex = Int(fetchByte())
+    func prefixCB(context: CPUContext) {
+        let opcodeIndex = Int(fetchByte(context: context))
         let opcode = CPU.cbOpcodes[opcodeIndex]
-        return opcode.block(self)
+        opcode.executeBlock(self, context)
     }
 
-    func rotateLeftCarry(value: inout Byte) -> Cycles {
+    func rotateLeftCarry(value: inout Byte) {
         flags = []
         let carry = value >> 7
         if carry != 0 { flags.formUnion(.fullCarry) }
         value = value << 1 | carry
         if value == 0 { flags.formUnion(.zero) }
-        return 2
     }
 
-    func rotateLeftCarry(address: Address) -> Cycles {
-        var value = mmu.read(address: address)
-        _ = rotateLeftCarry(value: &value)
-        mmu.write(byte: value, to: address)
-        return 4
+    func rotateLeftCarry(address: Address, context: CPUContext) {
+        var value = context.readCycle(address: address)
+        rotateLeftCarry(value: &value)
+        context.writeCycle(byte: value, to: address)
     }
 
-    func rotateRightCarry(value: inout Byte) -> Cycles {
+    func rotateRightCarry(value: inout Byte) {
         flags = []
         let carry = (value & 0x01) << 7
         if carry != 0 { flags.formUnion(.fullCarry) }
         value = value >> 1 | carry
         if value == 0 { flags.formUnion(.zero) }
-        return 2
     }
 
-    func rotateRightCarry(address: Address) -> Cycles {
-        var value = mmu.read(address: address)
-        _ = rotateRightCarry(value: &value)
-        mmu.write(byte: value, to: address)
-        return 4
+    func rotateRightCarry(address: Address, context: CPUContext) {
+        var value = context.readCycle(address: address)
+        rotateRightCarry(value: &value)
+        context.writeCycle(byte: value, to: address)
     }
 
-    func rotateLeft(value: inout Byte) -> Cycles {
+    func rotateLeft(value: inout Byte) {
         let carry: Byte = flags.contains(.fullCarry) ? 1 : 0
         flags = []
         if value & 0x80 != 0 { flags.formUnion(.fullCarry) }
         value = value << 1 | carry
         if value == 0 { flags.formUnion(.zero) }
-        return 2
     }
 
-    func rotateLeft(address: Address) -> Cycles {
-        var value = mmu.read(address: address)
-        _ = rotateLeft(value: &value)
-        mmu.write(byte: value, to: address)
-        return 4
+    func rotateLeft(address: Address, context: CPUContext) {
+        var value = context.readCycle(address: address)
+        rotateLeft(value: &value)
+        context.writeCycle(byte: value, to: address)
     }
 
-    func rotateRight(value: inout Byte) -> Cycles {
+    func rotateRight(value: inout Byte) {
         let carry: Byte = flags.contains(.fullCarry) ? 0x80 : 0
         flags = []
         if value & 0x01 != 0 { flags.formUnion(.fullCarry) }
         value = value >> 1 | carry
         if value == 0 { flags.formUnion(.zero) }
-        return 2
     }
 
-    func rotateRight(address: Address) -> Cycles {
-        var value = mmu.read(address: address)
-        _ = rotateRight(value: &value)
-        mmu.write(byte: value, to: address)
-        return 4
+    func rotateRight(address: Address, context: CPUContext) {
+        var value = context.readCycle(address: address)
+        rotateRight(value: &value)
+        context.writeCycle(byte: value, to: address)
     }
 
-    func shiftLeftArithmetic(value: inout Byte) -> Cycles {
+    func shiftLeftArithmetic(value: inout Byte) {
         flags = value & 0x80 != 0 ? .fullCarry : []
         value <<= 1
         if value == 0 { flags.formUnion(.zero) }
-        return 2
     }
 
-    func shiftLeftArithmetic(address: Address) -> Cycles {
-        var value = mmu.read(address: address)
-        _ = shiftLeftArithmetic(value: &value)
-        mmu.write(byte: value, to: address)
-        return 4
+    func shiftLeftArithmetic(address: Address, context: CPUContext) {
+        var value = context.readCycle(address: address)
+        shiftLeftArithmetic(value: &value)
+        context.writeCycle(byte: value, to: address)
     }
 
-    func shiftRightArithmetic(value: inout Byte) -> Cycles {
+    func shiftRightArithmetic(value: inout Byte) {
         flags = value & 0x01 != 0 ? .fullCarry : []
         value = (value & 0x80) | (value >> 1)
         if value == 0 { flags.formUnion(.zero) }
-        return 2
     }
 
-    func shiftRightArithmetic(address: Address) -> Cycles {
-        var value = mmu.read(address: address)
-        _ = shiftRightArithmetic(value: &value)
-        mmu.write(byte: value, to: address)
-        return 4
+    func shiftRightArithmetic(address: Address, context: CPUContext) {
+        var value = context.readCycle(address: address)
+        shiftRightArithmetic(value: &value)
+        context.writeCycle(byte: value, to: address)
     }
 
-    func swap(value: inout Byte) -> Cycles {
+    func swap(value: inout Byte) {
         value = (value << 4) | (value >> 4)
         flags = value == 0 ? .zero : []
-        return 2
     }
 
-    func swap(address: Address) -> Cycles {
-        var value = mmu.read(address: address)
-        _ = swap(value: &value)
-        mmu.write(byte: value, to: address)
-        return 4
+    func swap(address: Address, context: CPUContext) {
+        var value = context.readCycle(address: address)
+        swap(value: &value)
+        context.writeCycle(byte: value, to: address)
     }
 
-    func shiftRightLogical(value: inout Byte) -> Cycles {
+    func shiftRightLogical(value: inout Byte) {
         flags = value & 0x01 != 0 ? .fullCarry : []
         value >>= 1
         if value == 0 { flags.formUnion(.zero) }
-        return 2
     }
 
-    func shiftRightLogical(address: Address) -> Cycles {
-        var value = mmu.read(address: address)
-        _ = shiftRightLogical(value: &value)
-        mmu.write(byte: value, to: address)
-        return 4
+    func shiftRightLogical(address: Address, context: CPUContext) {
+        var value = context.readCycle(address: address)
+        shiftRightLogical(value: &value)
+        context.writeCycle(byte: value, to: address)
     }
 
-    func checkBit(index: BitIndex, of byte: Byte) -> Cycles {
+    func checkBit(index: BitIndex, of byte: Byte) {
         flags.formIntersection(.fullCarry) // preserve old carry flag
         flags.formUnion(.halfCarry)
         if (1 << index) & byte == 0 { flags.formUnion(.zero) }
-        return 2
     }
 
-    func checkBit(index: BitIndex, of address: Address) -> Cycles {
-        let byte = mmu.read(address: address)
-        _ = checkBit(index: index, of: byte)
-        return 3
+    func checkBit(index: BitIndex, of address: Address, context: CPUContext) {
+        let byte = context.readCycle(address: address)
+        checkBit(index: index, of: byte)
     }
 
-    func resetBit(index: BitIndex, of byte: inout Byte) -> Cycles {
+    func resetBit(index: BitIndex, of byte: inout Byte) {
         byte &= ~(1 << index)
-        return 2
     }
 
-    func resetBit(index: BitIndex, of address: Address) -> Cycles {
-        var byte = mmu.read(address: address)
-        _ = resetBit(index: index, of: &byte)
-        mmu.write(byte: byte, to: address)
-        return 4
+    func resetBit(index: BitIndex, of address: Address, context: CPUContext) {
+        var byte = context.readCycle(address: address)
+        resetBit(index: index, of: &byte)
+        context.writeCycle(byte: byte, to: address)
     }
 
-    func setBit(index: BitIndex, of byte: inout Byte) -> Cycles {
+    func setBit(index: BitIndex, of byte: inout Byte) {
         byte |= 1 << index
-        return 2
     }
 
-    func setBit(index: BitIndex, of address: Address) -> Cycles {
-        var byte = mmu.read(address: address)
-        _ = setBit(index: index, of: &byte)
-        mmu.write(byte: byte, to: address)
-        return 4
+    func setBit(index: BitIndex, of address: Address, context: CPUContext) {
+        var byte = context.readCycle(address: address)
+        setBit(index: index, of: &byte)
+        context.writeCycle(byte: byte, to: address)
     }
 }

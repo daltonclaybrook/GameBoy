@@ -78,7 +78,7 @@ public final class GameBoy {
         // emulate components
         ppu.emulate()
         // emulate timer
-        timer.step(clock: clock.cycles)
+        timer.emulate()
     }
 
     /// This is used to bypass the boot rom. All necessary CPU and memory

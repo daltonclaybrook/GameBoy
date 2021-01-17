@@ -175,6 +175,12 @@
 		75F61DA924FC26A100FA095F /* call_timing2.gb in Resources */ = {isa = PBXBuildFile; fileRef = 75F61DA824FC26A100FA095F /* call_timing2.gb */; };
 		75FDE24525B3AB9600C2A5FB /* div_timing.gb in Resources */ = {isa = PBXBuildFile; fileRef = 75FDE24425B3AB9600C2A5FB /* div_timing.gb */; };
 		75FDE24625B3AB9600C2A5FB /* div_timing.gb in Resources */ = {isa = PBXBuildFile; fileRef = 75FDE24425B3AB9600C2A5FB /* div_timing.gb */; };
+		75FDE24C25B4D7AF00C2A5FB /* oam_dma_start.gb in Resources */ = {isa = PBXBuildFile; fileRef = 75FDE24B25B4D7AE00C2A5FB /* oam_dma_start.gb */; };
+		75FDE24D25B4D7AF00C2A5FB /* oam_dma_start.gb in Resources */ = {isa = PBXBuildFile; fileRef = 75FDE24B25B4D7AE00C2A5FB /* oam_dma_start.gb */; };
+		75FDE25425B4D7BB00C2A5FB /* oam_dma_timing.gb in Resources */ = {isa = PBXBuildFile; fileRef = 75FDE25225B4D7BA00C2A5FB /* oam_dma_timing.gb */; };
+		75FDE25525B4D7BB00C2A5FB /* oam_dma_timing.gb in Resources */ = {isa = PBXBuildFile; fileRef = 75FDE25225B4D7BA00C2A5FB /* oam_dma_timing.gb */; };
+		75FDE25625B4D7BB00C2A5FB /* oam_dma_restart.gb in Resources */ = {isa = PBXBuildFile; fileRef = 75FDE25325B4D7BB00C2A5FB /* oam_dma_restart.gb */; };
+		75FDE25725B4D7BB00C2A5FB /* oam_dma_restart.gb in Resources */ = {isa = PBXBuildFile; fileRef = 75FDE25325B4D7BB00C2A5FB /* oam_dma_restart.gb */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -351,6 +357,9 @@
 		75F61DA624FC269700FA095F /* call_timing.gb */ = {isa = PBXFileReference; lastKnownFileType = file; path = call_timing.gb; sourceTree = "<group>"; };
 		75F61DA824FC26A100FA095F /* call_timing2.gb */ = {isa = PBXFileReference; lastKnownFileType = file; path = call_timing2.gb; sourceTree = "<group>"; };
 		75FDE24425B3AB9600C2A5FB /* div_timing.gb */ = {isa = PBXFileReference; lastKnownFileType = file; path = div_timing.gb; sourceTree = "<group>"; };
+		75FDE24B25B4D7AE00C2A5FB /* oam_dma_start.gb */ = {isa = PBXFileReference; lastKnownFileType = file; path = oam_dma_start.gb; sourceTree = "<group>"; };
+		75FDE25225B4D7BA00C2A5FB /* oam_dma_timing.gb */ = {isa = PBXFileReference; lastKnownFileType = file; path = oam_dma_timing.gb; sourceTree = "<group>"; };
+		75FDE25325B4D7BB00C2A5FB /* oam_dma_restart.gb */ = {isa = PBXFileReference; lastKnownFileType = file; path = oam_dma_restart.gb; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -703,6 +712,9 @@
 		75F61DA524FC203900FA095F /* mooneye_test_roms */ = {
 			isa = PBXGroup;
 			children = (
+				75FDE25325B4D7BB00C2A5FB /* oam_dma_restart.gb */,
+				75FDE25225B4D7BA00C2A5FB /* oam_dma_timing.gb */,
+				75FDE24B25B4D7AE00C2A5FB /* oam_dma_start.gb */,
 				75FDE24425B3AB9600C2A5FB /* div_timing.gb */,
 				7586A14925ADF2E7008DAD32 /* tim00.gb */,
 				7586A14225AD6B8A008DAD32 /* intr_timing.gb */,
@@ -909,6 +921,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				75FDE24D25B4D7AF00C2A5FB /* oam_dma_start.gb in Resources */,
 				758D867E22B6E82900C28791 /* 01-special.gb in Resources */,
 				75F61DA924FC26A100FA095F /* call_timing2.gb in Resources */,
 				75CAF08A22BD8CE700E04FAC /* interrupt_time.gb in Resources */,
@@ -920,6 +933,7 @@
 				758D866C22B6E82900C28791 /* 07-jr,jp,call,ret,rst.gb in Resources */,
 				758D867622B6E82900C28791 /* 04-op r,imm.gb in Resources */,
 				757F38E222B1BBA800BBB570 /* Main.storyboard in Resources */,
+				75FDE25525B4D7BB00C2A5FB /* oam_dma_timing.gb in Resources */,
 				75CAF08722BD8C7C00E04FAC /* instr_timing.gb in Resources */,
 				75D0E54322B26E670049BF6D /* cpu_instrs.gb in Resources */,
 				7586A14B25ADF2E7008DAD32 /* tim00.gb in Resources */,
@@ -934,6 +948,7 @@
 				758D866E22B6E82900C28791 /* 03-op sp,hl.gb in Resources */,
 				758D867222B6E82900C28791 /* 09-op r,r.gb in Resources */,
 				7590E80925ABF301005E1280 /* mario.gb in Resources */,
+				75FDE25725B4D7BB00C2A5FB /* oam_dma_restart.gb in Resources */,
 				75F61DA724FC269700FA095F /* call_timing.gb in Resources */,
 				758D867022B6E82900C28791 /* 02-interrupts.gb in Resources */,
 				758D867C22B6E82900C28791 /* 11-op a,(hl).gb in Resources */,
@@ -986,9 +1001,12 @@
 				75B3AD0E229DEEA500A03C5A /* Main.storyboard in Resources */,
 				758D864322B495BD00C28791 /* load.gb in Resources */,
 				7590E81725AC0BF7005E1280 /* dmg-acid2.gb in Resources */,
+				75FDE25425B4D7BB00C2A5FB /* oam_dma_timing.gb in Resources */,
 				758D867B22B6E82900C28791 /* 11-op a,(hl).gb in Resources */,
+				75FDE24C25B4D7AF00C2A5FB /* oam_dma_start.gb in Resources */,
 				758D867922B6E82900C28791 /* 06-ld r,r.gb in Resources */,
 				757F38D322B1BAC800BBB570 /* tetris.gb in Resources */,
+				75FDE25625B4D7BB00C2A5FB /* oam_dma_restart.gb in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

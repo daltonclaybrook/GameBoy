@@ -1,11 +1,20 @@
 public final class OAM: MemoryAddressable {
     public weak var mmu: MMU?
     private var oamBytes = [Byte](repeating: 0, count: MemoryMap.OAM.count)
-    private var cyclesSinceStartOfTransfer: Cycles = 0
+
     private let dmaTransferDuration: Cycles = 160
+    private let dmaTransferStartDelay: Cycles = 2
+
+    private var queuedDMATransfer = false
+    private var cyclesSinceStartOfTransfer: Cycles = 0
+    private var cyclesUntilTransferStarts: Cycles = 0
     private var transferSource: Byte = 0
 
     public func read(address: Address) -> Byte {
+        if let mmu = mmu, mmu.isDMATransferActive {
+            // OAM cannot be read while a DMA transfer is active
+            return 0xff
+        }
         return oamBytes.read(address: address, in: .OAM)
     }
 
@@ -14,24 +23,38 @@ public final class OAM: MemoryAddressable {
     }
 
     public func startDMATransfer(source: Byte) {
-        guard let mmu = mmu else {
-            fatalError("DMA transfer cannot start because no MMU is assigned")
-        }
         transferSource = source
         cyclesSinceStartOfTransfer = 0
-        mmu.isDMATransferActive = true
+        cyclesUntilTransferStarts = dmaTransferStartDelay
+        queuedDMATransfer = true
     }
 
     public func emulate() {
-        guard let mmu = mmu, mmu.isDMATransferActive else { return }
+        guard let mmu = mmu else { return }
+        if queuedDMATransfer {
+            emulateQueuedTransfer(mmu: mmu)
+        } else if mmu.isDMATransferActive {
+            emulateTransferActive(mmu: mmu)
+        }
+    }
+
+    // MARK: - Helpers
+
+    private func emulateQueuedTransfer(mmu: MMU) {
+        cyclesUntilTransferStarts -= 1
+        if cyclesUntilTransferStarts == 0 {
+            queuedDMATransfer = false
+            mmu.isDMATransferActive = true
+        }
+    }
+
+    private func emulateTransferActive(mmu: MMU) {
         cyclesSinceStartOfTransfer += 1
         if cyclesSinceStartOfTransfer >= dmaTransferDuration {
             performDMATransfer(mmu: mmu)
             mmu.isDMATransferActive = false
         }
     }
-
-    // MARK: - Helpers
 
     private func performDMATransfer(mmu: MMU) {
         let sourceAddress = Address(transferSource) * 0x100

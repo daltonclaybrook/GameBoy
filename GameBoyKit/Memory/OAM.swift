@@ -1,27 +1,44 @@
 public final class OAM: MemoryAddressable {
-    private var bytes = [Byte](repeating: 0, count: MemoryMap.OAM.count)
+    public weak var mmu: MMU?
+    private var oamBytes = [Byte](repeating: 0, count: MemoryMap.OAM.count)
+    private var cyclesSinceStartOfTransfer: Cycles = 0
+    private let dmaTransferDuration: Cycles = 160
+    private var transferSource: Byte = 0
 
     public func read(address: Address) -> Byte {
-        return bytes.read(address: address, in: .OAM)
+        return oamBytes.read(address: address, in: .OAM)
     }
 
     public func write(byte: Byte, to address: Address) {
-        bytes.write(byte: byte, to: address, in: .OAM)
+        oamBytes.write(byte: byte, to: address, in: .OAM)
     }
 
-    /// To-do: This transfer should take 160 microseconds to finish
-    /// rather than finishing in one operation like it does right
-    /// now. This class should have it's own `step` function that
-    /// does portions of the routine (or does it all at the end?)
-    /// based on how many cycles have elapsed. Also, during a DMA,
-    /// the CPU can only access HRAM, so all other reads/writes
-    /// be guarded.
-    public func dmaTransfer(byte: Byte, mmu: MMU) {
-        let source = Address(byte) * 0x100
-        for offset in (0..<UInt16(MemoryMap.OAM.count)) {
-            let from = source + offset
-            let to = MemoryMap.OAM.lowerBound + offset
-            mmu.write(byte: mmu.read(address: from), to: to)
+    public func startDMATransfer(source: Byte) {
+        guard let mmu = mmu else {
+            fatalError("DMA transfer cannot start because no MMU is assigned")
+        }
+        transferSource = source
+        cyclesSinceStartOfTransfer = 0
+        mmu.isDMATransferActive = true
+    }
+
+    public func emulate() {
+        guard let mmu = mmu, mmu.isDMATransferActive else { return }
+        cyclesSinceStartOfTransfer += 1
+        if cyclesSinceStartOfTransfer >= dmaTransferDuration {
+            performDMATransfer(mmu: mmu)
+            mmu.isDMATransferActive = false
+        }
+    }
+
+    // MARK: - Helpers
+
+    private func performDMATransfer(mmu: MMU) {
+        let sourceAddress = Address(transferSource) * 0x100
+        (0..<Address(MemoryMap.OAM.count)).forEach { offset in
+            let from = sourceAddress + offset
+            let byte = mmu.read(address: from, privileged: true)
+            oamBytes.write(byte: byte, to: offset)
         }
     }
 }

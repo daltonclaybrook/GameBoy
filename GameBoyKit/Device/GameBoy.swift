@@ -16,6 +16,7 @@ public final class GameBoy {
     private let clock: Clock
     private let timer: Timer
     private let cpu: CPU
+    private let oam: OAM
     private let ppu: PPU
     private let io: IO
     private let mmu: MMU
@@ -30,11 +31,11 @@ public final class GameBoy {
     public init(renderer: Renderer, displayLink: DisplayLinkType) {
         clock = Clock(queue: queue, displayLink: displayLink)
         timer = Timer()
-        let oam = OAM()
+        oam = OAM()
         io = IO(palette: palette, oam: oam, timer: timer)
         ppu = PPU(renderer: renderer, io: io, vram: vram)
         mmu = MMU(vram: vram, wram: WRAM(), oam: oam, io: io, hram: HRAM())
-        io.mmu = mmu
+        oam.mmu = mmu
         cpu = CPU()
     }
 
@@ -78,6 +79,7 @@ public final class GameBoy {
     private func emulateCycle() {
         clock.tickCycle()
         // emulate components
+        oam.emulate()
         ppu.emulate()
         // emulate timer
         timer.emulate()

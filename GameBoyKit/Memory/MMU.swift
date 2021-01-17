@@ -1,12 +1,13 @@
 public final class MMU: MemoryAddressable {
     public var mask: MemoryMasking?
+    public var isDMATransferActive = false
 
     private(set) var cartridge: CartridgeType?
-    let vram: VRAM
-    let wram: WRAM
-    let oam: OAM
-    let io: IO
-    let hram: HRAM
+    private let vram: VRAM
+    private let wram: WRAM
+    private let oam: OAM
+    private let io: IO
+    private let hram: HRAM
     /// Does this make sense as a plain field on the MMU,
     /// or should it have an object like the other regions?
     /// Maybe pull `interruptFlags` out of `IO` and create
@@ -26,8 +27,18 @@ public final class MMU: MemoryAddressable {
     }
 
     public func read(address: Address) -> Byte {
+        read(address: address, privileged: false)
+    }
+
+    /// Passing true for `privileged` allows reading from the MMU even during a DMA transfer
+    public func read(address: Address, privileged: Bool) -> Byte {
         if let mask = mask, mask.maskRange.contains(address) {
             return mask.read(address: address)
+        }
+
+        if isDMATransferActive && !privileged && (0x00..<MemoryMap.OAM.lowerBound).contains(address) {
+            // ROM and RAM is inaccessible by the CPU during DMA transfer
+            return 0xff
         }
 
         switch address {
@@ -59,8 +70,18 @@ public final class MMU: MemoryAddressable {
     }
 
     public func write(byte: Byte, to address: Address) {
+        write(byte: byte, to: address, privileged: false)
+    }
+
+    /// Passing true for `privileged` allows writing to the MMU even during a DMA transfer
+    public func write(byte: Byte, to address: Address, privileged: Bool) {
         if let mask = mask, mask.maskRange.contains(address) {
             mask.write(byte: byte, to: address)
+            return
+        }
+
+        if isDMATransferActive && !privileged && (0x00..<MemoryMap.OAM.lowerBound).contains(address) {
+            // ROM and RAM is inaccessible by the CPU during DMA transfer
             return
         }
 

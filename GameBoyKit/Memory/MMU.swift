@@ -55,8 +55,8 @@ public final class MMU: MemoryAddressable {
         case MemoryMap.OAM:
             return oam.read(address: address)
         case MemoryMap.unusable:
-            assertionFailure("attempting to access unusable memory")
-            return 0
+            // This region of memory is unusable
+            return 0xff
         case MemoryMap.IO:
             return io.read(address: address)
         case MemoryMap.HRAM:
@@ -65,7 +65,7 @@ public final class MMU: MemoryAddressable {
             return interruptEnable.rawValue
         default:
             assertionFailure("Failed to read address: \(address)")
-            return 0
+            return 0xff
         }
     }
 
@@ -99,7 +99,7 @@ public final class MMU: MemoryAddressable {
         case MemoryMap.OAM:
             oam.write(byte: byte, to: address)
         case MemoryMap.unusable:
-            assertionFailure("attempting to access unusable memory")
+            // This region of memory is unusable
             break
         case MemoryMap.IO:
             io.write(byte: byte, to: address)

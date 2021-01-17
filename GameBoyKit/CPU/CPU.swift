@@ -26,7 +26,8 @@ public final class CPU {
     internal(set) public var pc: UInt16 = 0
     internal(set) public var flags: Flags = []
 
-    internal(set) public var interuptsEnabled = false
+    internal var queuedEnableInterrupts = false
+    internal(set) public var interruptsEnabled = false
     internal(set) public var isHalted = false
 
     public init() {}

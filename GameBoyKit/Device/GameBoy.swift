@@ -58,6 +58,8 @@ public final class GameBoy {
             bootstrap()
         }
 
+        let previousQueuedEnableInterrupts = cpu.queuedEnableInterrupts
+
         if !cpu.isHalted {
             let pc = cpu.pc
             let opcodeByte = cpu.fetchByte(context: self)
@@ -66,6 +68,13 @@ public final class GameBoy {
             opcode.executeBlock(cpu, self)
         } else {
             (0..<haltedCycleStep).forEach { _ in tickCycle() }
+        }
+
+        // If enable interrupts was queued in the previous instruction and not dequeued in
+        // this instruction, interrupts will be enabled.
+        if previousQueuedEnableInterrupts && cpu.queuedEnableInterrupts {
+            cpu.queuedEnableInterrupts = false
+            cpu.interruptsEnabled = true
         }
 
         // todo: evaluate when it's appropriate to do this. This should probably
@@ -120,14 +129,14 @@ public final class GameBoy {
 
     private func processInterruptIfNecessary() {
         if cpu.isHalted &&
-            !cpu.interuptsEnabled &&
+            !cpu.interruptsEnabled &&
             !mmu.interruptEnable.intersection(io.interruptFlags).isEmpty {
             // disable halt without processing interrupts
             cpu.isHalted = false
             return
         }
 
-        guard cpu.interuptsEnabled else { return }
+        guard cpu.interruptsEnabled else { return }
 
         if mmu.interruptEnable.contains(.vBlank) && io.interruptFlags.contains(.vBlank) {
             callInterrupt(vector: InterruptVectors.vBlank, flag: .vBlank)
@@ -144,10 +153,11 @@ public final class GameBoy {
 
     private func callInterrupt(vector: Address, flag: Interrupts) {
         io.interruptFlags.remove(flag)
-        cpu.interuptsEnabled = false
+        cpu.interruptsEnabled = false
         cpu.isHalted = false
         tickCycle()
         cpu.pushStack(value: cpu.pc, context: self)
+        tickCycle()
         cpu.pc = vector
     }
 }

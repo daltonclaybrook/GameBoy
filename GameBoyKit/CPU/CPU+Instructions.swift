@@ -434,7 +434,7 @@ extension CPU {
     }
 
     func returnEnableInterrupts(context: CPUContext) {
-        interuptsEnabled = true
+        interruptsEnabled = true
         return `return`(context: context)
     }
 
@@ -502,11 +502,14 @@ extension CPU {
     }
 
     func disableInterrupts() {
-        interuptsEnabled = false
+        queuedEnableInterrupts = false
+        interruptsEnabled = false
     }
-    
+
+    /// The effect of enable interrupts (`EI`) instruction is delayed by one instruction,
+    /// so if `EI` is followed immediately by `DI`, no interrupt will be invoked.
     func enableInterrupts() {
-        interuptsEnabled = true
+        queuedEnableInterrupts = true
     }
 
     // MARK: Undefined

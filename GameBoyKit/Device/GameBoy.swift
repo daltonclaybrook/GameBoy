@@ -156,9 +156,9 @@ public final class GameBoy {
         cpu.interruptsEnabled = false
         cpu.isHalted = false
         tickCycle()
-        cpu.pushStack(value: cpu.pc, context: self)
         tickCycle()
-        cpu.pc = vector
+        cpu.pushStack(value: cpu.pc, context: self)
+        cpu.updatePC(address: vector, context: self)
     }
 }
 

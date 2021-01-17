@@ -309,7 +309,7 @@ extension CPU {
         Opcode(mnemonic: "AND n") { cpu, ctx in cpu.andOperand(into: &cpu.a, context: ctx) },
         Opcode(mnemonic: "RST 0x20") { cpu, ctx in cpu.reset(vector: 0x20, context: ctx) },
         Opcode(mnemonic: "ADD SP, e") { cpu, ctx in cpu.addSignedOperandToStackPointer(context: ctx) },
-        Opcode(mnemonic: "JP HL") { cpu, _ in cpu.jump(to: cpu.hl) },
+        Opcode(mnemonic: "JP HL") { cpu, ctx in cpu.jump(to: cpu.hl, context: ctx) },
         Opcode(mnemonic: "LD (nn), A") { cpu, ctx in cpu.loadIntoAddressOperand(byte: cpu.a, context: ctx) },
         Opcode(mnemonic: "UNDEFINED") { cpu, _ in cpu.undefined() },
         Opcode(mnemonic: "UNDEFINED") { cpu, _ in cpu.undefined() },

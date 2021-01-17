@@ -96,6 +96,7 @@ extension CPU {
     }
 
     func push(pair: Word, context: CPUContext) {
+        context.tickCycle()
         pushStack(value: pair, context: context)
     }
 
@@ -389,19 +390,18 @@ extension CPU {
     // MARK: Jumps/Calls
 
     func jump(context: CPUContext) {
-        pc = fetchWord(context: context)
-        context.tickCycle()
+        let address = fetchWord(context: context)
+        updatePC(address: address, context: context)
     }
 
-    func jump(to word: Word) {
-        pc = word
+    func jump(to word: Word, context: CPUContext) {
+        updatePC(address: word, context: context, tick: false)
     }
 
     func jump(condition: Bool, context: CPUContext) {
         let address = fetchWord(context: context)
         if condition {
-            pc = address
-            context.tickCycle()
+            updatePC(address: address, context: context)
         }
     }
 
@@ -409,21 +409,21 @@ extension CPU {
     /// Slightly more efficient than a normal jump.
     func jumpRelative(context: CPUContext) {
         let distance = Int8(bitPattern: fetchByte(context: context))
-        pc = pc.wrappingAdd(distance)
-        context.tickCycle()
+        let address = pc.wrappingAdd(distance)
+        updatePC(address: address, context: context)
     }
 
     func jumpRelative(condition: Bool, context: CPUContext) {
         let distance = Int8(bitPattern: fetchByte(context: context))
         if condition {
-            pc = pc.wrappingAdd(distance)
-            context.tickCycle()
+            let address = pc.wrappingAdd(distance)
+            updatePC(address: address, context: context)
         }
     }
 
     func `return`(context: CPUContext) {
-        pc = popStack(context: context)
-        context.tickCycle()
+        let address = popStack(context: context)
+        updatePC(address: address, context: context)
     }
 
     func `return`(condition: Bool, context: CPUContext) {
@@ -441,20 +441,20 @@ extension CPU {
     func call(context: CPUContext) {
         let address = fetchWord(context: context)
         pushStack(value: pc, context: context)
-        pc = address
+        updatePC(address: address, context: context)
     }
 
     func call(condition: Bool, context: CPUContext) {
         let address = fetchWord(context: context)
         if condition {
             pushStack(value: pc, context: context)
-            pc = address
+            updatePC(address: address, context: context)
         }
     }
 
     func reset(vector: Byte, context: CPUContext) {
         pushStack(value: pc, context: context)
-        pc = Word(vector)
+        updatePC(address: Address(vector), context: context)
     }
 
     // MARK: 8-bit Rotations/Shifts

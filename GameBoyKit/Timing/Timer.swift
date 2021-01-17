@@ -43,14 +43,14 @@ public final class Timer: MemoryAddressable {
         switch address {
         case Registers.divider:
             divider = 0 // byte is ignored and divider is reset
-            resetCounter()
+            reset()
         case Registers.counter:
             counter = byte
         case Registers.modulo:
             modulo = byte
         case Registers.control:
             control = TimerControl(rawValue: byte)
-            resetCounter()
+            reset()
         default:
             assertionFailure("Failed to write address: \(address)")
         }
@@ -63,10 +63,7 @@ public final class Timer: MemoryAddressable {
             dividerIntermediate = 0
         }
 
-        guard control.isTimerStarted else {
-            resetCounter()
-            return
-        }
+        guard control.isTimerStarted else { return }
 
         var counterDidOverflow = false
         counterIntermediate += 1
@@ -85,7 +82,8 @@ public final class Timer: MemoryAddressable {
 
     // MARK: - Helpers
 
-    private func resetCounter() {
+    private func reset() {
+        dividerIntermediate = 0
         counterIntermediate = 0
         counter = modulo
     }

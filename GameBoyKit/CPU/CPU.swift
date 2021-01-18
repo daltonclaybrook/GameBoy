@@ -52,6 +52,7 @@ extension CPU {
     func pushStack(value: Word, context: CPUContext) {
         let low = Byte(truncatingIfNeeded: value)
         let high = Byte(value >> 8)
+        context.tickCycle()
         sp &-= 1
         context.writeCycle(byte: high, to: sp)
         sp &-= 1
@@ -65,15 +66,6 @@ extension CPU {
         let high = context.readCycle(address: sp)
         sp &+= 1
         return (Word(high) << 8) | Word(low)
-    }
-
-    /// Update the program counter to a new address. This occurs as part of
-    /// a jump/call/etc. In most cases, this should advance one m-cycle.
-    func updatePC(address: Address, context: CPUContext, tick: Bool = true) {
-        pc = address
-        if tick {
-            context.tickCycle()
-        }
     }
 }
 

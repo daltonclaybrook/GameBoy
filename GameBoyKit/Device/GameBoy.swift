@@ -158,7 +158,7 @@ public final class GameBoy {
         tickCycle()
         tickCycle()
         cpu.pushStack(value: cpu.pc, context: self)
-        cpu.updatePC(address: vector, context: self)
+        cpu.pc = vector
     }
 }
 

@@ -4,6 +4,7 @@ public final class PPU {
     private let renderer: Renderer
     private let io: IO
     private let vram: VRAM
+    private let oam: OAM
 
     private let oamSearchDuration: Cycles = 20
     private let lcdTransferDuration: Cycles = 43
@@ -16,10 +17,11 @@ public final class PPU {
     private var isDisplayEnabled = false
     private var cyclesRemaining: Cycles
 
-    init(renderer: Renderer, io: IO, vram: VRAM) {
+    init(renderer: Renderer, io: IO, vram: VRAM, oam: OAM) {
         self.renderer = renderer
         self.io = io
         self.vram = vram
+        self.oam = oam
         self.cyclesRemaining = oamSearchDuration
         io.lcdStatus.mode = .searchingOAMRAM
 
@@ -75,7 +77,8 @@ public final class PPU {
         clearPixelBuffer()
         io.lcdYCoordinate = 0
         io.lcdStatus.mode = .searchingOAMRAM
-        vram.isLocked = false
+        oam.isBeingReadByPPU = false
+        vram.isBeingReadByPPU = false
     }
 
     private func clearPixelBuffer() {
@@ -91,13 +94,15 @@ public final class PPU {
 
         switch next {
         case .searchingOAMRAM:
+            oam.isBeingReadByPPU = true
             if io.lcdStatus.oamInterruptEnabled {
                 io.interruptFlags.formUnion(.lcdStat)
             }
         case .transferingToLCD:
-            break
+            vram.isBeingReadByPPU = true
         case .horizontalBlank:
-            break
+            oam.isBeingReadByPPU = false
+            vram.isBeingReadByPPU = false
         case .verticalBlank:
             io.interruptFlags.formUnion(.vBlank)
             if io.lcdStatus.vBlankInterruptEnabled {

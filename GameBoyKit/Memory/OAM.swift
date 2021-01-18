@@ -1,5 +1,6 @@
 public final class OAM: MemoryAddressable {
     public weak var mmu: MMU?
+    var isBeingReadByPPU = false
     private var oamBytes = [Byte](repeating: 0, count: MemoryMap.OAM.count)
 
     private let dmaTransferDuration: Cycles = 160
@@ -10,14 +11,29 @@ public final class OAM: MemoryAddressable {
     private var startedSource: Byte?
 
     public func read(address: Address) -> Byte {
-        if let mmu = mmu, mmu.isDMATransferActive {
-            // OAM cannot be read while a DMA transfer is active
+        read(address: address, privileged: false)
+    }
+
+    public func read(address: Address, privileged: Bool) -> Byte {
+        let mmu = getMMU()
+        guard privileged || (!isBeingReadByPPU && !mmu.isDMATransferActive) else {
+            // OAM cannot be read while being read by PPU or if a DMA transfer is active
             return 0xff
         }
+
         return oamBytes.read(address: address, in: .OAM)
     }
 
     public func write(byte: Byte, to address: Address) {
+        write(byte: byte, to: address, privileged: false)
+    }
+
+    public func write(byte: Byte, to address: Address, privileged: Bool) {
+        let mmu = getMMU()
+        guard privileged || (!isBeingReadByPPU && !mmu.isDMATransferActive) else {
+            // OAM cannot be written to while being read by PPU or if a DMA transfer is active
+            return
+        }
         oamBytes.write(byte: byte, to: address, in: .OAM)
     }
 
@@ -26,8 +42,7 @@ public final class OAM: MemoryAddressable {
     }
 
     public func emulate() {
-        guard let mmu = mmu else { return }
-
+        let mmu = getMMU()
         if let startedSource = startedSource {
             emulateTransferActive(mmu: mmu, source: startedSource)
         }
@@ -41,6 +56,13 @@ public final class OAM: MemoryAddressable {
     }
 
     // MARK: - Helpers
+
+    private func getMMU(file: StaticString = #file, line: UInt = #line) -> MMU {
+        guard let mmu = mmu else {
+            fatalError("MMU must not be nil", file: file, line: line)
+        }
+        return mmu
+    }
 
     private func emulateTransferActive(mmu: MMU, source: Byte) {
         cyclesSinceStartOfTransfer += 1

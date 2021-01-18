@@ -3,14 +3,14 @@ public final class VRAM: MemoryAddressable {
     /// The VRAM becomes locked when the PPU is drawing to the screen.
     /// At this time, reads/writes do not work and reads return a
     /// default value.
-    var isLocked: Bool = false
+    var isBeingReadByPPU: Bool = false
 
     public func read(address: Address) -> Byte {
         read(address: address, privileged: false)
     }
 
     public func write(byte: Byte, to address: Address) {
-        guard !isLocked else { return }
+        guard !isBeingReadByPPU else { return }
         bytes.write(byte: byte, to: address, in: .VRAM)
     }
 
@@ -18,7 +18,7 @@ public final class VRAM: MemoryAddressable {
     /// the screen. This will cause the `isLocked` setting to be
     /// ignored.
     public func read(address: Address, privileged: Bool) -> Byte {
-        guard !isLocked || privileged else { return 0xff } // is this the right default?
+        guard !isBeingReadByPPU || privileged else { return 0xff } // is this the right default?
         return bytes.read(address: address, in: .VRAM)
     }
 

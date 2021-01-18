@@ -33,7 +33,7 @@ public final class GameBoy {
         timer = Timer()
         oam = OAM()
         io = IO(palette: palette, oam: oam, timer: timer)
-        ppu = PPU(renderer: renderer, io: io, vram: vram)
+        ppu = PPU(renderer: renderer, io: io, vram: vram, oam: oam)
         mmu = MMU(vram: vram, wram: WRAM(), oam: oam, io: io, hram: HRAM())
         oam.mmu = mmu
         cpu = CPU()

@@ -78,7 +78,7 @@ extension VRAM {
             let tileAddress = 0x8000 + Address(tileNumber) * 0x10
 
             let pixelColorNumber = getPixelColorNumber(tileAddress: tileAddress, xOffsetInTile: UInt16(pixelXInTile), yOffsetInTile: UInt16(pixelYInTile))
-            let pixelColor = io.palette.monochromeBGColor(for: pixelColorNumber)
+            let pixelColor = io.palette.getMonochromeBGColor(for: pixelColorNumber)
 
             bytes.append(contentsOf: pixelColor.rgbaBytes)
         }

@@ -104,7 +104,7 @@ extension CPU {
         flags = []
 
         let toAdd = Int8(bitPattern: fetchByte(context: context))
-        pair = sp.wrappingAdd(toAdd)
+        pair = sp &+ toAdd
 
         let sp32 = Int32(sp)
         let toAdd32 = Int32(toAdd)
@@ -370,7 +370,7 @@ extension CPU {
     func addSignedOperandToStackPointer(context: CPUContext) {
         flags = []
         let toAdd = Int8(bitPattern: fetchByte(context: context))
-        let newSP = sp.wrappingAdd(toAdd)
+        let newSP = sp &+ toAdd
 
         let toAdd32 = Int32(toAdd)
         let sp32 = Int32(sp)
@@ -411,13 +411,13 @@ extension CPU {
     func jumpRelative(context: CPUContext) {
         let distance = Int8(bitPattern: fetchByte(context: context))
         context.tickCycle()
-        pc = pc.wrappingAdd(distance)
+        pc = pc &+ distance
     }
 
     func jumpRelative(condition: Bool, context: CPUContext) {
         let distance = Int8(bitPattern: fetchByte(context: context))
         if condition {
-            let address = pc.wrappingAdd(distance)
+            let address = pc &+ distance
             context.tickCycle()
             pc = address
         }
@@ -500,8 +500,9 @@ extension CPU {
     func stop() {
     }
 
-    func halt() {
+    func halt(context: CPUContext) {
         isHalted = true
+        context.tickCycle()
     }
 
     func disableInterrupts() {

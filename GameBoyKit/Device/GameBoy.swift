@@ -25,9 +25,6 @@ public final class GameBoy {
     private let palette = ColorPalette()
     private var cartridge: CartridgeType?
 
-    /// Advance by this amount each step if the CPU is halted
-    private let haltedCycleStep: Cycles = 2
-
     public init(renderer: Renderer, displayLink: DisplayLinkType) {
         clock = Clock(queue: queue, displayLink: displayLink)
         timer = Timer()
@@ -67,7 +64,7 @@ public final class GameBoy {
 //            print("PC: \(pc.hexString), \(opcode.mnemonic)")
             opcode.executeBlock(cpu, self)
         } else {
-            (0..<haltedCycleStep).forEach { _ in tickCycle() }
+            tickCycle()
         }
 
         // If enable interrupts was queued in the previous instruction and not dequeued in
@@ -99,38 +96,47 @@ public final class GameBoy {
     /// the boot rom. Notably, the PC register is set to 0x100, which is
     /// where the cartridge ROM takes over and begins execution.
     private func bootstrap() {
-        cpu.a = 0x01
-        cpu.flags = Flags(rawValue: 0xb0)
-        cpu.c = 0x13
-        cpu.e = 0xd8
+        cpu.af = 0x01b0
+        cpu.bc = 0x0013
+        cpu.de = 0x00d8
         cpu.sp = 0xfffe
         cpu.pc = 0x100
 
-        mmu.write(byte: 0x80, to: 0xff10)
-        mmu.write(byte: 0xbf, to: 0xff11)
-        mmu.write(byte: 0xf3, to: 0xff12)
-        mmu.write(byte: 0xbf, to: 0xff14)
-        mmu.write(byte: 0x3f, to: 0xff16)
-        mmu.write(byte: 0xbf, to: 0xff19)
-        mmu.write(byte: 0x7f, to: 0xff1a)
-        mmu.write(byte: 0xff, to: 0xff1b)
-        mmu.write(byte: 0x9f, to: 0xff1c)
-        mmu.write(byte: 0xbf, to: 0xff1e)
-        mmu.write(byte: 0xff, to: 0xff20)
-        mmu.write(byte: 0xbf, to: 0xff23)
-        mmu.write(byte: 0x77, to: 0xff24)
-        mmu.write(byte: 0xf3, to: 0xff25)
-        mmu.write(byte: 0xf1, to: 0xff26)
-        mmu.write(byte: 0x91, to: 0xff40)
-        mmu.write(byte: 0xfc, to: 0xff47)
-        mmu.write(byte: 0xff, to: 0xff48)
-        mmu.write(byte: 0xff, to: 0xff49)
+        mmu.write(byte: 0x00, to: 0xff05, privileged: true)
+        mmu.write(byte: 0x00, to: 0xff06, privileged: true)
+        mmu.write(byte: 0x00, to: 0xff07, privileged: true)
+        mmu.write(byte: 0x80, to: 0xff10, privileged: true)
+        mmu.write(byte: 0xbf, to: 0xff11, privileged: true)
+        mmu.write(byte: 0xf3, to: 0xff12, privileged: true)
+        mmu.write(byte: 0xbf, to: 0xff14, privileged: true)
+        mmu.write(byte: 0x3f, to: 0xff16, privileged: true)
+        mmu.write(byte: 0x00, to: 0xff17, privileged: true)
+        mmu.write(byte: 0xbf, to: 0xff19, privileged: true)
+        mmu.write(byte: 0x7f, to: 0xff1a, privileged: true)
+        mmu.write(byte: 0xff, to: 0xff1b, privileged: true)
+        mmu.write(byte: 0x9f, to: 0xff1c, privileged: true)
+        mmu.write(byte: 0xbf, to: 0xff1e, privileged: true)
+        mmu.write(byte: 0xff, to: 0xff20, privileged: true)
+        mmu.write(byte: 0x00, to: 0xff21, privileged: true)
+        mmu.write(byte: 0x00, to: 0xff22, privileged: true)
+        mmu.write(byte: 0xbf, to: 0xff23, privileged: true)
+        mmu.write(byte: 0x77, to: 0xff24, privileged: true)
+        mmu.write(byte: 0xf3, to: 0xff25, privileged: true)
+        mmu.write(byte: 0xf1, to: 0xff26, privileged: true)
+        mmu.write(byte: 0x91, to: 0xff40, privileged: true)
+        mmu.write(byte: 0x00, to: 0xff42, privileged: true)
+        mmu.write(byte: 0x00, to: 0xff43, privileged: true)
+        mmu.write(byte: 0x00, to: 0xff45, privileged: true)
+        mmu.write(byte: 0xfc, to: 0xff47, privileged: true)
+        mmu.write(byte: 0xff, to: 0xff48, privileged: true)
+        mmu.write(byte: 0xff, to: 0xff49, privileged: true)
+        mmu.write(byte: 0x00, to: 0xff4a, privileged: true)
+        mmu.write(byte: 0x00, to: 0xff4b, privileged: true)
+        mmu.write(byte: 0x00, to: 0xffff, privileged: true)
     }
 
     private func processInterruptIfNecessary() {
-        if cpu.isHalted &&
-            !cpu.interruptsEnabled &&
-            !mmu.interruptEnable.intersection(io.interruptFlags).isEmpty {
+        if cpu.isHalted && !cpu.interruptsEnabled {
             // disable halt without processing interrupts
             cpu.isHalted = false
             return

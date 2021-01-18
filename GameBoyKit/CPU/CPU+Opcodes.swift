@@ -166,7 +166,7 @@ extension CPU {
         Opcode(mnemonic: "LD (HL), E") { cpu, ctx in cpu.load(value: cpu.e, into: cpu.hl, context: ctx) },
         Opcode(mnemonic: "LD (HL), H") { cpu, ctx in cpu.load(value: cpu.h, into: cpu.hl, context: ctx) },
         Opcode(mnemonic: "LD (HL), L") { cpu, ctx in cpu.load(value: cpu.l, into: cpu.hl, context: ctx) },
-        Opcode(mnemonic: "HALT") { cpu, _ in cpu.halt() },
+        Opcode(mnemonic: "HALT") { cpu, ctx in cpu.halt(context: ctx) },
         Opcode(mnemonic: "LD (HL), A") { cpu, ctx in cpu.load(value: cpu.a, into: cpu.hl, context: ctx) },
         Opcode(mnemonic: "LD A, B") { cpu, _ in cpu.load(value: cpu.b, into: &cpu.a) },
         Opcode(mnemonic: "LD A, C") { cpu, _ in cpu.load(value: cpu.c, into: &cpu.a) },

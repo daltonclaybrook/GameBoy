@@ -1,5 +1,6 @@
 public final class IO: MemoryAddressable {
     public struct Registers {
+        public static let joypad: Address = 0xff00
         public static let timerRange: ClosedRange<Address> = 0xff04...0xff07
         public static let interruptFlags: Address = 0xff0f
         public static let lcdControl: Address = 0xff40
@@ -16,6 +17,7 @@ public final class IO: MemoryAddressable {
 
     public let palette: ColorPalette
 
+    public var joypad = Joypad()
     public var interruptFlags: Interrupts = []
     public var lcdControl = LCDControl(rawValue: 0)
     public var lcdStatus = LCDStatus(rawValue: 0)
@@ -29,12 +31,13 @@ public final class IO: MemoryAddressable {
         self.palette = palette
         self.oam = oam
         self.timer = timer
-        self.bytes[0] = 0xff // Register 0xff00 defaults to 0xff, not 0
         timer.delegate = self
     }
 
     public func read(address: Address) -> Byte {
         switch address {
+        case Registers.joypad:
+            return joypad.rawValue
         case Registers.timerRange:
             return timer.read(address: address)
         case Registers.interruptFlags:
@@ -45,7 +48,8 @@ public final class IO: MemoryAddressable {
             return lcdStatus.rawValue
         case Registers.lcdYCoordinate:
             return lcdYCoordinate
-        case palette.monochromeAddressRange, palette.colorAddressRange:
+//        case palette.monochromeAddressRange, palette.colorAddressRange:
+        case palette.monochromeAddressRange:
             return palette.read(address: address)
         default:
             return bytes.read(address: address, in: .IO)
@@ -54,8 +58,10 @@ public final class IO: MemoryAddressable {
 
     public func write(byte: Byte, to address: Address) {
         switch address {
+        case Registers.joypad:
+            joypad.update(byte: byte)
         case Registers.timerRange:
-            return timer.write(byte: byte, to: address)
+            timer.write(byte: byte, to: address)
         case Registers.interruptFlags:
             interruptFlags = Interrupts(rawValue: byte)
         case Registers.lcdControl:
@@ -64,7 +70,8 @@ public final class IO: MemoryAddressable {
             lcdStatus = LCDStatus(rawValue: byte)
         case Registers.lcdYCoordinate:
             lcdYCoordinate = byte
-        case palette.monochromeAddressRange, palette.colorAddressRange:
+//        case palette.monochromeAddressRange, palette.colorAddressRange:
+        case palette.monochromeAddressRange:
             palette.write(byte: byte, to: address)
         case Registers.dmaTransfer:
             oam.startDMATransfer(source: byte)

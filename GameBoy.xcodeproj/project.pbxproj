@@ -181,6 +181,8 @@
 		75FDE25525B4D7BB00C2A5FB /* oam_dma_timing.gb in Resources */ = {isa = PBXBuildFile; fileRef = 75FDE25225B4D7BA00C2A5FB /* oam_dma_timing.gb */; };
 		75FDE25625B4D7BB00C2A5FB /* oam_dma_restart.gb in Resources */ = {isa = PBXBuildFile; fileRef = 75FDE25325B4D7BB00C2A5FB /* oam_dma_restart.gb */; };
 		75FDE25725B4D7BB00C2A5FB /* oam_dma_restart.gb in Resources */ = {isa = PBXBuildFile; fileRef = 75FDE25325B4D7BB00C2A5FB /* oam_dma_restart.gb */; };
+		75FDE26125B625DB00C2A5FB /* Joypad.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75FDE26025B625DB00C2A5FB /* Joypad.swift */; };
+		75FDE26225B625DB00C2A5FB /* Joypad.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75FDE26025B625DB00C2A5FB /* Joypad.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -360,6 +362,7 @@
 		75FDE24B25B4D7AE00C2A5FB /* oam_dma_start.gb */ = {isa = PBXFileReference; lastKnownFileType = file; path = oam_dma_start.gb; sourceTree = "<group>"; };
 		75FDE25225B4D7BA00C2A5FB /* oam_dma_timing.gb */ = {isa = PBXFileReference; lastKnownFileType = file; path = oam_dma_timing.gb; sourceTree = "<group>"; };
 		75FDE25325B4D7BB00C2A5FB /* oam_dma_restart.gb */ = {isa = PBXFileReference; lastKnownFileType = file; path = oam_dma_restart.gb; sourceTree = "<group>"; };
+		75FDE26025B625DB00C2A5FB /* Joypad.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Joypad.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -601,6 +604,7 @@
 				758D863F22B4892500C28791 /* MemoryMap.swift */,
 				75B3AD4F229DFA7C00A03C5A /* MemoryProtocols.swift */,
 				75BD98B922A40D6000CFFB68 /* IO.swift */,
+				75FDE26025B625DB00C2A5FB /* Joypad.swift */,
 				75BD98C322A49C0C00CFFB68 /* OAM.swift */,
 				75B3AD4D229DEFB400A03C5A /* MMU.swift */,
 				7590E7EB25ABA935005E1280 /* MemoryMasking.swift */,
@@ -1080,6 +1084,7 @@
 				757F390722B1C69F00BBB570 /* VRAM.swift in Sources */,
 				757F390D22B1C69F00BBB570 /* Renderer.swift in Sources */,
 				75E85C7025AE8C9300DD9A9F /* CPUContext.swift in Sources */,
+				75FDE26225B625DB00C2A5FB /* Joypad.swift in Sources */,
 				757F390922B1C69F00BBB570 /* LCDControl.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1150,6 +1155,7 @@
 				75B3AD52229DFC1700A03C5A /* ROM.swift in Sources */,
 				75BD98B822A2F44300CFFB68 /* CPU+Instructions+CB.swift in Sources */,
 				75E85C6F25AE8C9300DD9A9F /* CPUContext.swift in Sources */,
+				75FDE26125B625DB00C2A5FB /* Joypad.swift in Sources */,
 				75B3AD4E229DEFB400A03C5A /* MMU.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -73,9 +73,9 @@ class ViewController: NSViewController {
 //        let fileURL = Bundle.main.url(forResource: "call_timing2", withExtension: "gb")!
 
         // Failing tests
-        let fileURL = Bundle.main.url(forResource: "call_timing", withExtension: "gb")!
+//        let fileURL = Bundle.main.url(forResource: "call_timing", withExtension: "gb")!
 //        let fileURL = Bundle.main.url(forResource: "dmg-acid2", withExtension: "gb")!
-//        let fileURL = Bundle.main.url(forResource: "tetris", withExtension: "gb")!
+        let fileURL = Bundle.main.url(forResource: "tetris", withExtension: "gb")!
 //        let fileURL = Bundle.main.url(forResource: "mario", withExtension: "gb")!
 //        let fileURL = Bundle.main.url(forResource: "pokemon-yellow", withExtension: "gbc")!
 

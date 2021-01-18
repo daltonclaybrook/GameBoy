@@ -79,14 +79,15 @@ extension LCDControl.TileData {
         }
     }
 
-    func tileAddress(atIndex: UInt8) -> Address {
+    func getTileAddress(atIndex: UInt8) -> Address {
         switch self {
         case .low:
-            return 0x8000 + Address(atIndex) * 0x10 // each tile is 0x10 bytes
-        case .high where atIndex < 128:
-            return 0x9000 + Address(atIndex) * 0x10
+            return 0x8000 + Address(atIndex) * 0x10 // each tile is 0x10 (16) bytes
         case .high:
-            return 0x8800 + Address(atIndex - 128) * 0x10
+            // Provided index is converted to a signed int so values over 127 result
+            // in a negative offset from 0x9000
+            let offset = Int8(bitPattern: atIndex)
+            return (0x9000 as Address) &+ offset
         }
     }
 }

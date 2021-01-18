@@ -7,11 +7,14 @@ extension FixedWidthInteger {
 }
 
 extension Word {
-    func wrappingAdd(_ value: Int8) -> Word {
-        if value >= 0 {
-            return self &+ Word(value)
+    /// Add a signed 8-bit integer to an unsigned 16-bit integer.
+    /// If the signed int is negative, the effect will be to subtract
+    /// its absolute value from the unsigned int.
+    static func &+ (lhs: Word, rhs: Int8) -> Word {
+        if rhs >= 0 {
+            return lhs &+ Word(rhs)
         } else {
-            return self &- Word(abs(value))
+            return lhs &- Word(abs(rhs))
         }
     }
 }

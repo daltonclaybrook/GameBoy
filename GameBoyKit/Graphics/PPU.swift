@@ -56,7 +56,7 @@ public final class PPU {
             } else {
                 changeMode(next: .verticalBlank)
             }
-            checkAndHandleYCoincidence()
+            checkAndHandleYCompare()
         case .verticalBlank:
             io.lcdYCoordinate += 1
             if io.lcdYCoordinate >= Constants.screenHeight + vBlankLineCount {
@@ -65,7 +65,7 @@ public final class PPU {
             } else {
                 cyclesRemaining = getCycles(for: .verticalBlank)
             }
-            checkAndHandleYCoincidence()
+            checkAndHandleYCompare()
         }
     }
 
@@ -114,14 +114,10 @@ public final class PPU {
         }
     }
 
-    private func checkAndHandleYCoincidence() {
-        if io.lcdYCoordinate == io.lcdYCoordinateCompare {
-            io.lcdStatus.lcdYCoincidence = true
-            if io.lcdStatus.lcdYCoincidenceInterruptEnabled {
-                io.interruptFlags.formUnion(.lcdStat)
-            }
-        } else {
-            io.lcdStatus.lcdYCoincidence = false
+    private func checkAndHandleYCompare() {
+        io.lcdStatus.lcdYCompare = io.lcdYCoordinate == io.lcdYCoordinateCompare
+        if io.lcdStatus.lcdYCompare && io.lcdStatus.lcdYCompareInterruptEnabled {
+            io.interruptFlags.formUnion(.lcdStat)
         }
     }
 
@@ -155,13 +151,13 @@ public final class PPU {
 
         var lineBuffer = [Byte]()
         lineBuffer.reserveCapacity(Constants.screenWidth * 4) // each pixel RGBA
-        (0..<Constants.screenWidth).forEach { screenX in
-            let mapX = UInt8(truncatingIfNeeded: screenX) &+ scrollX
+        (0..<UInt8(truncatingIfNeeded: Constants.screenWidth)).forEach { screenX in
+            let mapX = screenX &+ scrollX
             let pixelXInTile = mapX % 8 // tile width in pixels
             let tileAddress = getTileAddress(map: map, tiles: tiles, pixelX: UInt16(mapX), pixelY: UInt16(mapY))
             let pixelColorNumber = getPixelColorNumber(tileAddress: tileAddress, xOffsetInTile: UInt16(pixelXInTile), yOffsetInTile: UInt16(pixelYInTile))
 
-            let pixelColor = io.palette.monochromeBGColor(for: UInt8(truncatingIfNeeded: pixelColorNumber))
+            let pixelColor = io.palette.getMonochromeBGColor(for: UInt8(truncatingIfNeeded: pixelColorNumber))
             lineBuffer.append(contentsOf: pixelColor.rgbaBytes)
         }
 
@@ -175,15 +171,15 @@ public final class PPU {
         let tileOffsetInMap = tileY * mapWidthInTiles + tileX
         let tileAddressInMap = map.mapDataRange.lowerBound + tileOffsetInMap
         let tileIndex = vram.read(address: tileAddressInMap, privileged: true)
-        return tiles.tileAddress(atIndex: tileIndex)
+        return tiles.getTileAddress(atIndex: tileIndex)
     }
 
-    private func getPixelColorNumber(tileAddress: Address, xOffsetInTile: UInt16, yOffsetInTile: UInt16) -> UInt8 {
+    private func getPixelColorNumber(tileAddress: Address, xOffsetInTile: UInt16, yOffsetInTile: UInt16) -> ColorNumber {
         let pixelWord = vram.readWord(address: tileAddress + yOffsetInTile * 2, privileged: true)
         let lowShift = 7 - xOffsetInTile
         let highShift = lowShift + 8 - 1
         let pixelColorNumber = (pixelWord >> highShift) & 0x02 | (pixelWord >> lowShift) & 0x01
-        return UInt8(pixelColorNumber)
+        return ColorNumber(truncatingIfNeeded: pixelColorNumber)
     }
 }
 

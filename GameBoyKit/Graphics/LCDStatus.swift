@@ -14,7 +14,7 @@ public struct LCDStatus: RawRepresentable {
 }
 
 extension LCDStatus {
-    var lcdYCoincidence: Bool {
+    var lcdYCompare: Bool {
         get { return rawValue & 0x04 != 0 }
         set { rawValue = newValue ? rawValue | 0x04 : rawValue & 0xfb }
     }
@@ -34,7 +34,7 @@ extension LCDStatus {
         set { rawValue = newValue ? rawValue | 0x20 : rawValue & 0xdf }
     }
 
-    var lcdYCoincidenceInterruptEnabled: Bool {
+    var lcdYCompareInterruptEnabled: Bool {
         get { return rawValue & 0x40 != 0 }
         set { rawValue = newValue ? rawValue | 0x40 : rawValue & 0xbf }
     }

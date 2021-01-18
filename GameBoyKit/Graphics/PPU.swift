@@ -16,6 +16,7 @@ public final class PPU {
     private let cyclesPerLine: Cycles
     private var isDisplayEnabled = false
     private var cyclesRemaining: Cycles
+    private var pixelBuffer = [Byte](repeating: .max, count: Constants.screenWidth * Constants.screenHeight * 4)
 
     init(renderer: Renderer, io: IO, vram: VRAM, oam: OAM) {
         self.renderer = renderer
@@ -82,10 +83,8 @@ public final class PPU {
     }
 
     private func clearPixelBuffer() {
-        let pixelBytesCount = Constants.screenHeight * Constants.screenWidth * 4 // 4 bytes per pixel
-        let region = PixelRegion(x: 0, y: 0, width: Constants.screenWidth, height: Constants.screenHeight)
-        let pixelData = [Byte](repeating: .max, count: pixelBytesCount)
-        renderer.render(pixelData: pixelData, at: region)
+        pixelBuffer = [Byte](repeating: .max, count: pixelBuffer.count)
+        renderPixelBuffer()
     }
 
     private func changeMode(next: LCDStatus.Mode) {
@@ -104,6 +103,7 @@ public final class PPU {
             oam.isBeingReadByPPU = false
             vram.isBeingReadByPPU = false
         case .verticalBlank:
+            renderPixelBuffer()
             io.interruptFlags.formUnion(.vBlank)
             if io.lcdStatus.vBlankInterruptEnabled {
                 io.interruptFlags.formUnion(.lcdStat)
@@ -161,8 +161,7 @@ public final class PPU {
             lineBuffer.append(contentsOf: pixelColor.rgbaBytes)
         }
 
-        let region = PixelRegion(x: 0, y: Int(io.lcdYCoordinate), width: Constants.screenWidth, height: 1)
-        renderer.render(pixelData: lineBuffer, at: region)
+        replaceDataInPixelBuffer(forLine: Int(io.lcdYCoordinate), with: lineBuffer)
     }
 
     private func getTileAddress(map: LCDControl.TileMapDisplay, tiles: LCDControl.TileData, pixelX: UInt16, pixelY: UInt16) -> Address {
@@ -180,6 +179,17 @@ public final class PPU {
         let highShift = lowShift + 8 - 1
         let pixelColorNumber = (pixelWord >> highShift) & 0x02 | (pixelWord >> lowShift) & 0x01
         return ColorNumber(truncatingIfNeeded: pixelColorNumber)
+    }
+
+    private func replaceDataInPixelBuffer(forLine line: Int, with bytes: [Byte]) {
+        let offset = line * Constants.screenWidth * 4 // 4 bytes per pixel
+        let range = (offset..<(offset + bytes.count))
+        pixelBuffer.replaceSubrange(range, with: bytes)
+    }
+
+    private func renderPixelBuffer() {
+        let region = PixelRegion(x: 0, y: 0, width: Constants.screenWidth, height: Constants.screenHeight)
+        renderer.render(pixelData: pixelBuffer, at: region)
     }
 }
 

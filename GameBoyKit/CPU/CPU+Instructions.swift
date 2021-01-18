@@ -440,15 +440,17 @@ extension CPU {
 
     func call(context: CPUContext) {
         let address = fetchWord(context: context)
+        context.tickCycle()
         pushStack(value: pc, context: context)
-        updatePC(address: address, context: context)
+        updatePC(address: address, context: context, tick: false)
     }
 
     func call(condition: Bool, context: CPUContext) {
         let address = fetchWord(context: context)
         if condition {
+            context.tickCycle()
             pushStack(value: pc, context: context)
-            updatePC(address: address, context: context)
+            updatePC(address: address, context: context, tick: false)
         }
     }
 

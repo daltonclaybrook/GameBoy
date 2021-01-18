@@ -86,8 +86,8 @@ extension LCDControl.TileData {
         case .high:
             // Provided index is converted to a signed int so values over 127 result
             // in a negative offset from 0x9000
-            let offset = Int8(bitPattern: atIndex)
-            return (0x9000 as Address) &+ offset
+            let offset = Int16(Int8(bitPattern: atIndex)) * 0x10
+            return (0x9000 as Address).signedAdd(value: offset)
         }
     }
 }

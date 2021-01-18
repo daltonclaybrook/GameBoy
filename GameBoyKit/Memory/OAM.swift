@@ -3,12 +3,11 @@ public final class OAM: MemoryAddressable {
     private var oamBytes = [Byte](repeating: 0, count: MemoryMap.OAM.count)
 
     private let dmaTransferDuration: Cycles = 160
-    private let dmaTransferStartDelay: Cycles = 2
 
-    private var queuedDMATransfer = false
     private var cyclesSinceStartOfTransfer: Cycles = 0
-    private var cyclesUntilTransferStarts: Cycles = 0
-    private var transferSource: Byte = 0
+    private var requestedSource: Byte?
+    private var startingSource: Byte?
+    private var startedSource: Byte?
 
     public func read(address: Address) -> Byte {
         if let mmu = mmu, mmu.isDMATransferActive {
@@ -23,41 +22,44 @@ public final class OAM: MemoryAddressable {
     }
 
     public func startDMATransfer(source: Byte) {
-        transferSource = source
-        cyclesSinceStartOfTransfer = 0
-        cyclesUntilTransferStarts = dmaTransferStartDelay
-        queuedDMATransfer = true
+        requestedSource = source
     }
 
     public func emulate() {
         guard let mmu = mmu else { return }
-        if queuedDMATransfer {
-            emulateQueuedTransfer(mmu: mmu)
-        } else if mmu.isDMATransferActive {
-            emulateTransferActive(mmu: mmu)
+
+        if let startedSource = startedSource {
+            emulateTransferActive(mmu: mmu, source: startedSource)
+        }
+        if let startingSource = startingSource {
+            startNewDMATransfer(mmu: mmu, source: startingSource)
+        }
+        if let requestedSource = requestedSource {
+            startingSource = requestedSource
+            self.requestedSource = nil
         }
     }
 
     // MARK: - Helpers
 
-    private func emulateQueuedTransfer(mmu: MMU) {
-        cyclesUntilTransferStarts -= 1
-        if cyclesUntilTransferStarts == 0 {
-            queuedDMATransfer = false
-            mmu.isDMATransferActive = true
-        }
-    }
-
-    private func emulateTransferActive(mmu: MMU) {
+    private func emulateTransferActive(mmu: MMU, source: Byte) {
         cyclesSinceStartOfTransfer += 1
         if cyclesSinceStartOfTransfer >= dmaTransferDuration {
-            performDMATransfer(mmu: mmu)
+            performDMATransfer(mmu: mmu, source: source)
             mmu.isDMATransferActive = false
+            startedSource = nil
         }
     }
 
-    private func performDMATransfer(mmu: MMU) {
-        let sourceAddress = Address(transferSource) * 0x100
+    private func startNewDMATransfer(mmu: MMU, source: Byte) {
+        startedSource = source
+        self.startingSource = nil
+        cyclesSinceStartOfTransfer = 0
+        mmu.isDMATransferActive = true
+    }
+
+    private func performDMATransfer(mmu: MMU, source: Byte) {
+        let sourceAddress = Address(source) * 0x100
         (0..<Address(MemoryMap.OAM.count)).forEach { offset in
             let from = sourceAddress + offset
             let byte = mmu.read(address: from, privileged: true)

@@ -37,14 +37,18 @@ public final class GameBoy {
     }
 
     public func load(cartridge: CartridgeType) {
-        self.cartridge = cartridge
-        mmu.load(cartridge: cartridge)
-        mmu.mask = try! BootROM.dmgBootRom()
-//        bootstrap()
-        clock.start { [weak self] in
-            self?.fetchAndExecuteNextInstruction()
+        self.queue.async {
+            self.cartridge = cartridge
+            self.mmu.load(cartridge: cartridge)
+            self.mmu.mask = try! BootROM.dmgBootRom()
+//            bootstrap()
+            self.clock.start { [weak self] in
+                self?.fetchAndExecuteNextInstruction()
+            }
         }
     }
+
+    // MARK: - Helpers
 
     private func fetchAndExecuteNextInstruction() {
         if mmu.mask != nil && cpu.pc == 0x100 {

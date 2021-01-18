@@ -18,18 +18,20 @@ public final class Clock {
     let machineSpeed: CyclesPerSecond
 
     private let queue: DispatchQueue
-    private let cyclesPerFrame: Cycles
-    private let framesPerSecond: UInt64 = 60
-    private let frameDuration: TimeInterval
+    private let displayLink: DisplayLinkType
+    private var emulateBlock: (() -> Void)?
+    private var lastCycleOverflow: Cycles = 0
 
     /// - Parameters:
     ///   - queue: The dispatch queue where the clock will be advanced and the
     ///   block will be executed
     init(queue: DispatchQueue, displayLink: DisplayLinkType) {
         self.queue = queue
-        frameDuration = 1.0 / TimeInterval(framesPerSecond)
-        machineSpeed = timeSpeed / 4
-        cyclesPerFrame = machineSpeed / framesPerSecond
+        self.displayLink = displayLink
+        self.machineSpeed = timeSpeed / 4
+        displayLink.setRenderCallback { [weak self] framesPerSecond in
+            self?.displayLinkDidFire(framesPerSecond: framesPerSecond)
+        }
     }
 
     /// Begin emulation by starting the display link. The provided `emulateBlock`
@@ -37,39 +39,33 @@ public final class Clock {
     /// The Game Boy should read/evaluate a CPU instruction each time this block is
     /// called, and should advance the other components of the system accordingly.
     func start(emulateBlock: @escaping () -> Void) {
-        queue.async {
-            self.isRunning = true
-            self.emulateFrame(stepBlock: emulateBlock)
-        }
+        self.emulateBlock = emulateBlock
+        isRunning = true
+        displayLink.start()
     }
 
     func stop() {
-        queue.async {
-            self.isRunning = false
-        }
+        isRunning = false
+        emulateBlock = nil
+        displayLink.stop()
     }
 
     func tickCycle() {
         cycles += 1
     }
 
-    private func emulateFrame(stepBlock: @escaping () -> Void) {
-        let startDate = Date()
+    // MARK: - Helpers
 
-        let cyclesAtStart = cycles
-        while cycles - cyclesAtStart < cyclesPerFrame {
-            stepBlock()
-        }
-        let timeElapsed = -startDate.timeIntervalSinceNow
-        let delay = max(frameDuration - timeElapsed, 0)
-        scheduleAdvanceClockIfRunning(afterDelay: delay, stepBlock: stepBlock)
-    }
+    private func displayLinkDidFire(framesPerSecond: FramesPerSecond) {
+        queue.async {
+            let currentFrameCycles = Cycles(Double(self.machineSpeed) / framesPerSecond)
+            let targetCycles = currentFrameCycles - self.lastCycleOverflow
 
-    private func scheduleAdvanceClockIfRunning(afterDelay: TimeInterval, stepBlock: @escaping () -> Void) {
-        precondition(afterDelay >= 0)
-        guard isRunning else { return }
-        queue.asyncAfter(deadline: .now() + afterDelay) { [weak self] in
-            self?.emulateFrame(stepBlock: stepBlock)
+            let startCycles = self.cycles
+            while self.cycles - startCycles < targetCycles {
+                self.emulateBlock?()
+            }
+            self.lastCycleOverflow = self.cycles - startCycles - targetCycles
         }
     }
 }

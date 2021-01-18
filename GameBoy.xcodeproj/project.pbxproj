@@ -183,6 +183,8 @@
 		75FDE25725B4D7BB00C2A5FB /* oam_dma_restart.gb in Resources */ = {isa = PBXBuildFile; fileRef = 75FDE25325B4D7BB00C2A5FB /* oam_dma_restart.gb */; };
 		75FDE26125B625DB00C2A5FB /* Joypad.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75FDE26025B625DB00C2A5FB /* Joypad.swift */; };
 		75FDE26225B625DB00C2A5FB /* Joypad.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75FDE26025B625DB00C2A5FB /* Joypad.swift */; };
+		75FDE26F25B62B9F00C2A5FB /* GameBoy+Bootstrap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75FDE26E25B62B9F00C2A5FB /* GameBoy+Bootstrap.swift */; };
+		75FDE27025B62B9F00C2A5FB /* GameBoy+Bootstrap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75FDE26E25B62B9F00C2A5FB /* GameBoy+Bootstrap.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -363,6 +365,7 @@
 		75FDE25225B4D7BA00C2A5FB /* oam_dma_timing.gb */ = {isa = PBXFileReference; lastKnownFileType = file; path = oam_dma_timing.gb; sourceTree = "<group>"; };
 		75FDE25325B4D7BB00C2A5FB /* oam_dma_restart.gb */ = {isa = PBXFileReference; lastKnownFileType = file; path = oam_dma_restart.gb; sourceTree = "<group>"; };
 		75FDE26025B625DB00C2A5FB /* Joypad.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Joypad.swift; sourceTree = "<group>"; };
+		75FDE26E25B62B9F00C2A5FB /* GameBoy+Bootstrap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GameBoy+Bootstrap.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -673,6 +676,7 @@
 			isa = PBXGroup;
 			children = (
 				75B3AD57229EA1DD00A03C5A /* GameBoy.swift */,
+				75FDE26E25B62B9F00C2A5FB /* GameBoy+Bootstrap.swift */,
 			);
 			path = Device;
 			sourceTree = "<group>";
@@ -1080,6 +1084,7 @@
 				75B6D62A22BA6D67009E6E82 /* Timer.swift in Sources */,
 				757F38FF22B1C69F00BBB570 /* CPU+Opcodes+CB.swift in Sources */,
 				75862E7525AD387E004AACA4 /* Numbers+Additions.swift in Sources */,
+				75FDE27025B62B9F00C2A5FB /* GameBoy+Bootstrap.swift in Sources */,
 				7596942325B0017C008BDF67 /* DisplayLinkType.swift in Sources */,
 				757F390722B1C69F00BBB570 /* VRAM.swift in Sources */,
 				757F390D22B1C69F00BBB570 /* Renderer.swift in Sources */,
@@ -1151,6 +1156,7 @@
 				75D0E53C22B1C7BC0049BF6D /* WRAM.swift in Sources */,
 				758D868022B86B8900C28791 /* Timer.swift in Sources */,
 				75B3AD4C229DEEFF00A03C5A /* CPU.swift in Sources */,
+				75FDE26F25B62B9F00C2A5FB /* GameBoy+Bootstrap.swift in Sources */,
 				75862E7425AD387E004AACA4 /* Numbers+Additions.swift in Sources */,
 				75B3AD52229DFC1700A03C5A /* ROM.swift in Sources */,
 				75BD98B822A2F44300CFFB68 /* CPU+Instructions+CB.swift in Sources */,

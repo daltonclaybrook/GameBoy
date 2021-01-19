@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		754013D225B7225C005951E0 /* SpriteAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 754013D125B7225C005951E0 /* SpriteAttributes.swift */; };
+		754013D325B7225C005951E0 /* SpriteAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 754013D125B7225C005951E0 /* SpriteAttributes.swift */; };
 		757F38C422B0731E00BBB570 /* Renderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 757F38C322B0731E00BBB570 /* Renderer.swift */; };
 		757F38C622B0765E00BBB570 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 757F38C522B0765E00BBB570 /* Constants.swift */; };
 		757F38CA22B08A5500BBB570 /* AAPLShaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 757F38C822B08A5500BBB570 /* AAPLShaders.metal */; };
@@ -258,6 +260,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		754013D125B7225C005951E0 /* SpriteAttributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpriteAttributes.swift; sourceTree = "<group>"; };
 		757F38C322B0731E00BBB570 /* Renderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Renderer.swift; sourceTree = "<group>"; };
 		757F38C522B0765E00BBB570 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		757F38C822B08A5500BBB570 /* AAPLShaders.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = AAPLShaders.metal; sourceTree = "<group>"; };
@@ -609,6 +612,7 @@
 				75BD98B922A40D6000CFFB68 /* IO.swift */,
 				75FDE26025B625DB00C2A5FB /* Joypad.swift */,
 				75BD98C322A49C0C00CFFB68 /* OAM.swift */,
+				754013D125B7225C005951E0 /* SpriteAttributes.swift */,
 				75B3AD4D229DEFB400A03C5A /* MMU.swift */,
 				7590E7EB25ABA935005E1280 /* MemoryMasking.swift */,
 				75D0E53B22B1C7BC0049BF6D /* WRAM.swift */,
@@ -1071,6 +1075,7 @@
 				757F390022B1C69F00BBB570 /* CPU+Instructions.swift in Sources */,
 				75D0E54022B1C9F50049BF6D /* HRAM.swift in Sources */,
 				7590E7ED25ABA935005E1280 /* MemoryMasking.swift in Sources */,
+				754013D325B7225C005951E0 /* SpriteAttributes.swift in Sources */,
 				757F390522B1C69F00BBB570 /* Opcode.swift in Sources */,
 				7590E7B725AA5703005E1280 /* MBC1.swift in Sources */,
 				758D864A22B53AF000C28791 /* Interrupts.swift in Sources */,
@@ -1143,6 +1148,7 @@
 				757F38C622B0765E00BBB570 /* Constants.swift in Sources */,
 				75B3AD56229E13B700A03C5A /* PPU.swift in Sources */,
 				75D0E53F22B1C9CB0049BF6D /* HRAM.swift in Sources */,
+				754013D225B7225C005951E0 /* SpriteAttributes.swift in Sources */,
 				75BD98B222A0AA8600CFFB68 /* Opcode.swift in Sources */,
 				7590E7EC25ABA935005E1280 /* MemoryMasking.swift in Sources */,
 				758D864922B53A0200C28791 /* Interrupts.swift in Sources */,

@@ -121,6 +121,8 @@
 		7596942325B0017C008BDF67 /* DisplayLinkType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7596942125B0017C008BDF67 /* DisplayLinkType.swift */; };
 		7596942B25B001C2008BDF67 /* DisplayLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7596942A25B001C2008BDF67 /* DisplayLink.swift */; };
 		75AC8EE025AFEFEF00C4A1DA /* DisplayLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75AC8EDE25AFEFEF00C4A1DA /* DisplayLink.swift */; };
+		75B0E21A25B87F8E0021B3C9 /* Range+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B0E21925B87F8E0021B3C9 /* Range+Additions.swift */; };
+		75B0E21B25B87F8E0021B3C9 /* Range+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B0E21925B87F8E0021B3C9 /* Range+Additions.swift */; };
 		75B3AD09229DEEA500A03C5A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B3AD08229DEEA500A03C5A /* AppDelegate.swift */; };
 		75B3AD0B229DEEA500A03C5A /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B3AD0A229DEEA500A03C5A /* ViewController.swift */; };
 		75B3AD0E229DEEA500A03C5A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 75B3AD0C229DEEA500A03C5A /* Main.storyboard */; };
@@ -316,6 +318,7 @@
 		7596942125B0017C008BDF67 /* DisplayLinkType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayLinkType.swift; sourceTree = "<group>"; };
 		7596942A25B001C2008BDF67 /* DisplayLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayLink.swift; sourceTree = "<group>"; };
 		75AC8EDE25AFEFEF00C4A1DA /* DisplayLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayLink.swift; sourceTree = "<group>"; };
+		75B0E21925B87F8E0021B3C9 /* Range+Additions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Range+Additions.swift"; sourceTree = "<group>"; };
 		75B3AD05229DEEA500A03C5A /* GameBoy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GameBoy.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		75B3AD08229DEEA500A03C5A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		75B3AD0A229DEEA500A03C5A /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -457,6 +460,7 @@
 			isa = PBXGroup;
 			children = (
 				75862E7325AD387E004AACA4 /* Numbers+Additions.swift */,
+				75B0E21925B87F8E0021B3C9 /* Range+Additions.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -1076,6 +1080,7 @@
 				75D0E54022B1C9F50049BF6D /* HRAM.swift in Sources */,
 				7590E7ED25ABA935005E1280 /* MemoryMasking.swift in Sources */,
 				754013D325B7225C005951E0 /* SpriteAttributes.swift in Sources */,
+				75B0E21B25B87F8E0021B3C9 /* Range+Additions.swift in Sources */,
 				757F390522B1C69F00BBB570 /* Opcode.swift in Sources */,
 				7590E7B725AA5703005E1280 /* MBC1.swift in Sources */,
 				758D864A22B53AF000C28791 /* Interrupts.swift in Sources */,
@@ -1149,6 +1154,7 @@
 				75B3AD56229E13B700A03C5A /* PPU.swift in Sources */,
 				75D0E53F22B1C9CB0049BF6D /* HRAM.swift in Sources */,
 				754013D225B7225C005951E0 /* SpriteAttributes.swift in Sources */,
+				75B0E21A25B87F8E0021B3C9 /* Range+Additions.swift in Sources */,
 				75BD98B222A0AA8600CFFB68 /* Opcode.swift in Sources */,
 				7590E7EC25ABA935005E1280 /* MemoryMasking.swift in Sources */,
 				758D864922B53A0200C28791 /* Interrupts.swift in Sources */,

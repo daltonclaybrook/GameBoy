@@ -40,6 +40,11 @@ extension LCDControl {
         rawValue & 0x10 != 0 ? .low : .high
     }
 
+    var tileDataForObjects: TileData {
+        // Objects are always stored in 0x8000-0x8fff
+        .low
+    }
+
     var backgroundTileMapDisplay: TileMapDisplay {
         rawValue & 0x08 != 0 ? .high : .low
     }
@@ -104,5 +109,11 @@ extension LCDControl.ObjectSize {
         case .large:
             return 16
         }
+    }
+
+    /// Returns the height of a sprite in large mode. This value is always used to
+    /// adjust the y-position of a sprite on screen.
+    var maxHeight: UInt8 {
+        16
     }
 }

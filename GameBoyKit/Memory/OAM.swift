@@ -60,15 +60,14 @@ public final class OAM: MemoryAddressable {
     /// This function is used by the PPU for Mode 2, i.e. searching OAM. It returns up to 10 sprites that
     /// are visible on the provided line.
     public func findSortedSpriteAttributes(forLine line: UInt8, objectSize: LCDControl.ObjectSize) -> [SpriteAttributes] {
-        let objectHeight = objectSize.height
         var sprites: [SpriteAttributes] = []
         for index in (0..<totalSpriteCount) {
             let offset = index * SpriteAttributes.bytesPerSprite
             let spriteSlice = oamBytes[offset..<(offset + SpriteAttributes.bytesPerSprite)]
             let sprite = SpriteAttributes(rawValue: spriteSlice)
-            let position = sprite.position
-            let lineRange = position.y..<(position.y + objectHeight)
-            guard lineRange.contains(line) else {
+
+            let lineRange = sprite.getLineRangeRelativeToScreen(objectSize: objectSize)
+            guard lineRange.contains(Int16(line)) else {
                 continue
             }
 

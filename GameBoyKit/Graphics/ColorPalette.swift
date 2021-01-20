@@ -1,5 +1,7 @@
-// Only first 2 bits are used
+/// Only first 2 bits are used
 public typealias ColorNumber = Byte
+/// Only first 1 bit is used
+public typealias MonochromePaletteNumber = Byte
 
 public struct Color {
     let red: Byte
@@ -92,8 +94,22 @@ public final class ColorPalette {
     }
 
     public func getMonochromeBGColor(for number: ColorNumber) -> Color {
-        let shift = (number & 0x03) * 2
-        let colorShadeIndex = (monochromeBGData >> shift) & 0x03
+        getMonochromeColor(for: number, data: monochromeBGData)
+    }
+
+    public func getMonochromeObjectColor(for colorNumber: ColorNumber, paletteNumber: MonochromePaletteNumber) -> Color {
+        guard paletteNumber < 2 else {
+            fatalError("Invalid monochrome palette number")
+        }
+        let data = paletteNumber == 0 ? monochromeObject0Data : monochromeObject1Data
+        return getMonochromeColor(for: colorNumber, data: data)
+    }
+
+    // MARK: - Helpers
+
+    private func getMonochromeColor(for colorNumber: ColorNumber, data: Byte) -> Color {
+        let shift = (colorNumber & 0x03) * 2
+        let colorShadeIndex = (data >> shift) & 0x03
         // Possible values are:
         // 0 => 255 (white)
         // 1 => 170 (light gray)

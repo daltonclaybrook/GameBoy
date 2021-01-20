@@ -1,6 +1,14 @@
 import Foundation
 
 public final class PPU {
+    /// Represents information about a pixel that might be rendered to the
+    /// screen or might be overridden by another pixel based on priority.
+    private enum PixelInfo {
+        case unspecified
+        case background(colorNumber: Int, Color)
+        case sprite(Color, priority: SpriteAttributes.BackgroundPriority)
+    }
+
     private let renderer: Renderer
     private let io: IO
     private let vram: VRAM
@@ -155,13 +163,48 @@ public final class PPU {
             let mapX = screenX &+ scrollX
             let pixelXInTile = mapX % 8 // tile width in pixels
             let tileAddress = getTileAddress(map: map, tiles: tiles, pixelX: UInt16(mapX), pixelY: UInt16(mapY))
-            let pixelColorNumber = getPixelColorNumber(tileAddress: tileAddress, xOffsetInTile: UInt16(pixelXInTile), yOffsetInTile: UInt16(pixelYInTile))
+            let pixelColorNumber = getPixelColorNumber(tileAddress: tileAddress, xOffsetInTile: pixelXInTile, yOffsetInTile: pixelYInTile)
 
             let pixelColor = io.palette.getMonochromeBGColor(for: UInt8(truncatingIfNeeded: pixelColorNumber))
             lineBuffer.append(contentsOf: pixelColor.rgbaBytes)
         }
 
         replaceDataInPixelBuffer(forLine: Int(io.lcdYCoordinate), with: lineBuffer)
+    }
+
+    /// Updates the provided array of pixels with pixels for sprites on the same line.
+    private func updatePixelsWithSpriteInfo(forLine line: UInt8, pixels: inout [PixelInfo]) {
+        let sprites = oam.findSortedSpriteAttributes(forLine: line, objectSize: io.lcdControl.objectSize)
+        let objectSize = io.lcdControl.objectSize
+        let screenXRange = 0..<Int16(Constants.screenWidth)
+
+        sprites.forEach { sprite in
+            let lineRange = sprite.getLineRangeRelativeToScreen(objectSize: objectSize)
+            guard lineRange.contains(Int16(line)) else { return }
+
+            let xRange = sprite.getXRangeRelativeToScreen(objectSize: objectSize)
+            guard screenXRange.overlaps(xRange) else {
+                // Sprite is off the left or right side of the screen
+                return
+            }
+
+            (0..<objectSize.width).forEach { xOffsetInSprite in
+                let xPositionInScreen = xRange.lowerBound + Int16(xOffsetInSprite)
+                guard screenXRange.contains(xPositionInScreen) else { return }
+
+                let yOffsetInSprite = UInt8(lineRange.lowerBound.distance(to: Int16(line)))
+                let tileNumber = sprite.getTileNumber(yOffsetInSprite: yOffsetInSprite, objectSize: objectSize)
+                let tileAddress = io.lcdControl.tileDataForObjects.getTileAddress(atIndex: tileNumber)
+                let pixelColorNumber = getPixelColorNumber(tileAddress: tileAddress, xOffsetInTile: xOffsetInSprite, xFlipped: sprite.isXFlipped, yOffsetInTile: yOffsetInSprite % 8, yFlipped: sprite.isYFlipped)
+                guard pixelColorNumber != 0 else {
+                    // Sprite color number 0 is always transparent
+                    return
+                }
+
+                let color = io.palette.getMonochromeObjectColor(for: pixelColorNumber, paletteNumber: sprite.monochromePaletteNumber)
+                pixels[Int(xPositionInScreen)] = .sprite(color, priority: sprite.backgroundPriority)
+            }
+        }
     }
 
     private func getTileAddress(map: LCDControl.TileMapDisplay, tiles: LCDControl.TileData, pixelX: UInt16, pixelY: UInt16) -> Address {
@@ -173,9 +216,11 @@ public final class PPU {
         return tiles.getTileAddress(atIndex: tileIndex)
     }
 
-    private func getPixelColorNumber(tileAddress: Address, xOffsetInTile: UInt16, yOffsetInTile: UInt16) -> ColorNumber {
-        let pixelWord = vram.readWord(address: tileAddress + yOffsetInTile * 2, privileged: true)
-        let lowShift = 7 - xOffsetInTile
+    private func getPixelColorNumber(tileAddress: Address, xOffsetInTile: UInt8, xFlipped: Bool = false, yOffsetInTile: UInt8, yFlipped: Bool = false) -> ColorNumber {
+        let xOffset = xFlipped ? 8 - xOffsetInTile : xOffsetInTile
+        let yOffset = yFlipped ? 8 - yOffsetInTile : yOffsetInTile
+        let pixelWord = vram.readWord(address: tileAddress + Address(yOffset) * 2, privileged: true)
+        let lowShift = 7 - xOffset
         let highShift = lowShift + 8 - 1
         let pixelColorNumber = (pixelWord >> highShift) & 0x02 | (pixelWord >> lowShift) & 0x01
         return ColorNumber(truncatingIfNeeded: pixelColorNumber)

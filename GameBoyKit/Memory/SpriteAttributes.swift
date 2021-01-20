@@ -27,8 +27,7 @@ public extension SpriteAttributes {
         /// The sprite/object appears in front of the background and window
         case aboveBackground = 0
         /// The sprite/object appears behind the background and window, though,
-        /// BG color 0 is always behind the object. I'm not sure if this makes any
-        /// material difference since object color 0 is always transparent...
+        /// BG color 0 is always behind the object.
         case beneathBackground = 1
     }
 
@@ -69,5 +68,37 @@ public extension SpriteAttributes {
 
     private func getByteAtIndex(_ index: Int) -> Byte {
         rawValue[rawValue.startIndex.advanced(by: index)]
+    }
+}
+
+extension SpriteAttributes {
+    /// The y-position of a sprite in OAM is offset by 16 pixels. For example, if the
+    /// y-position in OAM is 0, the real y-position of the sprite relative to the screen
+    /// is -16. Since sprites have a max height of 16, the full sprite is off-screen and
+    /// will not be rendered. This function applies this 16-pixel offset and returns a
+    /// `Range` of screen lines where the sprite is rendered. A portion of this range
+    /// may be negative.
+    /// - Parameter objectSize: The size of all sprites
+    func getLineRangeRelativeToScreen(objectSize: LCDControl.ObjectSize) -> Range<Int16> {
+        let position = self.position
+        let lineRange = position.y..<(position.y + objectSize.height)
+        let convertedRange = Int16(lineRange.lowerBound)..<Int16(lineRange.upperBound)
+        return convertedRange.shifted(by: -Int16(objectSize.maxHeight))
+    }
+
+    func getXRangeRelativeToScreen(objectSize: LCDControl.ObjectSize) -> Range<Int16> {
+        let position = self.position
+        let xRange = position.x..<(position.x + objectSize.width)
+        let convertedRange = Int16(xRange.lowerBound)..<Int16(xRange.upperBound)
+        return convertedRange.shifted(by: -Int16(objectSize.width))
+    }
+
+    func getTileNumber(yOffsetInSprite: UInt8, objectSize: LCDControl.ObjectSize) -> UInt8 {
+        guard objectSize == .large else { return tileNumber }
+        if yOffsetInSprite < objectSize.maxHeight / 2 {
+            return tileNumber & 0xfe
+        } else {
+            return tileNumber | 0x01
+        }
     }
 }

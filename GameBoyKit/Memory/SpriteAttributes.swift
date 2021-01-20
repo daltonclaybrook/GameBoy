@@ -1,8 +1,9 @@
 public struct SpriteAttributes: RawRepresentable {
+    public static let bytesPerSprite = 4
     public let rawValue: ArraySlice<Byte>
 
     public init(rawValue: ArraySlice<Byte>) {
-        guard rawValue.count == 4 else {
+        guard rawValue.count == Self.bytesPerSprite else {
             fatalError("Sprite attributes must be initialized with exactly 4 bytes")
         }
         self.rawValue = rawValue
@@ -10,7 +11,7 @@ public struct SpriteAttributes: RawRepresentable {
 }
 
 public extension SpriteAttributes {
-    enum Attributes {
+    private enum Attributes {
         static let yPosition = 0
         static let xPosition = 1
         static let tileNumber = 2

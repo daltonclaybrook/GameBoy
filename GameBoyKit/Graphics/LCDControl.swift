@@ -11,7 +11,7 @@ public struct LCDControl: RawRepresentable {
         case high // 0x8800-97ff
     }
 
-    enum ObjectSize {
+    public enum ObjectSize {
         case small // 8x8
         case large // 8x16
     }
@@ -23,38 +23,38 @@ public struct LCDControl: RawRepresentable {
 
 extension LCDControl {
     var displayEnabled: Bool {
-        return rawValue & 0x80 != 0
+        rawValue & 0x80 != 0
     }
 
     var windowTileMapDisplay: TileMapDisplay {
-        return rawValue & 0x40 != 0 ? .high : .low
+        rawValue & 0x40 != 0 ? .high : .low
     }
 
     var windowDisplayEnabled: Bool {
-        return rawValue & 0x20 != 0
+        rawValue & 0x20 != 0
     }
 
     var selectedTileDataForBackgroundAndWindow: TileData {
         // this order is confusing, but if the bit is set high,
         // we use the lower address range
-        return rawValue & 0x10 != 0 ? .low : .high
+        rawValue & 0x10 != 0 ? .low : .high
     }
 
     var backgroundTileMapDisplay: TileMapDisplay {
-        return rawValue & 0x08 != 0 ? .high : .low
+        rawValue & 0x08 != 0 ? .high : .low
     }
 
     var objectSize: ObjectSize {
-        return rawValue & 0x04 != 0 ? .large : .small
+        rawValue & 0x04 != 0 ? .large : .small
     }
 
     var objectDisplayEnabled: Bool {
-        return rawValue & 0x02 != 0
+        rawValue & 0x02 != 0
     }
 
     /// This flag has multiple meanings depending on CGB mode
     var backgroundDisplayFlag: Bool {
-        return rawValue & 0x01 != 0
+        rawValue & 0x01 != 0
     }
 }
 
@@ -88,6 +88,21 @@ extension LCDControl.TileData {
             // in a negative offset from 0x9000
             let offset = Int16(Int8(bitPattern: atIndex)) * 0x10
             return (0x9000 as Address).signedAdd(value: offset)
+        }
+    }
+}
+
+extension LCDControl.ObjectSize {
+    var width: UInt8 {
+        return 8
+    }
+
+    var height: UInt8 {
+        switch self {
+        case .small:
+            return 8
+        case .large:
+            return 16
         }
     }
 }

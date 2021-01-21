@@ -1,4 +1,5 @@
-/// Only first 2 bits are used
+/// The index 0-3 of the color for a tile. This index refers to a
+/// color in a color palette. Only first 2 bits are used.
 public typealias ColorNumber = Byte
 /// Only first 1 bit is used
 public typealias MonochromePaletteNumber = Byte

@@ -3,10 +3,9 @@ import Foundation
 public final class PPU {
     /// Represents information about a pixel that might be rendered to the
     /// screen or might be overridden by another pixel based on priority.
-    private enum PixelInfo {
-        case unspecified
-        case background(colorNumber: Int, Color)
-        case sprite(Color, priority: SpriteAttributes.BackgroundPriority)
+    fileprivate enum PixelInfo {
+        case background(Color, colorNumber: ColorNumber)
+        case sprite(Color)
     }
 
     private let renderer: Renderer
@@ -157,8 +156,8 @@ public final class PPU {
         let map = lcdControl.backgroundTileMapDisplay
         let tiles = lcdControl.selectedTileDataForBackgroundAndWindow
 
-        var lineBuffer = [Byte]()
-        lineBuffer.reserveCapacity(Constants.screenWidth * 4) // each pixel RGBA
+        var linePixelInfo: [PixelInfo] = []
+        linePixelInfo.reserveCapacity(Constants.screenWidth)
         (0..<UInt8(truncatingIfNeeded: Constants.screenWidth)).forEach { screenX in
             let mapX = screenX &+ scrollX
             let pixelXInTile = mapX % 8 // tile width in pixels
@@ -166,9 +165,10 @@ public final class PPU {
             let pixelColorNumber = getPixelColorNumber(tileAddress: tileAddress, xOffsetInTile: pixelXInTile, yOffsetInTile: pixelYInTile)
 
             let pixelColor = io.palette.getMonochromeBGColor(for: UInt8(truncatingIfNeeded: pixelColorNumber))
-            lineBuffer.append(contentsOf: pixelColor.rgbaBytes)
+            linePixelInfo.append(.background(pixelColor, colorNumber: pixelColorNumber))
         }
 
+        let lineBuffer = getColorDataLineBuffer(for: linePixelInfo)
         replaceDataInPixelBuffer(forLine: Int(io.lcdYCoordinate), with: lineBuffer)
     }
 
@@ -178,7 +178,9 @@ public final class PPU {
         let objectSize = io.lcdControl.objectSize
         let screenXRange = 0..<Int16(Constants.screenWidth)
 
-        sprites.forEach { sprite in
+        // Since these sprites are ordered from highest to lowest priority, we reverse them so
+        // that higher priority sprites will overwrite lower priority ones.
+        sprites.reversed().forEach { sprite in
             let lineRange = sprite.getLineRangeRelativeToScreen(objectSize: objectSize)
             guard lineRange.contains(Int16(line)) else { return }
 
@@ -202,8 +204,29 @@ public final class PPU {
                 }
 
                 let color = io.palette.getMonochromeObjectColor(for: pixelColorNumber, paletteNumber: sprite.monochromePaletteNumber)
-                pixels[Int(xPositionInScreen)] = .sprite(color, priority: sprite.backgroundPriority)
+                mergeSpritePixel(color: color, priority: sprite.backgroundPriority, atIndex: Int(xPositionInScreen), with: &pixels)
             }
+        }
+    }
+
+    private func mergeSpritePixel(color: Color, priority: SpriteAttributes.BackgroundPriority, atIndex: Int, with pixels: inout [PixelInfo]) {
+        let existing = pixels[atIndex]
+        switch existing {
+        case .background(let color, let colorNumber):
+            // BG color number 0 is always behind the sprite
+            if colorNumber == 0 || priority == .aboveBackground {
+                pixels[atIndex] = .sprite(color)
+            }
+        case .sprite:
+            pixels[atIndex] = .sprite(color)
+        }
+    }
+
+    private func getColorDataLineBuffer(for pixels: [PixelInfo]) -> [Byte] {
+        var lineBuffer: [Byte] = []
+        lineBuffer.reserveCapacity(Constants.screenWidth * 4) // 4 bytes per pixel
+        return pixels.reduce(into: lineBuffer) { lineBuffer, pixel in
+            lineBuffer.append(contentsOf: pixel.color.rgbaBytes)
         }
     }
 
@@ -241,5 +264,14 @@ public final class PPU {
 extension Color {
     var rgbaBytes: [Byte] {
         return [red, green, blue, 255]
+    }
+}
+
+extension PPU.PixelInfo {
+    var color: Color {
+        switch self {
+        case .background(let color, _), .sprite(let color):
+            return color
+        }
     }
 }

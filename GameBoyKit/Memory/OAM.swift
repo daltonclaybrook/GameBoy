@@ -1,7 +1,7 @@
 public final class OAM: MemoryAddressable {
     public weak var mmu: MMU?
     var isBeingReadByPPU = false
-    private var oamBytes = [Byte](repeating: 0, count: MemoryMap.OAM.count)
+    private(set) var oamBytes = [Byte](repeating: 0, count: MemoryMap.OAM.count)
 
     private let dmaTransferDuration: Cycles = 160
     private let totalSpriteCount = 40
@@ -62,10 +62,7 @@ public final class OAM: MemoryAddressable {
     public func findSortedSpriteAttributes(forLine line: UInt8, objectSize: LCDControl.ObjectSize) -> [SpriteAttributes] {
         var sprites: [SpriteAttributes] = []
         for index in (0..<totalSpriteCount) {
-            let offset = index * SpriteAttributes.bytesPerSprite
-            let spriteSlice = oamBytes[offset..<(offset + SpriteAttributes.bytesPerSprite)]
-            let sprite = SpriteAttributes(rawValue: spriteSlice)
-
+            let sprite = getSprite(atIndex: index)
             let lineRange = sprite.getLineRangeRelativeToScreen(objectSize: objectSize)
             guard lineRange.contains(Int16(line)) else {
                 continue
@@ -81,6 +78,13 @@ public final class OAM: MemoryAddressable {
         return sprites.sorted { left, right in
             left.position.x < right.position.x
         }
+    }
+
+    func getSprite(atIndex: Int) -> SpriteAttributes {
+        let byteOffset = atIndex * 4
+        let range = byteOffset..<(byteOffset + 4)
+        let bytes = oamBytes[range]
+        return SpriteAttributes(rawValue: bytes)
     }
 
     // MARK: - Helpers

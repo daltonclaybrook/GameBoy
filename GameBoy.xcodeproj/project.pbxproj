@@ -123,6 +123,10 @@
 		75AC8EE025AFEFEF00C4A1DA /* DisplayLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75AC8EDE25AFEFEF00C4A1DA /* DisplayLink.swift */; };
 		75B0E21A25B87F8E0021B3C9 /* Range+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B0E21925B87F8E0021B3C9 /* Range+Additions.swift */; };
 		75B0E21B25B87F8E0021B3C9 /* Range+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B0E21925B87F8E0021B3C9 /* Range+Additions.swift */; };
+		75B0E22525B915AC0021B3C9 /* PPU+Debug.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B0E22425B915AC0021B3C9 /* PPU+Debug.swift */; };
+		75B0E22625B915AC0021B3C9 /* PPU+Debug.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B0E22425B915AC0021B3C9 /* PPU+Debug.swift */; };
+		75B0E22C25B918A60021B3C9 /* Tile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B0E22B25B918A60021B3C9 /* Tile.swift */; };
+		75B0E22D25B918A60021B3C9 /* Tile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B0E22B25B918A60021B3C9 /* Tile.swift */; };
 		75B3AD09229DEEA500A03C5A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B3AD08229DEEA500A03C5A /* AppDelegate.swift */; };
 		75B3AD0B229DEEA500A03C5A /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B3AD0A229DEEA500A03C5A /* ViewController.swift */; };
 		75B3AD0E229DEEA500A03C5A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 75B3AD0C229DEEA500A03C5A /* Main.storyboard */; };
@@ -319,6 +323,8 @@
 		7596942A25B001C2008BDF67 /* DisplayLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayLink.swift; sourceTree = "<group>"; };
 		75AC8EDE25AFEFEF00C4A1DA /* DisplayLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayLink.swift; sourceTree = "<group>"; };
 		75B0E21925B87F8E0021B3C9 /* Range+Additions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Range+Additions.swift"; sourceTree = "<group>"; };
+		75B0E22425B915AC0021B3C9 /* PPU+Debug.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PPU+Debug.swift"; sourceTree = "<group>"; };
+		75B0E22B25B918A60021B3C9 /* Tile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tile.swift; sourceTree = "<group>"; };
 		75B3AD05229DEEA500A03C5A /* GameBoy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GameBoy.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		75B3AD08229DEEA500A03C5A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		75B3AD0A229DEEA500A03C5A /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -637,7 +643,9 @@
 				75BD98BF22A413AA00CFFB68 /* LCDControl.swift */,
 				75BD98C122A41DDC00CFFB68 /* ColorPalette.swift */,
 				75B3AD55229E13B700A03C5A /* PPU.swift */,
+				75B0E22425B915AC0021B3C9 /* PPU+Debug.swift */,
 				757F38C322B0731E00BBB570 /* Renderer.swift */,
+				75B0E22B25B918A60021B3C9 /* Tile.swift */,
 			);
 			path = Graphics;
 			sourceTree = "<group>";
@@ -1075,6 +1083,7 @@
 				75CAF08022BD00D700E04FAC /* Constants.swift in Sources */,
 				7590E80225ABE353005E1280 /* CPU+Assertions.swift in Sources */,
 				757F390A22B1C69F00BBB570 /* ColorPalette.swift in Sources */,
+				75B0E22625B915AC0021B3C9 /* PPU+Debug.swift in Sources */,
 				757F390122B1C69F00BBB570 /* CPU+Instructions+CB.swift in Sources */,
 				757F390022B1C69F00BBB570 /* CPU+Instructions.swift in Sources */,
 				75D0E54022B1C9F50049BF6D /* HRAM.swift in Sources */,
@@ -1099,6 +1108,7 @@
 				757F390722B1C69F00BBB570 /* VRAM.swift in Sources */,
 				757F390D22B1C69F00BBB570 /* Renderer.swift in Sources */,
 				75E85C7025AE8C9300DD9A9F /* CPUContext.swift in Sources */,
+				75B0E22D25B918A60021B3C9 /* Tile.swift in Sources */,
 				75FDE26225B625DB00C2A5FB /* Joypad.swift in Sources */,
 				757F390922B1C69F00BBB570 /* LCDControl.swift in Sources */,
 			);
@@ -1149,6 +1159,7 @@
 				7590E7F325ABA96F005E1280 /* BootROM.swift in Sources */,
 				75BD98BA22A40D6000CFFB68 /* IO.swift in Sources */,
 				75B3AD5A229EA57700A03C5A /* Clock.swift in Sources */,
+				75B0E22525B915AC0021B3C9 /* PPU+Debug.swift in Sources */,
 				7590E80125ABE353005E1280 /* CPU+Assertions.swift in Sources */,
 				757F38C622B0765E00BBB570 /* Constants.swift in Sources */,
 				75B3AD56229E13B700A03C5A /* PPU.swift in Sources */,
@@ -1173,6 +1184,7 @@
 				75B3AD52229DFC1700A03C5A /* ROM.swift in Sources */,
 				75BD98B822A2F44300CFFB68 /* CPU+Instructions+CB.swift in Sources */,
 				75E85C6F25AE8C9300DD9A9F /* CPUContext.swift in Sources */,
+				75B0E22C25B918A60021B3C9 /* Tile.swift in Sources */,
 				75FDE26125B625DB00C2A5FB /* Joypad.swift in Sources */,
 				75B3AD4E229DEFB400A03C5A /* MMU.swift in Sources */,
 			);

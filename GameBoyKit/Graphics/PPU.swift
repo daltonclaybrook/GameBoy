@@ -9,9 +9,9 @@ public final class PPU {
     }
 
     private let renderer: Renderer
-    private let io: IO
-    private let vram: VRAM
-    private let oam: OAM
+    let io: IO
+    let vram: VRAM
+    let oam: OAM
 
     private let oamSearchDuration: Cycles = 20
     private let lcdTransferDuration: Cycles = 43

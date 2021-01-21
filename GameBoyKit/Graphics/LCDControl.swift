@@ -1,19 +1,25 @@
 public struct LCDControl: RawRepresentable {
     public let rawValue: UInt8
 
-    enum TileMapDisplay {
-        case low // 0x9800-0x9Bff
-        case high // 0x9c00-0x9fff
+    enum TileMapDisplayRange {
+        /// 0x9800-0x9Bff
+        case low
+        /// 0x9c00-0x9fff
+        case high
     }
 
-    enum TileData {
-        case low // 0x8000-0x8fff
-        case high // 0x8800-97ff
+    enum TileDataRange {
+        /// 0x8000-0x8fff
+        case low
+        /// 0x8800-97ff
+        case high
     }
 
     public enum ObjectSize {
-        case small // 8x8
-        case large // 8x16
+        /// 8x8 px
+        case small
+        /// 8x16 px
+        case large
     }
 
     public init(rawValue: UInt8) {
@@ -26,7 +32,7 @@ extension LCDControl {
         rawValue & 0x80 != 0
     }
 
-    var windowTileMapDisplay: TileMapDisplay {
+    var windowTileMapDisplay: TileMapDisplayRange {
         rawValue & 0x40 != 0 ? .high : .low
     }
 
@@ -34,18 +40,18 @@ extension LCDControl {
         rawValue & 0x20 != 0
     }
 
-    var selectedTileDataForBackgroundAndWindow: TileData {
+    var selectedTileDataForBackgroundAndWindow: TileDataRange {
         // this order is confusing, but if the bit is set high,
         // we use the lower address range
         rawValue & 0x10 != 0 ? .low : .high
     }
 
-    var tileDataForObjects: TileData {
+    var tileDataForObjects: TileDataRange {
         // Objects are always stored in 0x8000-0x8fff
         .low
     }
 
-    var backgroundTileMapDisplay: TileMapDisplay {
+    var backgroundTileMapDisplay: TileMapDisplayRange {
         rawValue & 0x08 != 0 ? .high : .low
     }
 
@@ -63,7 +69,7 @@ extension LCDControl {
     }
 }
 
-extension LCDControl.TileMapDisplay {
+extension LCDControl.TileMapDisplayRange {
     var mapDataRange: ClosedRange<Address> {
         switch self {
         case .low:
@@ -74,7 +80,7 @@ extension LCDControl.TileMapDisplay {
     }
 }
 
-extension LCDControl.TileData {
+extension LCDControl.TileDataRange {
     var tileDataRange: ClosedRange<Address> {
         switch self {
         case .low:

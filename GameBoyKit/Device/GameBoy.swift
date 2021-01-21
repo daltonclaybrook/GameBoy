@@ -22,14 +22,14 @@ public final class GameBoy {
     private let io: IO
 
     private let vram = VRAM()
-    private let palette = ColorPalette()
+    private let palettes = ColorPalettes()
     private var cartridge: CartridgeType?
 
     public init(renderer: Renderer, displayLink: DisplayLinkType) {
         clock = Clock(queue: queue, displayLink: displayLink)
         timer = Timer()
         oam = OAM()
-        io = IO(palette: palette, oam: oam, timer: timer)
+        io = IO(palettes: palettes, oam: oam, timer: timer)
         ppu = PPU(renderer: renderer, io: io, vram: vram, oam: oam)
         mmu = MMU(vram: vram, wram: WRAM(), oam: oam, io: io, hram: HRAM())
         oam.mmu = mmu

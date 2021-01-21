@@ -1,0 +1,87 @@
+/// The index 0-3 of the color for a tile. This index refers to a
+/// color in a color palette. Only first 2 bits are used.
+public typealias ColorNumber = Byte
+
+public struct Color {
+    let red: Byte
+    let green: Byte
+    let blue: Byte
+}
+
+public final class ColorPalettes {
+    public enum Palette {
+        case monochromeBackground
+        case monochromeObject0
+        case monochromeObject1
+    }
+
+    public struct Registers {
+        public static let monochromeBGData: Address = 0xff47
+        public static let monochromeObject0Data: Address = 0xff48
+        public static let monochromeObject1Data: Address = 0xff49
+    }
+
+    public let monochromeAddressRange: ClosedRange<Address> = (0xff47...0xff49)
+
+    private var monochromeBGData: Byte = 0
+    private var monochromeObject0Data: Byte = 0
+    private var monochromeObject1Data: Byte = 0
+
+    public init() {}
+
+    public func read(address: Address) -> Byte {
+        switch address {
+        case Registers.monochromeBGData:
+            return monochromeBGData
+        case Registers.monochromeObject0Data:
+            return monochromeObject0Data
+        case Registers.monochromeObject1Data:
+            return monochromeObject1Data
+        default:
+            fatalError("Attempting to read from invalid address")
+        }
+    }
+
+    public func write(byte: Byte, to address: Address) {
+        switch address {
+        case Registers.monochromeBGData:
+            monochromeBGData = byte
+        case Registers.monochromeObject0Data:
+            monochromeObject0Data = byte
+        case Registers.monochromeObject1Data:
+            monochromeObject1Data = byte
+        default:
+            fatalError("Attempting to read from invalid address")
+        }
+    }
+
+    func getColor(for number: ColorNumber, in palette: Palette) -> Color {
+        let paletteData = getData(for: palette)
+        return getMonochromeColor(for: number, data: paletteData)
+    }
+
+    // MARK: - Helpers
+
+    private func getMonochromeColor(for colorNumber: ColorNumber, data: Byte) -> Color {
+        let shift = (colorNumber & 0x03) * 2
+        let colorShadeIndex = (data >> shift) & 0x03
+        // Possible values are:
+        // 0 => 255 (white)
+        // 1 => 170 (light gray)
+        // 2 => 85 (dark gray)
+        // 3 => 0 (black)
+        let grayValue = 255 - colorShadeIndex * 85
+        return Color(red: grayValue, green: grayValue, blue: grayValue)
+    }
+
+    private func getData(for palette: Palette) -> Byte {
+        switch palette {
+        case .monochromeBackground:
+            return monochromeBGData
+        case .monochromeObject0:
+            return monochromeObject0Data
+        case .monochromeObject1:
+            return monochromeObject1Data
+        }
+    }
+}

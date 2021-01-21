@@ -8,7 +8,7 @@ struct Tile {
         self.address = address
     }
 
-    init(tileNumber: TileNumber, in data: LCDControl.TileData) {
+    init(tileNumber: TileNumber, in data: LCDControl.TileDataRange) {
         self.address = data.getAddressForTile(number: tileNumber)
     }
 }

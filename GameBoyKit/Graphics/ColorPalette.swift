@@ -10,7 +10,9 @@ public struct Color {
     let blue: Byte
 }
 
-public final class ColorPalette {
+/// Todo: rename this. This type isn't a "palette" itself. Rather it's a container of palettes. It's a surface for the MMU and other components to use to access any of the individual palettes.
+public final class ColorPalettes {
+
     public struct Registers {
         public static let monochromeBGData: Address = 0xff47
         public static let monochromeObject0Data: Address = 0xff48

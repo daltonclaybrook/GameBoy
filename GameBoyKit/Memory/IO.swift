@@ -15,7 +15,7 @@ public final class IO: MemoryAddressable {
         public static let vramBank: Address = 0xff4f
     }
 
-    public let palette: ColorPalette
+    public let palettes: ColorPalettes
 
     public var joypad = Joypad()
     public var interruptFlags: Interrupts = []
@@ -27,8 +27,8 @@ public final class IO: MemoryAddressable {
     private let oam: OAM
     private let timer: Timer
 
-    public init(palette: ColorPalette, oam: OAM, timer: Timer) {
-        self.palette = palette
+    public init(palettes: ColorPalettes, oam: OAM, timer: Timer) {
+        self.palettes = palettes
         self.oam = oam
         self.timer = timer
         timer.delegate = self
@@ -49,8 +49,8 @@ public final class IO: MemoryAddressable {
         case Registers.lcdYCoordinate:
             return lcdYCoordinate
 //        case palette.monochromeAddressRange, palette.colorAddressRange:
-        case palette.monochromeAddressRange:
-            return palette.read(address: address)
+        case palettes.monochromeAddressRange:
+            return palettes.read(address: address)
         default:
             return bytes.read(address: address, in: .IO)
         }
@@ -71,8 +71,8 @@ public final class IO: MemoryAddressable {
         case Registers.lcdYCoordinate:
             lcdYCoordinate = byte
 //        case palette.monochromeAddressRange, palette.colorAddressRange:
-        case palette.monochromeAddressRange:
-            palette.write(byte: byte, to: address)
+        case palettes.monochromeAddressRange:
+            palettes.write(byte: byte, to: address)
         case Registers.dmaTransfer:
             oam.startDMATransfer(source: byte)
         default:

@@ -37,7 +37,7 @@
 		757F390722B1C69F00BBB570 /* VRAM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B3AD53229E128900A03C5A /* VRAM.swift */; };
 		757F390822B1C69F00BBB570 /* LCDStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75BD98BD22A4135900CFFB68 /* LCDStatus.swift */; };
 		757F390922B1C69F00BBB570 /* LCDControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75BD98BF22A413AA00CFFB68 /* LCDControl.swift */; };
-		757F390A22B1C69F00BBB570 /* ColorPalette.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75BD98C122A41DDC00CFFB68 /* ColorPalette.swift */; };
+		757F390A22B1C69F00BBB570 /* ColorPalettes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75BD98C122A41DDC00CFFB68 /* ColorPalettes.swift */; };
 		757F390C22B1C69F00BBB570 /* PPU.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B3AD55229E13B700A03C5A /* PPU.swift */; };
 		757F390D22B1C69F00BBB570 /* Renderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 757F38C322B0731E00BBB570 /* Renderer.swift */; };
 		757F390E22B1C69F00BBB570 /* GameBoy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B3AD57229EA1DD00A03C5A /* GameBoy.swift */; };
@@ -154,7 +154,7 @@
 		75BD98BA22A40D6000CFFB68 /* IO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75BD98B922A40D6000CFFB68 /* IO.swift */; };
 		75BD98BE22A4135900CFFB68 /* LCDStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75BD98BD22A4135900CFFB68 /* LCDStatus.swift */; };
 		75BD98C022A413AA00CFFB68 /* LCDControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75BD98BF22A413AA00CFFB68 /* LCDControl.swift */; };
-		75BD98C222A41DDC00CFFB68 /* ColorPalette.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75BD98C122A41DDC00CFFB68 /* ColorPalette.swift */; };
+		75BD98C222A41DDC00CFFB68 /* ColorPalettes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75BD98C122A41DDC00CFFB68 /* ColorPalettes.swift */; };
 		75BD98C422A49C0C00CFFB68 /* OAM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75BD98C322A49C0C00CFFB68 /* OAM.swift */; };
 		75CAF08022BD00D700E04FAC /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 757F38C522B0765E00BBB570 /* Constants.swift */; };
 		75CAF08422BD031100E04FAC /* OpcodeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75CAF08322BD031100E04FAC /* OpcodeTests.swift */; };
@@ -354,7 +354,7 @@
 		75BD98B922A40D6000CFFB68 /* IO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IO.swift; sourceTree = "<group>"; };
 		75BD98BD22A4135900CFFB68 /* LCDStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LCDStatus.swift; sourceTree = "<group>"; };
 		75BD98BF22A413AA00CFFB68 /* LCDControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LCDControl.swift; sourceTree = "<group>"; };
-		75BD98C122A41DDC00CFFB68 /* ColorPalette.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorPalette.swift; sourceTree = "<group>"; };
+		75BD98C122A41DDC00CFFB68 /* ColorPalettes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorPalettes.swift; sourceTree = "<group>"; };
 		75BD98C322A49C0C00CFFB68 /* OAM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OAM.swift; sourceTree = "<group>"; };
 		75CAF08322BD031100E04FAC /* OpcodeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpcodeTests.swift; sourceTree = "<group>"; };
 		75CAF08522BD8C7C00E04FAC /* instr_timing.gb */ = {isa = PBXFileReference; lastKnownFileType = file; path = instr_timing.gb; sourceTree = "<group>"; };
@@ -641,7 +641,7 @@
 			children = (
 				75BD98BD22A4135900CFFB68 /* LCDStatus.swift */,
 				75BD98BF22A413AA00CFFB68 /* LCDControl.swift */,
-				75BD98C122A41DDC00CFFB68 /* ColorPalette.swift */,
+				75BD98C122A41DDC00CFFB68 /* ColorPalettes.swift */,
 				75B3AD55229E13B700A03C5A /* PPU.swift */,
 				75B0E22425B915AC0021B3C9 /* PPU+Debug.swift */,
 				757F38C322B0731E00BBB570 /* Renderer.swift */,
@@ -1082,7 +1082,7 @@
 				757F391122B1C69F00BBB570 /* MemoryProtocols.swift in Sources */,
 				75CAF08022BD00D700E04FAC /* Constants.swift in Sources */,
 				7590E80225ABE353005E1280 /* CPU+Assertions.swift in Sources */,
-				757F390A22B1C69F00BBB570 /* ColorPalette.swift in Sources */,
+				757F390A22B1C69F00BBB570 /* ColorPalettes.swift in Sources */,
 				75B0E22625B915AC0021B3C9 /* PPU+Debug.swift in Sources */,
 				757F390122B1C69F00BBB570 /* CPU+Instructions+CB.swift in Sources */,
 				757F390022B1C69F00BBB570 /* CPU+Instructions.swift in Sources */,
@@ -1170,7 +1170,7 @@
 				7590E7EC25ABA935005E1280 /* MemoryMasking.swift in Sources */,
 				758D864922B53A0200C28791 /* Interrupts.swift in Sources */,
 				7590E7B625AA5703005E1280 /* MBC1.swift in Sources */,
-				75BD98C222A41DDC00CFFB68 /* ColorPalette.swift in Sources */,
+				75BD98C222A41DDC00CFFB68 /* ColorPalettes.swift in Sources */,
 				7590E7C425AACEC6005E1280 /* CartridgeFactory.swift in Sources */,
 				758834DA22BB12DF00B80FD0 /* TimerControl.swift in Sources */,
 				75BD98C022A413AA00CFFB68 /* LCDControl.swift in Sources */,

@@ -164,7 +164,7 @@ public final class PPU {
             let tileAddress = getTileAddress(map: map, tiles: tiles, pixelX: UInt16(mapX), pixelY: UInt16(line))
             let pixelColorNumber = getPixelColorNumber(tileAddress: tileAddress, xOffsetInTile: pixelXInTile, yOffsetInTile: pixelYInTile)
 
-            let pixelColor = io.palette.getMonochromeBGColor(for: UInt8(truncatingIfNeeded: pixelColorNumber))
+            let pixelColor = io.palettes.getColor(for: pixelColorNumber, in: .monochromeBackground)
             linePixels.append(.background(pixelColor, colorNumber: pixelColorNumber))
         }
 
@@ -197,15 +197,15 @@ public final class PPU {
 
                 let yOffsetInSprite = UInt8(lineRange.lowerBound.distance(to: Int16(line)))
                 let tileNumber = sprite.getTileNumber(yOffsetInSprite: yOffsetInSprite, objectSize: objectSize)
-                let tileAddress = io.lcdControl.tileDataForObjects.getTileAddress(atIndex: tileNumber)
+                let tileAddress = io.lcdControl.tileDataForObjects.getAddressForTile(number: tileNumber)
                 let pixelColorNumber = getPixelColorNumber(tileAddress: tileAddress, xOffsetInTile: xOffsetInSprite, xFlipped: sprite.isXFlipped, yOffsetInTile: yOffsetInSprite % 8, yFlipped: sprite.isYFlipped)
                 guard pixelColorNumber != 0 else {
                     // Sprite color number 0 is always transparent
                     return
                 }
 
-                let color = io.palette.getMonochromeObjectColor(for: pixelColorNumber, paletteNumber: sprite.monochromePaletteNumber)
-                mergeSpritePixel(color: color, priority: sprite.backgroundPriority, atIndex: Int(xPositionInScreen), with: &pixels)
+                let pixelColor = io.palettes.getColor(for: pixelColorNumber, in: sprite.monochromePalette)
+                mergeSpritePixel(color: pixelColor, priority: sprite.backgroundPriority, atIndex: Int(xPositionInScreen), with: &pixels)
             }
         }
     }
@@ -231,13 +231,13 @@ public final class PPU {
         }
     }
 
-    private func getTileAddress(map: LCDControl.TileMapDisplay, tiles: LCDControl.TileData, pixelX: UInt16, pixelY: UInt16) -> Address {
+    private func getTileAddress(map: LCDControl.TileMapDisplayRange, tiles: LCDControl.TileDataRange, pixelX: UInt16, pixelY: UInt16) -> Address {
         let tileX = pixelX / 8
         let tileY = pixelY / 8
         let tileOffsetInMap = tileY * mapWidthInTiles + tileX
         let tileAddressInMap = map.mapDataRange.lowerBound + tileOffsetInMap
-        let tileIndex = vram.read(address: tileAddressInMap, privileged: true)
-        return tiles.getTileAddress(atIndex: tileIndex)
+        let tileNumber = vram.read(address: tileAddressInMap, privileged: true)
+        return tiles.getAddressForTile(number: tileNumber)
     }
 
     private func getPixelColorNumber(tileAddress: Address, xOffsetInTile: UInt8, xFlipped: Bool = false, yOffsetInTile: UInt8, yFlipped: Bool = false) -> ColorNumber {

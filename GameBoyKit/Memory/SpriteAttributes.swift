@@ -72,6 +72,17 @@ public extension SpriteAttributes {
 }
 
 extension SpriteAttributes {
+    var monochromePalette: ColorPalettes.Palette {
+        switch monochromePaletteNumber {
+        case 0:
+            return .monochromeObject0
+        case 1:
+            return .monochromeObject1
+        default:
+            fatalError("Palette number is invalid")
+        }
+    }
+
     /// The y-position of a sprite in OAM is offset by 16 pixels. For example, if the
     /// y-position in OAM is 0, the real y-position of the sprite relative to the screen
     /// is -16. Since sprites have a max height of 16, the full sprite is off-screen and

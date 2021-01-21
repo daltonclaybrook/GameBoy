@@ -13,12 +13,13 @@ public final class GameBoy {
         label: "com.daltonclaybrook.GameBoy.GameBoy",
         qos: .userInteractive
     )
+
+    public let ppu: PPU
     let cpu: CPU
     let mmu: MMU
     private let clock: Clock
     private let timer: Timer
     private let oam: OAM
-    private let ppu: PPU
     private let io: IO
 
     private let vram = VRAM()

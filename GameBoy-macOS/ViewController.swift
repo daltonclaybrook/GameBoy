@@ -11,6 +11,13 @@ class ViewController: NSViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] event in
+            // This is the "O" key (for OAM)
+            guard event.keyCode == 31 else { return event }
+            self?.generateAndSaveOAMImage()
+            return nil
+        }
+
         view.frame.size = viewSize
         view.addSubview(mtkView)
         mtkView.frame = view.bounds
@@ -83,6 +90,24 @@ class ViewController: NSViewController {
         let fileData = try Data(contentsOf: fileURL)
         let cartridge = CartridgeFactory.makeCartridge(romBytes: [Byte](fileData))
         return cartridge
+    }
+
+    private func generateAndSaveOAMImage() {
+        guard let image = gameBoy?.ppu.generateDebugOAMImage(scale: 10) else {
+            fatalError("Game Boy was nil")
+        }
+        let timestamp = Int(Date().timeIntervalSince1970)
+        let filePath = NSString(string: "~/Desktop/oam-\(timestamp).png").expandingTildeInPath
+        let url = URL(fileURLWithPath: filePath)
+        print("Saving image to: \(url.path)")
+        guard let destination = CGImageDestinationCreateWithURL(url as CFURL, kUTTypePNG, 1, nil) else {
+            fatalError("Unable to create destination")
+        }
+
+        CGImageDestinationAddImage(destination, image, nil)
+        guard CGImageDestinationFinalize(destination) else {
+            fatalError("Unable to finalize image destination")
+        }
     }
 }
 

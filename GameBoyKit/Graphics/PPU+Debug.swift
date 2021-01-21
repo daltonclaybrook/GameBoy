@@ -1,5 +1,5 @@
 extension PPU {
-    func generateDebugOAMImage() -> CGImage {
+    public func generateDebugOAMImage(scale: CGFloat) -> CGImage {
         let objectSize = io.lcdControl.objectSize
         let objectCGSize = CGSize(width: CGFloat(objectSize.width), height: CGFloat(objectSize.height))
 
@@ -9,9 +9,12 @@ extension PPU {
         let fullWidth = spritesPerRow * Int(objectSize.width) + (spritesPerRow - 1) * padding
         let fullHeight = rowsCount * Int(objectSize.height) + (rowsCount - 1) * padding
         let context = createGraphicsContext(width: fullWidth, height: fullHeight)
+        context.setShouldAntialias(false)
 
         (0..<40).forEach { index in
             let sprite = oam.getSprite(atIndex: index)
+            guard sprite.getIsOnScreen(objectSize: io.lcdControl.objectSize) else { return }
+
             let tiles = getTiles(for: sprite, dataRange: io.lcdControl.tileDataForObjects)
             let spriteColorBytes = tiles.flatMap { getColorBytes(for: sprite, tile: $0) }
             let spriteImage = getCGImageFromSpriteColorBytes(spriteColorBytes)
@@ -23,12 +26,15 @@ extension PPU {
             context.draw(spriteImage, in: rect)
         }
 
-        let scale: CGFloat = 2.0
-        context.scaleBy(x: scale, y: scale)
         guard let image = context.makeImage() else {
             fatalError("Could not make image")
         }
-        return image
+        let scaledContext = createGraphicsContext(width: fullWidth * Int(scale), height: fullHeight * Int(scale))
+        scaledContext.draw(image, in: CGRect(x: 0, y: 0, width: CGFloat(fullWidth) * scale, height: CGFloat(fullHeight) * scale))
+        guard let scaledImage = scaledContext.makeImage() else {
+            fatalError("Could not make scaled image")
+        }
+        return scaledImage
     }
 
     func getTileNumbers(for sprite: SpriteAttributes) -> [TileNumber] {
@@ -55,8 +61,13 @@ extension PPU {
         (UInt8(0)..<8).forEach { yOffset in
             (UInt8(0)..<8).forEach { xOffset in
                 let colorNumber = tile.getColorNumber(in: vram, xOffset: xOffset, xFlipped: sprite.isXFlipped, yOffset: yOffset, yFlipped: sprite.isYFlipped)
-                let color = io.palettes.getColor(for: colorNumber, in: sprite.monochromePalette)
-                colorBytes.append(contentsOf: color.rgbaBytes)
+                if colorNumber == 0 {
+                    // Color number 0 is transparent in sprites
+                    colorBytes.append(contentsOf: Color.transparentRGBABytes)
+                } else {
+                    let color = io.palettes.getColor(for: colorNumber, in: sprite.monochromePalette)
+                    colorBytes.append(contentsOf: color.rgbaBytes)
+                }
             }
         }
         return colorBytes
@@ -89,6 +100,7 @@ extension PPU {
         ) else {
             fatalError("Unable to create CGContext")
         }
+        context.interpolationQuality = .none
         return context
     }
 }

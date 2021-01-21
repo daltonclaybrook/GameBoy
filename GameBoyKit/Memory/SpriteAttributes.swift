@@ -83,6 +83,15 @@ extension SpriteAttributes {
         }
     }
 
+    func getIsOnScreen(objectSize: LCDControl.ObjectSize) -> Bool {
+        let xRange = (1..<UInt8(Constants.screenWidth) + objectSize.width)
+        guard xRange.contains(position.x) else { return false }
+        let minY = objectSize.maxHeight - objectSize.height + 1
+        let yRange = (minY..<UInt8(Constants.screenHeight) + objectSize.maxHeight)
+        guard yRange.contains(position.y) else { return false }
+        return true
+    }
+
     /// The y-position of a sprite in OAM is offset by 16 pixels. For example, if the
     /// y-position in OAM is 0, the real y-position of the sprite relative to the screen
     /// is -16. Since sprites have a max height of 16, the full sprite is off-screen and

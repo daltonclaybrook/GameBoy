@@ -266,6 +266,10 @@ extension Color {
     var rgbaBytes: [Byte] {
         return [red, green, blue, 255]
     }
+
+    static var transparentRGBABytes: [Byte] {
+        return [255, 255, 255, 0]
+    }
 }
 
 extension PPU.PixelInfo {

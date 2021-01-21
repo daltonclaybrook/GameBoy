@@ -80,17 +80,15 @@ extension SpriteAttributes {
     /// may be negative.
     /// - Parameter objectSize: The size of all sprites
     func getLineRangeRelativeToScreen(objectSize: LCDControl.ObjectSize) -> Range<Int16> {
-        let position = self.position
-        let lineRange = position.y..<(position.y + objectSize.height)
-        let convertedRange = Int16(lineRange.lowerBound)..<Int16(lineRange.upperBound)
-        return convertedRange.shifted(by: -Int16(objectSize.maxHeight))
+        let yPosition = Int16(position.y)
+        let lineRange = yPosition..<(yPosition + Int16(objectSize.height))
+        return lineRange.shifted(by: -Int16(objectSize.maxHeight))
     }
 
     func getXRangeRelativeToScreen(objectSize: LCDControl.ObjectSize) -> Range<Int16> {
-        let position = self.position
-        let xRange = position.x..<(position.x + objectSize.width)
-        let convertedRange = Int16(xRange.lowerBound)..<Int16(xRange.upperBound)
-        return convertedRange.shifted(by: -Int16(objectSize.width))
+        let xPosition = Int16(position.x)
+        let xRange = xPosition..<(xPosition + Int16(objectSize.width))
+        return xRange.shifted(by: -Int16(objectSize.width))
     }
 
     func getTileNumber(yOffsetInSprite: UInt8, objectSize: LCDControl.ObjectSize) -> UInt8 {

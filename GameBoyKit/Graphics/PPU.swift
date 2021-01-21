@@ -149,26 +149,27 @@ public final class PPU {
     private func drawLine() {
         let scrollX = io.scrollX
         let scrollY = io.scrollY
-        let mapY = scrollY &+ io.lcdYCoordinate
-        let pixelYInTile = mapY % 8 // tile height in pixels
+        let line = scrollY &+ io.lcdYCoordinate
+        let pixelYInTile = line % 8 // tile height in pixels
 
         let lcdControl = io.lcdControl
         let map = lcdControl.backgroundTileMapDisplay
         let tiles = lcdControl.selectedTileDataForBackgroundAndWindow
 
-        var linePixelInfo: [PixelInfo] = []
-        linePixelInfo.reserveCapacity(Constants.screenWidth)
+        var linePixels: [PixelInfo] = []
+        linePixels.reserveCapacity(Constants.screenWidth)
         (0..<UInt8(truncatingIfNeeded: Constants.screenWidth)).forEach { screenX in
             let mapX = screenX &+ scrollX
             let pixelXInTile = mapX % 8 // tile width in pixels
-            let tileAddress = getTileAddress(map: map, tiles: tiles, pixelX: UInt16(mapX), pixelY: UInt16(mapY))
+            let tileAddress = getTileAddress(map: map, tiles: tiles, pixelX: UInt16(mapX), pixelY: UInt16(line))
             let pixelColorNumber = getPixelColorNumber(tileAddress: tileAddress, xOffsetInTile: pixelXInTile, yOffsetInTile: pixelYInTile)
 
             let pixelColor = io.palette.getMonochromeBGColor(for: UInt8(truncatingIfNeeded: pixelColorNumber))
-            linePixelInfo.append(.background(pixelColor, colorNumber: pixelColorNumber))
+            linePixels.append(.background(pixelColor, colorNumber: pixelColorNumber))
         }
 
-        let lineBuffer = getColorDataLineBuffer(for: linePixelInfo)
+        updatePixelsWithSpriteInfo(forLine: line, pixels: &linePixels)
+        let lineBuffer = getColorDataLineBuffer(for: linePixels)
         replaceDataInPixelBuffer(forLine: Int(io.lcdYCoordinate), with: lineBuffer)
     }
 
@@ -240,8 +241,8 @@ public final class PPU {
     }
 
     private func getPixelColorNumber(tileAddress: Address, xOffsetInTile: UInt8, xFlipped: Bool = false, yOffsetInTile: UInt8, yFlipped: Bool = false) -> ColorNumber {
-        let xOffset = xFlipped ? 8 - xOffsetInTile : xOffsetInTile
-        let yOffset = yFlipped ? 8 - yOffsetInTile : yOffsetInTile
+        let xOffset = xFlipped ? 7 - xOffsetInTile : xOffsetInTile
+        let yOffset = yFlipped ? 7 - yOffsetInTile : yOffsetInTile
         let pixelWord = vram.readWord(address: tileAddress + Address(yOffset) * 2, privileged: true)
         let lowShift = 7 - xOffset
         let highShift = lowShift + 8 - 1

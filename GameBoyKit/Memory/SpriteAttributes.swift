@@ -112,10 +112,12 @@ extension SpriteAttributes {
     }
 
     func getTileNumber(yOffsetInSprite: UInt8, objectSize: LCDControl.ObjectSize) -> UInt8 {
-        guard objectSize == .large else { return tileNumber }
-        if yOffsetInSprite < objectSize.maxHeight / 2 {
+        switch objectSize {
+        case .small:
+            return tileNumber
+        case .large where yOffsetInSprite < objectSize.maxHeight / 2:
             return tileNumber & 0xfe
-        } else {
+        case .large:
             return tileNumber | 0x01
         }
     }

@@ -15,7 +15,7 @@ extension PPU {
             let sprite = oam.getSprite(atIndex: index)
             guard sprite.getIsOnScreen(objectSize: io.lcdControl.objectSize) else { return }
 
-            let tiles = getTiles(for: sprite, dataRange: io.lcdControl.tileDataForObjects)
+            let tiles = getTiles(for: sprite, dataRange: io.lcdControl.tileDataRangeForObjects)
             let spriteColorBytes = tiles.flatMap { getColorBytes(for: sprite, tile: $0) }
             let spriteImage = getCGImageFromSpriteColorBytes(spriteColorBytes)
             let xOffset = CGFloat(index % spritesPerRow)
@@ -51,9 +51,7 @@ extension PPU {
     }
 
     func getTiles(for sprite: SpriteAttributes, dataRange: LCDControl.TileDataRange) -> [Tile] {
-        getTileNumbers(for: sprite).map { tileNumber in
-            Tile(tileNumber: tileNumber, in: dataRange)
-        }
+        getTileNumbers(for: sprite).map(dataRange.getTile(for:))
     }
 
     func getColorBytes(for sprite: SpriteAttributes, tile: Tile) -> [Byte] {
@@ -63,7 +61,7 @@ extension PPU {
                 let colorNumber = tile.getColorNumber(in: vram, xOffset: xOffset, xFlipped: sprite.isXFlipped, yOffset: yOffset, yFlipped: sprite.isYFlipped)
                 if colorNumber == 0 {
                     // Color number 0 is transparent in sprites
-                    colorBytes.append(contentsOf: Color.transparentRGBABytes)
+                    colorBytes.append(contentsOf: Color.white)
                 } else {
                     let color = io.palettes.getColor(for: colorNumber, in: sprite.monochromePalette)
                     colorBytes.append(contentsOf: color.rgbaBytes)

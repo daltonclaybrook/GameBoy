@@ -40,13 +40,13 @@ extension LCDControl {
         rawValue & 0x20 != 0
     }
 
-    var selectedTileDataForBackgroundAndWindow: TileDataRange {
+    var selectedTileDataRangeForBackgroundAndWindow: TileDataRange {
         // this order is confusing, but if the bit is set high,
         // we use the lower address range
         rawValue & 0x10 != 0 ? .low : .high
     }
 
-    var tileDataForObjects: TileDataRange {
+    var tileDataRangeForObjects: TileDataRange {
         // Objects are always stored in 0x8000-0x8fff
         .low
     }
@@ -90,16 +90,18 @@ extension LCDControl.TileDataRange {
         }
     }
 
-    func getAddressForTile(number: TileNumber) -> Address {
+    func getTile(for number: TileNumber) -> Tile {
+        let address: Address
         switch self {
         case .low:
-            return 0x8000 + Address(number) * 0x10 // each tile is 0x10 (16) bytes
+            address = 0x8000 + Address(number) * 0x10 // each tile is 0x10 (16) bytes
         case .high:
             // Provided index is converted to a signed int so values over 127 result
             // in a negative offset from 0x9000
             let offset = Int16(Int8(bitPattern: number)) * 0x10
-            return (0x9000 as Address).signedAdd(value: offset)
+            address = (0x9000 as Address).signedAdd(value: offset)
         }
+        return Tile(address: address)
     }
 }
 

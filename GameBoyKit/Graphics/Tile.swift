@@ -3,14 +3,6 @@ typealias TileNumber = UInt8
 struct Tile {
     /// The address of the tile in VRAM
     let address: Address
-
-    init(address: Address) {
-        self.address = address
-    }
-
-    init(tileNumber: TileNumber, in data: LCDControl.TileDataRange) {
-        self.address = data.getAddressForTile(number: tileNumber)
-    }
 }
 
 extension Tile {

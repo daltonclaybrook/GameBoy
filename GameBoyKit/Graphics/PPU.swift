@@ -196,7 +196,7 @@ public final class PPU {
                 guard screenXRange.contains(xPositionInScreen) else { return }
 
                 let yOffsetInSprite = UInt8(lineRange.lowerBound.distance(to: Int16(line)))
-                let yOffsetInTile = yOffsetInSprite & 8
+                let yOffsetInTile = yOffsetInSprite % 8
                 let tileNumber = sprite.getTileNumber(yOffsetInSprite: yOffsetInSprite, objectSize: objectSize)
                 let tile = io.lcdControl.tileDataRangeForObjects.getTile(for: tileNumber)
                 let pixelColorNumber = tile.getColorNumber(in: vram, xOffset: xOffsetInSprite, xFlipped: sprite.isXFlipped, yOffset: yOffsetInTile, yFlipped: sprite.isYFlipped)

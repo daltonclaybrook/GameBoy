@@ -4,6 +4,7 @@ public final class PPU {
     /// Represents information about a pixel that might be rendered to the
     /// screen or might be overridden by another pixel based on priority.
     fileprivate enum PixelInfo {
+        case blank
         case background(Color, colorNumber: ColorNumber)
         case sprite(Color)
     }
@@ -147,34 +148,42 @@ public final class PPU {
     /// - display window
     /// - display sprites
     private func drawLine() {
+        let lineOnScreen = io.lcdYCoordinate
+
+        var linePixels = [PixelInfo](repeating: .blank, count: Constants.screenWidth)
+        if io.lcdControl.backgroundAndWindowDisplayed {
+            updatePixelsWithBackground(line: lineOnScreen, pixels: &linePixels)
+        }
+
+        if io.lcdControl.objectDisplayEnabled {
+            updatePixelsWithSprites(line: lineOnScreen, pixels: &linePixels)
+        }
+
+        let lineBuffer = getColorDataLineBuffer(for: linePixels)
+        replaceDataInPixelBuffer(forLine: Int(lineOnScreen), with: lineBuffer)
+    }
+
+    /// Update the provided array of pixels with pixels for the background
+    private func updatePixelsWithBackground(line: UInt8, pixels: inout [PixelInfo]) {
         let scrollX = io.scrollX
-        let scrollY = io.scrollY
-        let line = scrollY &+ io.lcdYCoordinate
-        let pixelYInTile = line % 8 // tile height in pixels
+        let map = io.lcdControl.backgroundTileMapDisplay
+        let tiles = io.lcdControl.selectedTileDataRangeForBackgroundAndWindow
+        let lineInMap = io.scrollY &+ line
+        let pixelYInTile = lineInMap % 8 // tile height in pixels
 
-        let lcdControl = io.lcdControl
-        let map = lcdControl.backgroundTileMapDisplay
-        let tiles = lcdControl.selectedTileDataRangeForBackgroundAndWindow
-
-        var linePixels: [PixelInfo] = []
-        linePixels.reserveCapacity(Constants.screenWidth)
         (0..<UInt8(truncatingIfNeeded: Constants.screenWidth)).forEach { screenX in
             let mapX = screenX &+ scrollX
             let pixelXInTile = mapX % 8 // tile width in pixels
-            let tile = getTile(in: map, tileRange: tiles, pixelX: UInt16(mapX), pixelY: UInt16(line))
+            let tile = getTile(in: map, tileRange: tiles, pixelX: UInt16(mapX), pixelY: UInt16(lineInMap))
             let pixelColorNumber = tile.getColorNumber(in: vram, xOffset: pixelXInTile, yOffset: pixelYInTile)
 
             let pixelColor = io.palettes.getColor(for: pixelColorNumber, in: .monochromeBackground)
-            linePixels.append(.background(pixelColor, colorNumber: pixelColorNumber))
+            pixels[Int(screenX)] = .background(pixelColor, colorNumber: pixelColorNumber)
         }
-
-        updatePixelsWithSpriteInfo(forLine: line, pixels: &linePixels)
-        let lineBuffer = getColorDataLineBuffer(for: linePixels)
-        replaceDataInPixelBuffer(forLine: Int(io.lcdYCoordinate), with: lineBuffer)
     }
 
     /// Updates the provided array of pixels with pixels for sprites on the same line.
-    private func updatePixelsWithSpriteInfo(forLine line: UInt8, pixels: inout [PixelInfo]) {
+    private func updatePixelsWithSprites(line: UInt8, pixels: inout [PixelInfo]) {
         let sprites = oam.findSortedSpriteAttributes(forLine: line, objectSize: io.lcdControl.objectSize)
         let objectSize = io.lcdControl.objectSize
         let screenXRange = 0..<Int16(Constants.screenWidth)
@@ -219,7 +228,7 @@ public final class PPU {
             if colorNumber == 0 || priority == .aboveBackground {
                 pixels[atIndex] = .sprite(color)
             }
-        case .sprite:
+        case .blank, .sprite:
             pixels[atIndex] = .sprite(color)
         }
     }
@@ -254,14 +263,16 @@ extension Color {
         return [red, green, blue, 255]
     }
 
-    static var white: [Byte] {
-        return [255, 255, 255, 255]
+    static var white: Color {
+        return Color(red: 255, green: 255, blue: 255)
     }
 }
 
 extension PPU.PixelInfo {
     var color: Color {
         switch self {
+        case .blank:
+            return .white
         case .background(let color, _), .sprite(let color):
             return color
         }

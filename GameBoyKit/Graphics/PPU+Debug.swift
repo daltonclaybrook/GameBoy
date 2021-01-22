@@ -61,7 +61,7 @@ extension PPU {
                 let colorNumber = tile.getColorNumber(in: vram, xOffset: xOffset, xFlipped: sprite.isXFlipped, yOffset: yOffset, yFlipped: sprite.isYFlipped)
                 if colorNumber == 0 {
                     // Color number 0 is transparent in sprites
-                    colorBytes.append(contentsOf: Color.white)
+                    colorBytes.append(contentsOf: Color.white.rgbaBytes)
                 } else {
                     let color = io.palettes.getColor(for: colorNumber, in: sprite.monochromePalette)
                     colorBytes.append(contentsOf: color.rgbaBytes)

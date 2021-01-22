@@ -43,12 +43,6 @@ class ViewController: NSViewController {
         self.view.window?.title = self.title ?? "Game Boy"
     }
 
-    override func keyDown(with event: NSEvent) {
-        // This is the "O" key (for OAM)
-        guard event.keyCode == 31 else { return }
-        generateAndSaveOAMImage()
-    }
-
     private func makeCartridge() throws -> CartridgeType {
         let testRoms = [
             // blargg
@@ -85,9 +79,9 @@ class ViewController: NSViewController {
 
         // Failing tests
 //        let fileURL = Bundle.main.url(forResource: "call_timing", withExtension: "gb")!
-//        let fileURL = Bundle.main.url(forResource: "dmg-acid2", withExtension: "gb")!
+        let fileURL = Bundle.main.url(forResource: "dmg-acid2", withExtension: "gb")!
 //        let fileURL = Bundle.main.url(forResource: "tetris", withExtension: "gb")!
-        let fileURL = Bundle.main.url(forResource: "mario", withExtension: "gb")!
+//        let fileURL = Bundle.main.url(forResource: "mario", withExtension: "gb")!
 //        let fileURL = Bundle.main.url(forResource: "pokemon-yellow", withExtension: "gbc")!
 
 
@@ -117,17 +111,22 @@ class ViewController: NSViewController {
 
 extension ViewController: WindowControllerDelegate {
     func windowController(_ controller: WindowController, keyCodePressed keyCode: UInt16) {
-        guard let button = Joypad.Button(keyCode: keyCode) else { return }
-        gameBoy?.joypad.buttonWasPressed(button)
+        if keyCode == 31 {
+            // Save OAM to disk when the "O" button is pressed
+            generateAndSaveOAMImage()
+        }
+
+        guard let key = Joypad.Key(keyCode: keyCode) else { return }
+        gameBoy?.joypad.keyWasPressed(key)
     }
 
     func windowController(_ controller: WindowController, keyCodeReleased keyCode: UInt16) {
-        guard let button = Joypad.Button(keyCode: keyCode) else { return }
-        gameBoy?.joypad.buttonWasReleased(button)
+        guard let key = Joypad.Key(keyCode: keyCode) else { return }
+        gameBoy?.joypad.keyWasReleased(key)
     }
 }
 
-extension Joypad.Button {
+extension Joypad.Key {
     init?(keyCode: UInt16) {
         switch keyCode {
         case 2:

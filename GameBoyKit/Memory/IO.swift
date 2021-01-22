@@ -32,6 +32,7 @@ public final class IO: MemoryAddressable {
         self.oam = oam
         self.timer = timer
         timer.delegate = self
+        joypad.delegate = self
     }
 
     public func read(address: Address) -> Byte {
@@ -110,5 +111,11 @@ extension IO {
 extension IO: TimerDelegate {
     public func timer(_ timer: Timer, didRequest interrupt: Interrupts) {
         interruptFlags.formUnion(interrupt)
+    }
+}
+
+extension IO: JoypadDelegate {
+    public func joypadDidRequestInterrupt(_ joypad: Joypad) {
+        interruptFlags.formUnion(.joypad)
     }
 }

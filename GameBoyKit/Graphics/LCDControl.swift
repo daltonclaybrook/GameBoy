@@ -63,8 +63,10 @@ extension LCDControl {
         rawValue & 0x02 != 0
     }
 
-    /// This flag has multiple meanings depending on CGB mode
-    var backgroundDisplayFlag: Bool {
+    /// Monochrome Game Boy: When false, both background and window become blank (white),
+    /// and the Window Display Bit is ignored in that case. Only Sprites may still be
+    /// displayed (if enabled in Bit 1).
+    var backgroundAndWindowDisplayed: Bool {
         rawValue & 0x01 != 0
     }
 }

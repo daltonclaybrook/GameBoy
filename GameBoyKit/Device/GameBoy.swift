@@ -14,6 +14,10 @@ public final class GameBoy {
         qos: .userInteractive
     )
 
+    public var joypad: Joypad {
+        io.joypad
+    }
+
     public let ppu: PPU
     let cpu: CPU
     let mmu: MMU
@@ -42,7 +46,7 @@ public final class GameBoy {
             self.cartridge = cartridge
             self.mmu.load(cartridge: cartridge)
             self.mmu.mask = try! BootROM.dmgBootRom()
-//            bootstrap()
+//            self.bootstrap()
             self.clock.start { [weak self] in
                 self?.fetchAndExecuteNextInstruction()
             }

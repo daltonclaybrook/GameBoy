@@ -8,15 +8,12 @@ class ViewController: NSViewController {
     private let viewSize = CGSize(width: 400, height: 360)
     private let displayLink = try! DisplayLink()
 
+    private var windowController: WindowController? {
+        view.window?.windowController as? WindowController
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] event in
-            // This is the "O" key (for OAM)
-            guard event.keyCode == 31 else { return event }
-            self?.generateAndSaveOAMImage()
-            return nil
-        }
 
         view.frame.size = viewSize
         view.addSubview(mtkView)
@@ -42,7 +39,14 @@ class ViewController: NSViewController {
 
     override func viewDidAppear() {
         super.viewDidAppear()
+        windowController?.delegate = self
         self.view.window?.title = self.title ?? "Game Boy"
+    }
+
+    override func keyDown(with event: NSEvent) {
+        // This is the "O" key (for OAM)
+        guard event.keyCode == 31 else { return }
+        generateAndSaveOAMImage()
     }
 
     private func makeCartridge() throws -> CartridgeType {
@@ -111,3 +115,39 @@ class ViewController: NSViewController {
     }
 }
 
+extension ViewController: WindowControllerDelegate {
+    func windowController(_ controller: WindowController, keyCodePressed keyCode: UInt16) {
+        guard let button = Joypad.Button(keyCode: keyCode) else { return }
+        gameBoy?.joypad.buttonWasPressed(button)
+    }
+
+    func windowController(_ controller: WindowController, keyCodeReleased keyCode: UInt16) {
+        guard let button = Joypad.Button(keyCode: keyCode) else { return }
+        gameBoy?.joypad.buttonWasReleased(button)
+    }
+}
+
+extension Joypad.Button {
+    init?(keyCode: UInt16) {
+        switch keyCode {
+        case 2:
+            self = .right
+        case 0:
+            self = .left
+        case 13:
+            self = .up
+        case 1:
+            self = .down
+        case 37:
+            self = .a
+        case 40:
+            self = .b
+        case 43:
+            self = .select
+        case 47:
+            self = .start
+        default:
+            return nil
+        }
+    }
+}

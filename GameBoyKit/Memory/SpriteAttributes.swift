@@ -123,10 +123,9 @@ extension SpriteAttributes {
         switch objectSize {
         case .small:
             return tileNumber
-        case .large where yOffsetInSprite < objectSize.maxHeight / 2:
-            return largeTopAndBottomTileNumbers[0]
         case .large:
-            return largeTopAndBottomTileNumbers[1]
+            let index = Int(yOffsetInSprite / objectSize.minHeight)
+            return largeTopAndBottomTileNumbers[index]
         }
     }
 }

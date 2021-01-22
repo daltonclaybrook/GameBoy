@@ -121,6 +121,11 @@ extension LCDControl.ObjectSize {
         }
     }
 
+    /// Returns the height of a sprite in small mode.
+    var minHeight: UInt8 {
+        8
+    }
+
     /// Returns the height of a sprite in large mode. This value is always used to
     /// adjust the y-position of a sprite on screen.
     var maxHeight: UInt8 {

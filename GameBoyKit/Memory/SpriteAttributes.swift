@@ -83,6 +83,14 @@ extension SpriteAttributes {
         }
     }
 
+    var largeTopAndBottomTileNumbers: [UInt8] {
+        let tileNumbers = [
+            tileNumber & 0xfe,
+            tileNumber | 0x01
+        ]
+        return isYFlipped ? tileNumbers.reversed() : tileNumbers
+    }
+
     func getIsOnScreen(objectSize: LCDControl.ObjectSize) -> Bool {
         let xRange = (1..<UInt8(Constants.screenWidth) + objectSize.width)
         guard xRange.contains(position.x) else { return false }
@@ -116,9 +124,9 @@ extension SpriteAttributes {
         case .small:
             return tileNumber
         case .large where yOffsetInSprite < objectSize.maxHeight / 2:
-            return tileNumber & 0xfe
+            return largeTopAndBottomTileNumbers[0]
         case .large:
-            return tileNumber | 0x01
+            return largeTopAndBottomTileNumbers[1]
         }
     }
 }

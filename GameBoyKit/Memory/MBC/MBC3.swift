@@ -1,6 +1,11 @@
 public final class MBC3: CartridgeType {
     private typealias BankNumber = UInt8
 
+    private enum LatchPosition: UInt8 {
+        case low = 0
+        case high = 1
+    }
+
     public let title: String
 
     private let romBankSize: UInt16 = 0x4000 // 16KB
@@ -9,6 +14,7 @@ public final class MBC3: CartridgeType {
 
     private let romBytes: [Byte]
     private var ramBytes: [Byte]
+    private let clock = RTC()
 
     private var isRAMAndTimerEnabled: Bool = false
     private var currentROMBankNumber: Byte = 0x01
@@ -17,6 +23,7 @@ public final class MBC3: CartridgeType {
     /// value is in the range 0x0a...0x0c, the corresponding RTC
     /// register is mapped into that range instead.
     private var currentRAMBankNumberOrRTCRegister: Byte = 0x00
+    private var currentLatchPosition = LatchPosition.low
 
     /// The calculated ROM bank number
     private var currentROMBank: BankNumber {
@@ -41,7 +48,7 @@ public final class MBC3: CartridgeType {
         case 0x6000...0x7fff: // Latch clock data
             // When this register goes from 0x00->0x01, the current
             // time is "latched" into the RTC registers.
-            fatalError("unimplemented")
+            updateLatchPositionIfNecessary(byte: byte)
         case 0xa000...0xbfff: // Write to selected RAM bank or RTC registers
             writeToRAMOrRTC(byte: byte, to: address)
         default:
@@ -72,7 +79,7 @@ public final class MBC3: CartridgeType {
             let adjustedAddress = (address - 0xa000) + (Address(currentRAMBankNumberOrRTCRegister) * ramBankSize)
             return ramBytes.read(address: adjustedAddress)
         case RTC.registerRange: // RTC register selected
-            fatalError("unimplemented")
+            return clock.read(register: currentRAMBankNumberOrRTCRegister)
         default:
             return 0x00 // If this the correct default?
         }
@@ -85,9 +92,20 @@ public final class MBC3: CartridgeType {
             let adjustedAddress = (address - 0xa000) + (Address(currentRAMBankNumberOrRTCRegister) * ramBankSize)
             ramBytes.write(byte: byte, to: adjustedAddress)
         case RTC.registerRange: // RTC register selected
-            fatalError("unimplemented")
+            clock.updateClockRegister(value: byte, register: currentRAMBankNumberOrRTCRegister)
         default:
             break
+        }
+    }
+
+    private func updateLatchPositionIfNecessary(byte: Byte) {
+        guard let position = LatchPosition(rawValue: byte),
+              position != currentLatchPosition
+        else { return }
+
+        self.currentLatchPosition = position
+        if position == .high {
+            clock.latchClockData()
         }
     }
 }

@@ -49,14 +49,22 @@ public final class RTC: RawRepresentable {
         self.init(rawValue: [Byte](repeating: 0, count: Self.registerRange.count))
     }
 
-    /// Updates the RTC register for the given address. The address must be
-    /// in the range 0x08...0x0c.
-    public func updateClockRegister(value: Byte, address: Register) {
-        guard Self.registerRange.contains(address) else {
+    public func read(register: Register) -> Byte {
+        guard Self.registerRange.contains(register) else {
             fatalError("The provided address is outside of the allowed range")
         }
-        update(value: value, for: address)
-        handleRegisterWasUpdated(value: value, address: address)
+        let index = Self.registerRange.lowerBound.distance(to: register)
+        return rawValue[index]
+    }
+
+    /// Updates the RTC register for the given address. The address must be
+    /// in the range 0x08...0x0c.
+    public func updateClockRegister(value: Byte, register: Register) {
+        guard Self.registerRange.contains(register) else {
+            fatalError("The provided address is outside of the allowed range")
+        }
+        update(value: value, for: register)
+        handleRegisterWasUpdated(value: value, register: register)
     }
 
     /// Causes the internal clock data to be applied to the external registers
@@ -109,8 +117,8 @@ public final class RTC: RawRepresentable {
         internalClock.dayCounterCarried = true
     }
 
-    private func handleRegisterWasUpdated(value: Byte, address: Register) {
-        switch address {
+    private func handleRegisterWasUpdated(value: Byte, register: Register) {
+        switch register {
         case Registers.seconds:
             internalClock.seconds = value
         case Registers.minutes:

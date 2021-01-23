@@ -63,12 +63,12 @@ public final class MBC1: CartridgeType {
 
     public func write(byte: Byte, to address: Address) {
         switch address {
+        case 0x0000...0x1fff: // Set RAM enabled/disabled
+            isRAMEnabled = byte & 0x0f == 0x0a
         case 0xa000...0xbfff: // Write to selected RAM bank
             guard isRAMEnabled else { return }
             let adjustedAddress = (address - 0xa000) + (Address(currentRAMBank) * ramBankSize)
             ramBytes.write(byte: byte, to: adjustedAddress)
-        case 0x0000...0x1fff: // Set RAM enabled/disabled
-            isRAMEnabled = byte & 0x0f == 0x0a
         case 0x2000...0x3fff: // Set ROM bank number (lower 5 bits)
             currentLowROMBankNumber = byte & 0x1f // mask of lower 5 bits
         case 0x4000...0x5fff: // Set RAM bank number ~or~ upper 2 bits of ROM bank number

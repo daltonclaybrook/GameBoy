@@ -128,6 +128,12 @@
 		75B0E22C25B918A60021B3C9 /* Tile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B0E22B25B918A60021B3C9 /* Tile.swift */; };
 		75B0E22D25B918A60021B3C9 /* Tile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B0E22B25B918A60021B3C9 /* Tile.swift */; };
 		75B1F59925BA76CD001BEA37 /* WindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B1F59825BA76CD001BEA37 /* WindowController.swift */; };
+		75B1F5BA25BBCD8D001BEA37 /* pokemon-red.gb in Resources */ = {isa = PBXBuildFile; fileRef = 75B1F5B925BBCD8D001BEA37 /* pokemon-red.gb */; };
+		75B1F5BB25BBCD8D001BEA37 /* pokemon-red.gb in Resources */ = {isa = PBXBuildFile; fileRef = 75B1F5B925BBCD8D001BEA37 /* pokemon-red.gb */; };
+		75B1F5C525BC9B84001BEA37 /* MBC3.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B1F5C425BC9B83001BEA37 /* MBC3.swift */; };
+		75B1F5C625BC9B84001BEA37 /* MBC3.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B1F5C425BC9B83001BEA37 /* MBC3.swift */; };
+		75B1F5CC25BCC9D9001BEA37 /* RTC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B1F5CB25BCC9D9001BEA37 /* RTC.swift */; };
+		75B1F5CD25BCC9D9001BEA37 /* RTC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B1F5CB25BCC9D9001BEA37 /* RTC.swift */; };
 		75B3AD09229DEEA500A03C5A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B3AD08229DEEA500A03C5A /* AppDelegate.swift */; };
 		75B3AD0B229DEEA500A03C5A /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B3AD0A229DEEA500A03C5A /* ViewController.swift */; };
 		75B3AD0E229DEEA500A03C5A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 75B3AD0C229DEEA500A03C5A /* Main.storyboard */; };
@@ -327,6 +333,9 @@
 		75B0E22425B915AC0021B3C9 /* PPU+Debug.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PPU+Debug.swift"; sourceTree = "<group>"; };
 		75B0E22B25B918A60021B3C9 /* Tile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tile.swift; sourceTree = "<group>"; };
 		75B1F59825BA76CD001BEA37 /* WindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowController.swift; sourceTree = "<group>"; };
+		75B1F5B925BBCD8D001BEA37 /* pokemon-red.gb */ = {isa = PBXFileReference; lastKnownFileType = file; path = "pokemon-red.gb"; sourceTree = "<group>"; };
+		75B1F5C425BC9B83001BEA37 /* MBC3.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBC3.swift; sourceTree = "<group>"; };
+		75B1F5CB25BCC9D9001BEA37 /* RTC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RTC.swift; sourceTree = "<group>"; };
 		75B3AD05229DEEA500A03C5A /* GameBoy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GameBoy.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		75B3AD08229DEEA500A03C5A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		75B3AD0A229DEEA500A03C5A /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -507,6 +516,8 @@
 			isa = PBXGroup;
 			children = (
 				7590E7B525AA5703005E1280 /* MBC1.swift */,
+				75B1F5C425BC9B83001BEA37 /* MBC3.swift */,
+				75B1F5CB25BCC9D9001BEA37 /* RTC.swift */,
 			);
 			path = MBC;
 			sourceTree = "<group>";
@@ -725,6 +736,7 @@
 			children = (
 				7590E81625AC0BF7005E1280 /* dmg-acid2.gb */,
 				7590E80725ABF301005E1280 /* mario.gb */,
+				75B1F5B925BBCD8D001BEA37 /* pokemon-red.gb */,
 				7590E7CE25AB8FF0005E1280 /* pokemon-yellow.gbc */,
 				757F38D222B1BAC800BBB570 /* tetris.gb */,
 				75D0E54122B26E670049BF6D /* cpu_instrs.gb */,
@@ -950,6 +962,7 @@
 			files = (
 				75FDE24D25B4D7AF00C2A5FB /* oam_dma_start.gb in Resources */,
 				758D867E22B6E82900C28791 /* 01-special.gb in Resources */,
+				75B1F5BB25BBCD8D001BEA37 /* pokemon-red.gb in Resources */,
 				75F61DA924FC26A100FA095F /* call_timing2.gb in Resources */,
 				75CAF08A22BD8CE700E04FAC /* interrupt_time.gb in Resources */,
 				758D865C22B6D86A00C28791 /* reimp.gbc in Resources */,
@@ -1028,6 +1041,7 @@
 				75B3AD0E229DEEA500A03C5A /* Main.storyboard in Resources */,
 				758D864322B495BD00C28791 /* load.gb in Resources */,
 				7590E81725AC0BF7005E1280 /* dmg-acid2.gb in Resources */,
+				75B1F5BA25BBCD8D001BEA37 /* pokemon-red.gb in Resources */,
 				75FDE25425B4D7BB00C2A5FB /* oam_dma_timing.gb in Resources */,
 				758D867B22B6E82900C28791 /* 11-op a,(hl).gb in Resources */,
 				75FDE24C25B4D7AF00C2A5FB /* oam_dma_start.gb in Resources */,
@@ -1090,6 +1104,7 @@
 				75B0E22625B915AC0021B3C9 /* PPU+Debug.swift in Sources */,
 				757F390122B1C69F00BBB570 /* CPU+Instructions+CB.swift in Sources */,
 				757F390022B1C69F00BBB570 /* CPU+Instructions.swift in Sources */,
+				75B1F5C625BC9B84001BEA37 /* MBC3.swift in Sources */,
 				75D0E54022B1C9F50049BF6D /* HRAM.swift in Sources */,
 				7590E7ED25ABA935005E1280 /* MemoryMasking.swift in Sources */,
 				754013D325B7225C005951E0 /* SpriteAttributes.swift in Sources */,
@@ -1100,6 +1115,7 @@
 				7590E7C525AACEC6005E1280 /* CartridgeFactory.swift in Sources */,
 				758834DB22BB17BB00B80FD0 /* TimerControl.swift in Sources */,
 				757F38FB22B1C69000BBB570 /* AAPLShaders.metal in Sources */,
+				75B1F5CD25BCC9D9001BEA37 /* RTC.swift in Sources */,
 				757F390F22B1C69F00BBB570 /* Clock.swift in Sources */,
 				757F390222B1C69F00BBB570 /* IO.swift in Sources */,
 				75D0E53D22B1C8430049BF6D /* WRAM.swift in Sources */,
@@ -1166,6 +1182,7 @@
 				75B0E22525B915AC0021B3C9 /* PPU+Debug.swift in Sources */,
 				7590E80125ABE353005E1280 /* CPU+Assertions.swift in Sources */,
 				757F38C622B0765E00BBB570 /* Constants.swift in Sources */,
+				75B1F5C525BC9B84001BEA37 /* MBC3.swift in Sources */,
 				75B3AD56229E13B700A03C5A /* PPU.swift in Sources */,
 				75D0E53F22B1C9CB0049BF6D /* HRAM.swift in Sources */,
 				754013D225B7225C005951E0 /* SpriteAttributes.swift in Sources */,
@@ -1176,6 +1193,7 @@
 				7590E7B625AA5703005E1280 /* MBC1.swift in Sources */,
 				75BD98C222A41DDC00CFFB68 /* ColorPalettes.swift in Sources */,
 				7590E7C425AACEC6005E1280 /* CartridgeFactory.swift in Sources */,
+				75B1F5CC25BCC9D9001BEA37 /* RTC.swift in Sources */,
 				758834DA22BB12DF00B80FD0 /* TimerControl.swift in Sources */,
 				75BD98C022A413AA00CFFB68 /* LCDControl.swift in Sources */,
 				757F38CA22B08A5500BBB570 /* AAPLShaders.metal in Sources */,

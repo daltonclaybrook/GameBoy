@@ -66,7 +66,7 @@ extension LCDControl {
     /// Monochrome Game Boy: When false, both background and window become blank (white),
     /// and the Window Display Bit is ignored in that case. Only Sprites may still be
     /// displayed (if enabled in Bit 1).
-    var backgroundAndWindowDisplayed: Bool {
+    var backgroundAndWindowDisplayPriority: Bool {
         rawValue & 0x01 != 0
     }
 }

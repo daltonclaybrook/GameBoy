@@ -10,20 +10,20 @@ public struct Color {
 
 public final class ColorPalettes {
     public enum Palette {
-        case monochromeBackground
+        case monochromeBackgroundAndWindow
         case monochromeObject0
         case monochromeObject1
     }
 
     public struct Registers {
-        public static let monochromeBGData: Address = 0xff47
+        public static let monochromeBGAndWindowData: Address = 0xff47
         public static let monochromeObject0Data: Address = 0xff48
         public static let monochromeObject1Data: Address = 0xff49
     }
 
     public let monochromeAddressRange: ClosedRange<Address> = (0xff47...0xff49)
 
-    private var monochromeBGData: Byte = 0
+    private var monochromeBGAndWindowData: Byte = 0
     private var monochromeObject0Data: Byte = 0
     private var monochromeObject1Data: Byte = 0
 
@@ -31,8 +31,8 @@ public final class ColorPalettes {
 
     public func read(address: Address) -> Byte {
         switch address {
-        case Registers.monochromeBGData:
-            return monochromeBGData
+        case Registers.monochromeBGAndWindowData:
+            return monochromeBGAndWindowData
         case Registers.monochromeObject0Data:
             return monochromeObject0Data
         case Registers.monochromeObject1Data:
@@ -44,8 +44,8 @@ public final class ColorPalettes {
 
     public func write(byte: Byte, to address: Address) {
         switch address {
-        case Registers.monochromeBGData:
-            monochromeBGData = byte
+        case Registers.monochromeBGAndWindowData:
+            monochromeBGAndWindowData = byte
         case Registers.monochromeObject0Data:
             monochromeObject0Data = byte
         case Registers.monochromeObject1Data:
@@ -76,8 +76,8 @@ public final class ColorPalettes {
 
     private func getData(for palette: Palette) -> Byte {
         switch palette {
-        case .monochromeBackground:
-            return monochromeBGData
+        case .monochromeBackgroundAndWindow:
+            return monochromeBGAndWindowData
         case .monochromeObject0:
             return monochromeObject0Data
         case .monochromeObject1:

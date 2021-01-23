@@ -6,6 +6,7 @@ public final class PPU {
     fileprivate enum PixelInfo {
         case blank
         case background(Color, colorNumber: ColorNumber)
+        case window(Color, colorNumber: ColorNumber)
         case sprite(Color)
     }
 
@@ -149,10 +150,13 @@ public final class PPU {
     /// - display sprites
     private func drawLine() {
         let lineOnScreen = io.lcdYCoordinate
-
         var linePixels = [PixelInfo](repeating: .blank, count: Constants.screenWidth)
-        if io.lcdControl.backgroundAndWindowDisplayed {
+
+        if io.lcdControl.backgroundAndWindowDisplayPriority {
             updatePixelsWithBackground(line: lineOnScreen, pixels: &linePixels)
+            if io.lcdControl.windowDisplayEnabled {
+                updatePixelsWithWindow(line: lineOnScreen, pixels: &linePixels)
+            }
         }
 
         if io.lcdControl.objectDisplayEnabled {
@@ -171,14 +175,46 @@ public final class PPU {
         let lineInMap = io.scrollY &+ line
         let pixelYInTile = lineInMap % 8 // tile height in pixels
 
-        (0..<UInt8(truncatingIfNeeded: Constants.screenWidth)).forEach { screenX in
+        (0..<UInt8(Constants.screenWidth)).forEach { screenX in
             let mapX = screenX &+ scrollX
             let pixelXInTile = mapX % 8 // tile width in pixels
             let tile = getTile(in: map, tileRange: tiles, pixelX: UInt16(mapX), pixelY: UInt16(lineInMap))
             let pixelColorNumber = tile.getColorNumber(in: vram, xOffset: pixelXInTile, yOffset: pixelYInTile)
 
-            let pixelColor = io.palettes.getColor(for: pixelColorNumber, in: .monochromeBackground)
+            let pixelColor = io.palettes.getColor(for: pixelColorNumber, in: .monochromeBackgroundAndWindow)
             pixels[Int(screenX)] = .background(pixelColor, colorNumber: pixelColorNumber)
+        }
+    }
+
+    private func updatePixelsWithWindow(line: UInt8, pixels: inout [PixelInfo]) {
+        let windowY = io.windowY
+        guard windowY <= line else {
+            // This line is above where the window is rendered
+            return
+        }
+
+        // A value of 0-7 positions the window at the left edge of the screen. Positions
+        // less than 7 result in hardware glitches on the game boy, but those glitches are
+        // not emulated here.
+        let windowX = UInt8(max(Int(io.windowX) - 7, 0))
+        let screenWidth = UInt8(Constants.screenWidth)
+        guard windowX < screenWidth else {
+            // Window is off the right edge of the screen
+            return
+        }
+
+        let yOffsetInWindow = line - windowY
+        let yOffsetInTile = yOffsetInWindow % 8
+        let mapRange = io.lcdControl.windowTileMapDisplay
+        let tileRange = io.lcdControl.selectedTileDataRangeForBackgroundAndWindow
+
+        (windowX..<screenWidth).forEach { screenX in
+            let xOffsetInWindow = screenX - windowX
+            let xOffsetInTile = xOffsetInWindow % 8
+            let tile = getTile(in: mapRange, tileRange: tileRange, pixelX: UInt16(xOffsetInWindow), pixelY: UInt16(yOffsetInWindow))
+            let colorNumber = tile.getColorNumber(in: vram, xOffset: xOffsetInTile, yOffset: yOffsetInTile)
+            let pixelColor = io.palettes.getColor(for: colorNumber, in: .monochromeBackgroundAndWindow)
+            pixels[Int(screenX)] = .window(pixelColor, colorNumber: colorNumber)
         }
     }
 
@@ -223,7 +259,7 @@ public final class PPU {
     private func mergeSpritePixel(color: Color, priority: SpriteAttributes.BackgroundPriority, atIndex: Int, with pixels: inout [PixelInfo]) {
         let existing = pixels[atIndex]
         switch existing {
-        case .background(_, let colorNumber):
+        case .background(_, let colorNumber), .window(_, let colorNumber):
             // BG color number 0 is always behind the sprite
             if colorNumber == 0 || priority == .aboveBackground {
                 pixels[atIndex] = .sprite(color)
@@ -273,7 +309,9 @@ extension PPU.PixelInfo {
         switch self {
         case .blank:
             return .white
-        case .background(let color, _), .sprite(let color):
+        case .background(let color, _),
+             .window(let color, _),
+             .sprite(let color):
             return color
         }
     }

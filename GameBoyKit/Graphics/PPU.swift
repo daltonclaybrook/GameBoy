@@ -25,6 +25,10 @@ public final class PPU {
     private let cyclesPerLine: Cycles
     private var isDisplayEnabled = false
     private var cyclesRemaining: Cycles
+    /// Each time a window line is drawn, this counter is incremented and used to
+    /// calculate the next window line to draw. If window display is disabled, this
+    /// will not be incremented.
+    private var windowLineCounter: UInt8 = 0
     private var pixelBuffer = [Byte](repeating: .max, count: Constants.screenWidth * Constants.screenHeight * 4)
 
     init(renderer: Renderer, io: IO, vram: VRAM, oam: OAM) {
@@ -70,7 +74,9 @@ public final class PPU {
         case .verticalBlank:
             io.lcdYCoordinate += 1
             if io.lcdYCoordinate >= Constants.screenHeight + vBlankLineCount {
+                // Jump back to the top of the screen
                 io.lcdYCoordinate = 0
+                windowLineCounter = 0
                 changeMode(next: .searchingOAMRAM)
             } else {
                 cyclesRemaining = getCycles(for: .verticalBlank)
@@ -203,7 +209,9 @@ public final class PPU {
             return
         }
 
-        let yOffsetInWindow = line - windowY
+        let yOffsetInWindow = windowLineCounter
+        windowLineCounter += 1
+
         let yOffsetInTile = yOffsetInWindow % 8
         let mapRange = io.lcdControl.windowTileMapDisplay
         let tileRange = io.lcdControl.selectedTileDataRangeForBackgroundAndWindow

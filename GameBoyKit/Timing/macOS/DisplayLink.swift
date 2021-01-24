@@ -7,7 +7,6 @@ public final class DisplayLink: DisplayLinkType {
     }
 
     private let displayLink: CVDisplayLink
-    private var notificationToken: NSObjectProtocol?
     private var renderCallback: ((FramesPerSecond) -> Void)?
 
     public init() throws {
@@ -26,17 +25,9 @@ public final class DisplayLink: DisplayLinkType {
             assertionFailure("failed to register display link callback")
             throw Error.errorRegisteringDisplayLinkCallback
         }
-
-        notificationToken = NotificationCenter.default
-            .addObserver(forName: NSWindow.willCloseNotification, object: nil, queue: nil) { [weak self] _ in
-                self?.stop()
-            }
     }
 
     deinit {
-        if let token = notificationToken {
-            NotificationCenter.default.removeObserver(token)
-        }
         stop()
         CVDisplayLinkSetOutputCallback(displayLink, nil, nil)
     }

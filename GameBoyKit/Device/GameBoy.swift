@@ -42,14 +42,29 @@ public final class GameBoy {
     }
 
     public func load(cartridge: CartridgeType) {
-        self.queue.async {
+        queue.async {
             self.cartridge = cartridge
             self.mmu.load(cartridge: cartridge)
             self.mmu.mask = try! BootROM.dmgBootRom()
 //            self.bootstrap()
+        }
+    }
+
+    public func start() {
+        queue.async {
+            guard self.cartridge != nil else { return }
             self.clock.start { [weak self] in
                 self?.fetchAndExecuteNextInstruction()
             }
+        }
+    }
+
+    public func stop() {
+        // This might be called as the owner of GameBoy is being torn down,
+        // so we use `queue.sync` to make sure the clock is stopped before
+        // that happens.
+        queue.sync {
+            self.clock.stop()
         }
     }
 
@@ -67,7 +82,7 @@ public final class GameBoy {
         let previousQueuedEnableInterrupts = cpu.queuedEnableInterrupts
 
         if !cpu.isHalted {
-            let pc = cpu.pc
+//            let pc = cpu.pc
             let opcodeByte = cpu.fetchByte(context: self)
             let opcode = CPU.allOpcodes[Int(opcodeByte)]
 //            print("PC: \(pc.hexString), \(opcode.mnemonic)")

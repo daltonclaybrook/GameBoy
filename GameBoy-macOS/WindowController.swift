@@ -1,12 +1,12 @@
 import Cocoa
 
-protocol WindowControllerDelegate: AnyObject {
-    func windowController(_ controller: WindowController, keyCodePressed keyCode: UInt16)
-    func windowController(_ controller: WindowController, keyCodeReleased keyCode: UInt16)
+protocol GameWindowControllerDelegate: AnyObject {
+    func windowController(_ controller: GameWindowController, keyCodePressed keyCode: UInt16)
+    func windowController(_ controller: GameWindowController, keyCodeReleased keyCode: UInt16)
 }
 
-final class WindowController: NSWindowController {
-    weak var delegate: WindowControllerDelegate?
+final class GameWindowController: NSWindowController {
+    weak var delegate: GameWindowControllerDelegate?
 
     override func keyDown(with event: NSEvent) {
         delegate?.windowController(self, keyCodePressed: event.keyCode)

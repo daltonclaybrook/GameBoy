@@ -57,15 +57,23 @@ public final class Clock {
     // MARK: - Helpers
 
     private func displayLinkDidFire(framesPerSecond: FramesPerSecond) {
-        queue.async {
-            let currentFrameCycles = Cycles(Double(self.machineSpeed) / framesPerSecond)
-            let targetCycles = currentFrameCycles - self.lastCycleOverflow
-
-            let startCycles = self.cycles
-            while self.cycles - startCycles < targetCycles {
-                self.emulateBlock?()
-            }
-            self.lastCycleOverflow = self.cycles - startCycles - targetCycles
+        // By using `queue.sync` instead of `async`, we apply back-pressure on
+        // the display link thread rather than flooding the queue with work
+        // that it can't keep up with.
+        queue.sync {
+            self.queueDisplayLinkDidFire(framesPerSecond: framesPerSecond)
         }
+    }
+
+    private func queueDisplayLinkDidFire(framesPerSecond: FramesPerSecond) {
+        guard let emulateBlock = emulateBlock else { return }
+        let currentFrameCycles = Cycles(Double(machineSpeed) / framesPerSecond)
+        let targetCycles = currentFrameCycles - lastCycleOverflow
+
+        let startCycles = cycles
+        while cycles - startCycles < targetCycles {
+            emulateBlock()
+        }
+        lastCycleOverflow = cycles - startCycles - targetCycles
     }
 }

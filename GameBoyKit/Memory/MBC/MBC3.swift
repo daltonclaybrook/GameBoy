@@ -8,7 +8,7 @@ public final class MBC3: CartridgeType {
 
     public let title: String
 
-    private let romBankSize: UInt16 = 0x4000 // 16KB
+    private let romBankSize: UInt32 = 0x4000 // 16KB
     private let ramBankSize: UInt16 = 0x2000 // 8KB
     private let ramBankRange: ClosedRange<UInt8> = 0x00...0x03
 
@@ -61,7 +61,7 @@ public final class MBC3: CartridgeType {
         case 0x0000...0x3fff: // Always ROM bank 0x00
             return romBytes.read(address: address)
         case 0x4000...0x7fff: // Selected ROM bank 0x01-0x7f
-            let adjustedAddress = (address - 0x4000) + (Address(currentROMBank) * romBankSize)
+            let adjustedAddress = (UInt32(address) - 0x4000) + (UInt32(currentROMBank) * romBankSize)
             return romBytes.read(address: adjustedAddress)
         case 0xa000...0xbfff: // RAM or RTC access
             return readFromRAMOrRTC(at: address)

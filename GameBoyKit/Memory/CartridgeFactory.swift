@@ -17,7 +17,7 @@ public struct CartridgeFactory {
         case 0x0b...0x0d:
             fatalError("MMM01 is currently unsupported")
         case 0x0f...0x13:
-            fatalError("MBC3 is currently unsupported")
+            return MBC3(title: titleString, bytes: romBytes)
         case 0x19...0x1e:
             fatalError("MBC5 is currently unsupported")
         case 0x20:

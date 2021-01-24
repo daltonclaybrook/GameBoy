@@ -18,6 +18,11 @@ extension Array where Element == Byte {
         return self[Int(address)]
     }
 
+    /// Used when reading from a large ROM
+    func read(address: UInt32) -> Byte {
+        return self[Int(truncatingIfNeeded: address)]
+    }
+
     func read(address: Address, in range: ClosedRange<Address>) -> Byte {
         return self[Int(address - range.lowerBound)]
     }

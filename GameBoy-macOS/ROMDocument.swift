@@ -7,11 +7,15 @@ final class ROMDocument: NSDocument {
     private var viewController: GameViewController?
     private var cartridge: CartridgeType? = nil
     private var saveData: SaveData? = nil
+    private var timer: Foundation.Timer?
 
     override func read(from data: Data, ofType typeName: String) throws {
         let (cartridge, header) = try CartridgeFactory.makeCartridge(romBytes: [Byte](data))
         self.cartridge = cartridge
         self.saveData = loadSaveData(ramSize: header.ramSize)
+        timer = .scheduledTimer(withTimeInterval: 10, repeats: true) { [weak self] _ in
+            self?.save(nil)
+        }
     }
 
     override func makeWindowControllers() {

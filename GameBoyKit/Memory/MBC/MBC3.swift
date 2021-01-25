@@ -91,7 +91,6 @@ public final class MBC3: CartridgeType {
         guard isRAMAndTimerEnabled else { return }
         switch currentRAMBankNumberOrRTCRegister {
         case ramBankRange: // RAM bank selected
-            print("\(Date()): Writing to SRAM...")
             let adjustedAddress = (address - 0xa000) + (Address(currentRAMBankNumberOrRTCRegister) * ramBankSize)
             externalRAMBytes.write(byte: byte, to: adjustedAddress)
         case RTC.registerRange: // RTC register selected

@@ -2,13 +2,7 @@ import Cocoa
 import GameBoyKit
 import MetalKit
 
-protocol GameViewControllerDelegate: AnyObject {
-    func gameViewController(_ viewController: GameViewController, didSaveExternalRAM bytes: [Byte])
-}
-
 class GameViewController: NSViewController {
-    weak var delegate: GameViewControllerDelegate?
-
     private let viewSize = CGSize(width: 400, height: 360)
     private let mtkView = MTKView()
     private let mtlDevice = MTLCreateSystemDefaultDevice()
@@ -22,7 +16,6 @@ class GameViewController: NSViewController {
             let renderer = try MetalRenderer(view: mtkView, device: device)
             let displayLink = try DisplayLink()
             let gameBoy = GameBoy(renderer: renderer, displayLink: displayLink)
-            gameBoy.delegate = self
             return gameBoy
         } catch let error {
             assertionFailure("error creating game boy: \(error)")
@@ -112,12 +105,6 @@ extension GameViewController: GameWindowControllerDelegate {
     func windowController(_ controller: GameWindowController, keyCodeReleased keyCode: UInt16) {
         guard let key = Joypad.Key(keyCode: keyCode) else { return }
         gameBoy?.joypad.keyWasReleased(key)
-    }
-}
-
-extension GameViewController: GameBoyDelegate {
-    func gameBoy(_ gameBoy: GameBoy, didSaveExternalRAM bytes: [Byte]) {
-        delegate?.gameViewController(self, didSaveExternalRAM: bytes)
     }
 }
 

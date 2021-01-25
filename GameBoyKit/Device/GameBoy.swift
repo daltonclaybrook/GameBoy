@@ -8,18 +8,12 @@ public struct InterruptVectors {
     public static let joypad: Address = 0x0060
 }
 
-public protocol GameBoyDelegate: AnyObject {
-    func gameBoy(_ gameBoy: GameBoy, didSaveExternalRAM bytes: [Byte])
-}
-
 public final class GameBoy {
     private let delegateQueue: DispatchQueue
     private let queue = DispatchQueue(
         label: "com.daltonclaybrook.GameBoy.GameBoy",
         qos: .userInteractive
     )
-
-    public weak var delegate: GameBoyDelegate?
 
     public var joypad: Joypad {
         io.joypad
@@ -54,7 +48,6 @@ public final class GameBoy {
     public func load(cartridge: CartridgeType) {
         queue.async {
             self.cartridge = cartridge
-            self.cartridge?.delegate = self
             self.mmu.load(cartridge: cartridge)
             self.mmu.mask = try! BootROM.dmgBootRom()
 //            self.bootstrap()
@@ -172,14 +165,5 @@ extension GameBoy: CPUContext {
 
     public func tickCycle() {
         emulateCycle()
-    }
-}
-
-extension GameBoy: CartridgeDelegate {
-    public func cartridge(_ cartridge: CartridgeType, didSaveExternalRAM bytes: [Byte]) {
-        delegateQueue.async { [weak self] in
-            guard let self = self else { return }
-            self.delegate?.gameBoy(self, didSaveExternalRAM: bytes)
-        }
     }
 }

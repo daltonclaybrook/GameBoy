@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		754013D225B7225C005951E0 /* SpriteAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 754013D125B7225C005951E0 /* SpriteAttributes.swift */; };
 		754013D325B7225C005951E0 /* SpriteAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 754013D125B7225C005951E0 /* SpriteAttributes.swift */; };
+		7573111425BF08A6001530DC /* pokemon-pinball.gbc in Resources */ = {isa = PBXBuildFile; fileRef = 7573111325BF08A6001530DC /* pokemon-pinball.gbc */; };
+		7573111525BF08A7001530DC /* pokemon-pinball.gbc in Resources */ = {isa = PBXBuildFile; fileRef = 7573111325BF08A6001530DC /* pokemon-pinball.gbc */; };
 		757F38C422B0731E00BBB570 /* Renderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 757F38C322B0731E00BBB570 /* Renderer.swift */; };
 		757F38C622B0765E00BBB570 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 757F38C522B0765E00BBB570 /* Constants.swift */; };
 		757F38CA22B08A5500BBB570 /* AAPLShaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 757F38C822B08A5500BBB570 /* AAPLShaders.metal */; };
@@ -284,6 +286,7 @@
 
 /* Begin PBXFileReference section */
 		754013D125B7225C005951E0 /* SpriteAttributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpriteAttributes.swift; sourceTree = "<group>"; };
+		7573111325BF08A6001530DC /* pokemon-pinball.gbc */ = {isa = PBXFileReference; lastKnownFileType = file; path = "pokemon-pinball.gbc"; sourceTree = "<group>"; };
 		757F38C322B0731E00BBB570 /* Renderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Renderer.swift; sourceTree = "<group>"; };
 		757F38C522B0765E00BBB570 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		757F38C822B08A5500BBB570 /* AAPLShaders.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = AAPLShaders.metal; sourceTree = "<group>"; };
@@ -760,6 +763,7 @@
 				7590E80725ABF301005E1280 /* mario.gb */,
 				75B1F5B925BBCD8D001BEA37 /* pokemon-red.gb */,
 				7590E7CE25AB8FF0005E1280 /* pokemon-yellow.gbc */,
+				7573111325BF08A6001530DC /* pokemon-pinball.gbc */,
 				757F38D222B1BAC800BBB570 /* tetris.gb */,
 				75D0E54122B26E670049BF6D /* cpu_instrs.gb */,
 				758D865A22B6D86900C28791 /* reimp.gbc */,
@@ -1007,6 +1011,7 @@
 				75FDE24625B3AB9600C2A5FB /* div_timing.gb in Resources */,
 				757F391222B1C73900BBB570 /* tetris.gb in Resources */,
 				7586A14425AD6B8A008DAD32 /* intr_timing.gb in Resources */,
+				7573111525BF08A7001530DC /* pokemon-pinball.gbc in Resources */,
 				758D866E22B6E82900C28791 /* 03-op sp,hl.gb in Resources */,
 				758D867222B6E82900C28791 /* 09-op r,r.gb in Resources */,
 				7590E80925ABF301005E1280 /* mario.gb in Resources */,
@@ -1060,6 +1065,7 @@
 				7590E80825ABF301005E1280 /* mario.gb in Resources */,
 				758D867122B6E82900C28791 /* 09-op r,r.gb in Resources */,
 				7586A14A25ADF2E7008DAD32 /* tim00.gb in Resources */,
+				7573111425BF08A6001530DC /* pokemon-pinball.gbc in Resources */,
 				75B3AD0E229DEEA500A03C5A /* Main.storyboard in Resources */,
 				758D864322B495BD00C28791 /* load.gb in Resources */,
 				7590E81725AC0BF7005E1280 /* dmg-acid2.gb in Resources */,

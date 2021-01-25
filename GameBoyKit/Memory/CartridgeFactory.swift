@@ -3,6 +3,7 @@ public struct CartridgeFactory {
         case romIncorrectSize
         case ramIncorrectSize
         case invalidCartridgeHeader
+        case unsupportedCartridgeType(name: String)
     }
 
     public static func makeCartridge(romBytes: [Byte], externalRAMBytes: [Byte]?) throws -> (CartridgeType, CartridgeHeader) {
@@ -31,27 +32,27 @@ public struct CartridgeFactory {
         case 0x01...0x03:
             cartridge = MBC1(romBytes: romBytes, ramBytes: externalRAMBytes, romSize: romSize, ramSize: ramSize)
         case 0x05, 0x06:
-            fatalError("MBC2 is currently unsupported")
+            throw Error.unsupportedCartridgeType(name: "MBC2")
         case 0x0b...0x0d:
-            fatalError("MMM01 is currently unsupported")
+            throw Error.unsupportedCartridgeType(name: "MMM01")
         case 0x0f...0x13:
             cartridge = MBC3(romBytes: romBytes, ramBytes: externalRAMBytes, romSize: romSize, ramSize: ramSize)
         case 0x19...0x1e:
-            fatalError("MBC5 is currently unsupported")
+            throw Error.unsupportedCartridgeType(name: "MBC5")
         case 0x20:
-            fatalError("MBC6 is currently unsupported")
+            throw Error.unsupportedCartridgeType(name: "MBC6")
         case 0x22:
-            fatalError("MBC7 is currently unsupported")
+            throw Error.unsupportedCartridgeType(name: "MBC7")
         case 0xfc:
-            fatalError("POCKET CAMERA is currently unsupported")
+            throw Error.unsupportedCartridgeType(name: "POCKET CAMERA")
         case 0xfd:
-            fatalError("BANDAI TAMA5 is currently unsupported")
+            throw Error.unsupportedCartridgeType(name: "BANDAI TAMA5")
         case 0xfe:
-            fatalError("HuC3 is currently unsupported")
+            throw Error.unsupportedCartridgeType(name: "HuC3")
         case 0xff:
-            fatalError("HuC1 is currently unsupported")
+            throw Error.unsupportedCartridgeType(name: "HuC1")
         default:
-            fatalError("Unsupported cartridge type: \(String(format: "%02X", cartridgeType))")
+            throw Error.unsupportedCartridgeType(name: "Unknown \(cartridgeType.hexString)")
         }
         return (cartridge, header)
     }

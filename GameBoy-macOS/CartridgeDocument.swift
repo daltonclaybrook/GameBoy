@@ -1,10 +1,10 @@
 import Cocoa
 import GameBoyKit
 
-final class ROMDocument: NSDocument {
+final class CartridgeDocument: NSDocument {
     private let storyboardID: NSString = "GameWindowController"
     private let saveQueue = DispatchQueue(
-        label: "com.daltonclaybrook.GameBoy.ROMDocument.SaveQueue",
+        label: "com.daltonclaybrook.GameBoy.CartridgeDocument.SaveQueue",
         qos: .userInitiated
     )
 
@@ -27,7 +27,7 @@ final class ROMDocument: NSDocument {
         self.header = header
 
         timer?.invalidate()
-        timer = .scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] _ in
+        timer = .scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
             self?.saveQueue.async {
                 self?.attemptSaveLatestGameData()
             }
@@ -90,7 +90,7 @@ final class ROMDocument: NSDocument {
     }
 }
 
-extension ROMDocument: CartridgeDelegate {
+extension CartridgeDocument: CartridgeDelegate {
     func cartridge(_ cartridge: CartridgeType, didSaveExternalRAM bytes: [Byte]) {
         saveQueue.async { [weak self] in
             self?.queuedSaveExternalRAMBytes = bytes

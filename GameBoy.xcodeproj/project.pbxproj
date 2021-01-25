@@ -136,7 +136,7 @@
 		75B1F5C625BC9B84001BEA37 /* MBC3.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B1F5C425BC9B83001BEA37 /* MBC3.swift */; };
 		75B1F5CC25BCC9D9001BEA37 /* RTC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B1F5CB25BCC9D9001BEA37 /* RTC.swift */; };
 		75B1F5CD25BCC9D9001BEA37 /* RTC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B1F5CB25BCC9D9001BEA37 /* RTC.swift */; };
-		75B1F5F225BD42B7001BEA37 /* ROMDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B1F5F125BD42B7001BEA37 /* ROMDocument.swift */; };
+		75B1F5F225BD42B7001BEA37 /* CartridgeDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B1F5F125BD42B7001BEA37 /* CartridgeDocument.swift */; };
 		75B1F62625BE066A001BEA37 /* NSView+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B1F62525BE066A001BEA37 /* NSView+Additions.swift */; };
 		75B1F63B25BE6262001BEA37 /* ROMSize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B1F63A25BE6262001BEA37 /* ROMSize.swift */; };
 		75B1F63C25BE6262001BEA37 /* ROMSize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B1F63A25BE6262001BEA37 /* ROMSize.swift */; };
@@ -349,7 +349,7 @@
 		75B1F5B925BBCD8D001BEA37 /* pokemon-red.gb */ = {isa = PBXFileReference; lastKnownFileType = file; path = "pokemon-red.gb"; sourceTree = "<group>"; };
 		75B1F5C425BC9B83001BEA37 /* MBC3.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBC3.swift; sourceTree = "<group>"; };
 		75B1F5CB25BCC9D9001BEA37 /* RTC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RTC.swift; sourceTree = "<group>"; };
-		75B1F5F125BD42B7001BEA37 /* ROMDocument.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ROMDocument.swift; sourceTree = "<group>"; };
+		75B1F5F125BD42B7001BEA37 /* CartridgeDocument.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartridgeDocument.swift; sourceTree = "<group>"; };
 		75B1F62525BE066A001BEA37 /* NSView+Additions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSView+Additions.swift"; sourceTree = "<group>"; };
 		75B1F63A25BE6262001BEA37 /* ROMSize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ROMSize.swift; sourceTree = "<group>"; };
 		75B1F64525BE64E4001BEA37 /* RAMSize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RAMSize.swift; sourceTree = "<group>"; };
@@ -474,7 +474,7 @@
 			isa = PBXGroup;
 			children = (
 				75B1F62525BE066A001BEA37 /* NSView+Additions.swift */,
-				75B1F5F125BD42B7001BEA37 /* ROMDocument.swift */,
+				75B1F5F125BD42B7001BEA37 /* CartridgeDocument.swift */,
 				757F38DA22B1BBA600BBB570 /* AppDelegate.swift */,
 				757F38DC22B1BBA600BBB570 /* GameViewController.swift */,
 				75B1F59825BA76CD001BEA37 /* WindowController.swift */,
@@ -1103,7 +1103,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				757F38DD22B1BBA600BBB570 /* GameViewController.swift in Sources */,
-				75B1F5F225BD42B7001BEA37 /* ROMDocument.swift in Sources */,
+				75B1F5F225BD42B7001BEA37 /* CartridgeDocument.swift in Sources */,
 				75B1F59925BA76CD001BEA37 /* WindowController.swift in Sources */,
 				757F38DB22B1BBA600BBB570 /* AppDelegate.swift in Sources */,
 				75B1F62625BE066A001BEA37 /* NSView+Additions.swift in Sources */,

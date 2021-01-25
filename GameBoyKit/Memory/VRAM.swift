@@ -27,4 +27,8 @@ public final class VRAM: MemoryAddressable {
         let big = read(address: address + 1, privileged: privileged)
         return (UInt16(big) << 8) | UInt16(little)
     }
+
+    public func loadSavedBytes(_ bytes: [Byte]) {
+        self.bytes = bytes
+    }
 }

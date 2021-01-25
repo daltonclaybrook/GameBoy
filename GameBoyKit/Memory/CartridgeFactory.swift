@@ -1,23 +1,33 @@
 public struct CartridgeFactory {
-    public static func makeCartridge(romBytes: [Byte]) -> CartridgeType {
-        guard romBytes.count >= 0x0147 else {
-            fatalError("ROM is too small")
+    public enum Error: Swift.Error {
+        case romTooSmall
+        case invalidCartridgeHeader
+    }
+
+    public static func makeCartridge(romBytes: [Byte]) throws -> (CartridgeType, CartridgeHeader) {
+        guard romBytes.count >= 0x014f else {
+            throw Error.romTooSmall
         }
 
-        let titleString = getCartridgeTitle(from: romBytes)
+        let title = getCartridgeTitle(from: romBytes)
+        guard let romSize = ROMSize(headerByte: romBytes[0x0148]),
+              let ramSize = RAMSize(headerByte: romBytes[0x0149])
+        else { throw Error.invalidCartridgeHeader }
 
+        let header = CartridgeHeader(title: title, romSize: romSize, ramSize: ramSize)
         let cartridgeType = romBytes[0x0147]
+        let cartridge: CartridgeType
         switch cartridgeType {
         case 0x00, 0x08, 0x09:
-            return ROM(title: titleString, bytes: romBytes)
+            cartridge = ROM(bytes: romBytes)
         case 0x01...0x03:
-            return MBC1(title: titleString, bytes: romBytes)
+            cartridge = MBC1(bytes: romBytes)
         case 0x05, 0x06:
             fatalError("MBC2 is currently unsupported")
         case 0x0b...0x0d:
             fatalError("MMM01 is currently unsupported")
         case 0x0f...0x13:
-            return MBC3(title: titleString, bytes: romBytes)
+            cartridge = MBC3(bytes: romBytes)
         case 0x19...0x1e:
             fatalError("MBC5 is currently unsupported")
         case 0x20:
@@ -35,6 +45,7 @@ public struct CartridgeFactory {
         default:
             fatalError("Unsupported cartridge type: \(String(format: "%02X", cartridgeType))")
         }
+        return (cartridge, header)
     }
 
     // MARK: - Helpers

@@ -41,8 +41,12 @@ class GameViewController: NSViewController {
         gameBoy?.stop()
     }
 
-    func loadCartridge(_ cartridge: CartridgeType) {
-        gameBoy?.load(cartridge: cartridge)
+    func loadCartridge(_ cartridge: CartridgeType, saveData: SaveData?) {
+        gameBoy?.load(cartridge: cartridge, saveData: saveData)
+    }
+
+    public func getCurrentSaveData() -> SaveData? {
+        gameBoy?.getCurrentSaveData()
     }
 
     // MARK: - Private
@@ -67,7 +71,7 @@ class GameViewController: NSViewController {
 //        let fileURL = Bundle.main.url(forResource: "pokemon-yellow", withExtension: "gbc")!
 
         let fileData = try Data(contentsOf: fileURL)
-        let cartridge = CartridgeFactory.makeCartridge(romBytes: [Byte](fileData))
+        let (cartridge, _) = try CartridgeFactory.makeCartridge(romBytes: [Byte](fileData))
         return cartridge
     }
 

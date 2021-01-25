@@ -136,6 +136,16 @@
 		75B1F5CD25BCC9D9001BEA37 /* RTC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B1F5CB25BCC9D9001BEA37 /* RTC.swift */; };
 		75B1F5F225BD42B7001BEA37 /* ROMDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B1F5F125BD42B7001BEA37 /* ROMDocument.swift */; };
 		75B1F62625BE066A001BEA37 /* NSView+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B1F62525BE066A001BEA37 /* NSView+Additions.swift */; };
+		75B1F63025BE5FCE001BEA37 /* SaveData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B1F62F25BE5FCD001BEA37 /* SaveData.swift */; };
+		75B1F63525BE60A1001BEA37 /* SaveData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B1F62F25BE5FCD001BEA37 /* SaveData.swift */; };
+		75B1F63B25BE6262001BEA37 /* ROMSize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B1F63A25BE6262001BEA37 /* ROMSize.swift */; };
+		75B1F63C25BE6262001BEA37 /* ROMSize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B1F63A25BE6262001BEA37 /* ROMSize.swift */; };
+		75B1F64625BE64E4001BEA37 /* RAMSize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B1F64525BE64E4001BEA37 /* RAMSize.swift */; };
+		75B1F64725BE64E4001BEA37 /* RAMSize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B1F64525BE64E4001BEA37 /* RAMSize.swift */; };
+		75B1F64D25BE65EA001BEA37 /* CartridgeHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B1F64C25BE65EA001BEA37 /* CartridgeHeader.swift */; };
+		75B1F64E25BE65EA001BEA37 /* CartridgeHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B1F64C25BE65EA001BEA37 /* CartridgeHeader.swift */; };
+		75B1F65425BE6F0F001BEA37 /* Array+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B1F65325BE6F0F001BEA37 /* Array+Additions.swift */; };
+		75B1F65525BE6F0F001BEA37 /* Array+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B1F65325BE6F0F001BEA37 /* Array+Additions.swift */; };
 		75B3AD09229DEEA500A03C5A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B3AD08229DEEA500A03C5A /* AppDelegate.swift */; };
 		75B3AD0B229DEEA500A03C5A /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B3AD0A229DEEA500A03C5A /* ViewController.swift */; };
 		75B3AD0E229DEEA500A03C5A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 75B3AD0C229DEEA500A03C5A /* Main.storyboard */; };
@@ -340,6 +350,11 @@
 		75B1F5CB25BCC9D9001BEA37 /* RTC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RTC.swift; sourceTree = "<group>"; };
 		75B1F5F125BD42B7001BEA37 /* ROMDocument.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ROMDocument.swift; sourceTree = "<group>"; };
 		75B1F62525BE066A001BEA37 /* NSView+Additions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSView+Additions.swift"; sourceTree = "<group>"; };
+		75B1F62F25BE5FCD001BEA37 /* SaveData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaveData.swift; sourceTree = "<group>"; };
+		75B1F63A25BE6262001BEA37 /* ROMSize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ROMSize.swift; sourceTree = "<group>"; };
+		75B1F64525BE64E4001BEA37 /* RAMSize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RAMSize.swift; sourceTree = "<group>"; };
+		75B1F64C25BE65EA001BEA37 /* CartridgeHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartridgeHeader.swift; sourceTree = "<group>"; };
+		75B1F65325BE6F0F001BEA37 /* Array+Additions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+Additions.swift"; sourceTree = "<group>"; };
 		75B3AD05229DEEA500A03C5A /* GameBoy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GameBoy.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		75B3AD08229DEEA500A03C5A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		75B3AD0A229DEEA500A03C5A /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -485,6 +500,7 @@
 			children = (
 				75862E7325AD387E004AACA4 /* Numbers+Additions.swift */,
 				75B0E21925B87F8E0021B3C9 /* Range+Additions.swift */,
+				75B1F65325BE6F0F001BEA37 /* Array+Additions.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -651,7 +667,11 @@
 				75B3AD51229DFC1700A03C5A /* ROM.swift */,
 				7590E7BC25AACE15005E1280 /* CartridgeType.swift */,
 				7590E7C325AACEC6005E1280 /* CartridgeFactory.swift */,
+				75B1F63A25BE6262001BEA37 /* ROMSize.swift */,
+				75B1F64525BE64E4001BEA37 /* RAMSize.swift */,
+				75B1F64C25BE65EA001BEA37 /* CartridgeHeader.swift */,
 				7590E7F225ABA96F005E1280 /* BootROM.swift */,
+				75B1F62F25BE5FCD001BEA37 /* SaveData.swift */,
 			);
 			path = Memory;
 			sourceTree = "<group>";
@@ -1094,6 +1114,7 @@
 			files = (
 				758D864122B48A7400C28791 /* MemoryMap.swift in Sources */,
 				757F390C22B1C69F00BBB570 /* PPU.swift in Sources */,
+				75B1F63525BE60A1001BEA37 /* SaveData.swift in Sources */,
 				75D0E54C22B32DFE0049BF6D /* VRAM+Debug.swift in Sources */,
 				757F38FD22B1C69F00BBB570 /* CPU.swift in Sources */,
 				757F390622B1C69F00BBB570 /* MMU.swift in Sources */,
@@ -1116,14 +1137,17 @@
 				75D0E54022B1C9F50049BF6D /* HRAM.swift in Sources */,
 				7590E7ED25ABA935005E1280 /* MemoryMasking.swift in Sources */,
 				754013D325B7225C005951E0 /* SpriteAttributes.swift in Sources */,
+				75B1F65525BE6F0F001BEA37 /* Array+Additions.swift in Sources */,
 				75B0E21B25B87F8E0021B3C9 /* Range+Additions.swift in Sources */,
 				757F390522B1C69F00BBB570 /* Opcode.swift in Sources */,
 				7590E7B725AA5703005E1280 /* MBC1.swift in Sources */,
 				758D864A22B53AF000C28791 /* Interrupts.swift in Sources */,
 				7590E7C525AACEC6005E1280 /* CartridgeFactory.swift in Sources */,
 				758834DB22BB17BB00B80FD0 /* TimerControl.swift in Sources */,
+				75B1F64E25BE65EA001BEA37 /* CartridgeHeader.swift in Sources */,
 				757F38FB22B1C69000BBB570 /* AAPLShaders.metal in Sources */,
 				75B1F5CD25BCC9D9001BEA37 /* RTC.swift in Sources */,
+				75B1F64725BE64E4001BEA37 /* RAMSize.swift in Sources */,
 				757F390F22B1C69F00BBB570 /* Clock.swift in Sources */,
 				757F390222B1C69F00BBB570 /* IO.swift in Sources */,
 				75D0E53D22B1C8430049BF6D /* WRAM.swift in Sources */,
@@ -1137,6 +1161,7 @@
 				757F390D22B1C69F00BBB570 /* Renderer.swift in Sources */,
 				75E85C7025AE8C9300DD9A9F /* CPUContext.swift in Sources */,
 				75B0E22D25B918A60021B3C9 /* Tile.swift in Sources */,
+				75B1F63C25BE6262001BEA37 /* ROMSize.swift in Sources */,
 				75FDE26225B625DB00C2A5FB /* Joypad.swift in Sources */,
 				757F390922B1C69F00BBB570 /* LCDControl.swift in Sources */,
 			);
@@ -1172,6 +1197,7 @@
 			files = (
 				758D864022B4892500C28791 /* MemoryMap.swift in Sources */,
 				75B3AD54229E128900A03C5A /* VRAM.swift in Sources */,
+				75B1F63025BE5FCE001BEA37 /* SaveData.swift in Sources */,
 				75D0E54B22B30C7A0049BF6D /* VRAM+Debug.swift in Sources */,
 				75BD98BE22A4135900CFFB68 /* LCDStatus.swift in Sources */,
 				75BD98B422A0AD9600CFFB68 /* CPU+Instructions.swift in Sources */,
@@ -1194,14 +1220,17 @@
 				75B3AD56229E13B700A03C5A /* PPU.swift in Sources */,
 				75D0E53F22B1C9CB0049BF6D /* HRAM.swift in Sources */,
 				754013D225B7225C005951E0 /* SpriteAttributes.swift in Sources */,
+				75B1F65425BE6F0F001BEA37 /* Array+Additions.swift in Sources */,
 				75B0E21A25B87F8E0021B3C9 /* Range+Additions.swift in Sources */,
 				75BD98B222A0AA8600CFFB68 /* Opcode.swift in Sources */,
 				7590E7EC25ABA935005E1280 /* MemoryMasking.swift in Sources */,
 				758D864922B53A0200C28791 /* Interrupts.swift in Sources */,
 				7590E7B625AA5703005E1280 /* MBC1.swift in Sources */,
 				75BD98C222A41DDC00CFFB68 /* ColorPalettes.swift in Sources */,
+				75B1F64D25BE65EA001BEA37 /* CartridgeHeader.swift in Sources */,
 				7590E7C425AACEC6005E1280 /* CartridgeFactory.swift in Sources */,
 				75B1F5CC25BCC9D9001BEA37 /* RTC.swift in Sources */,
+				75B1F64625BE64E4001BEA37 /* RAMSize.swift in Sources */,
 				758834DA22BB12DF00B80FD0 /* TimerControl.swift in Sources */,
 				75BD98C022A413AA00CFFB68 /* LCDControl.swift in Sources */,
 				757F38CA22B08A5500BBB570 /* AAPLShaders.metal in Sources */,
@@ -1215,6 +1244,7 @@
 				75BD98B822A2F44300CFFB68 /* CPU+Instructions+CB.swift in Sources */,
 				75E85C6F25AE8C9300DD9A9F /* CPUContext.swift in Sources */,
 				75B0E22C25B918A60021B3C9 /* Tile.swift in Sources */,
+				75B1F63B25BE6262001BEA37 /* ROMSize.swift in Sources */,
 				75FDE26125B625DB00C2A5FB /* Joypad.swift in Sources */,
 				75B3AD4E229DEFB400A03C5A /* MMU.swift in Sources */,
 			);

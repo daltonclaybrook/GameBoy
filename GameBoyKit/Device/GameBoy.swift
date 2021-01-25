@@ -27,6 +27,8 @@ public final class GameBoy {
     private let io: IO
 
     private let vram = VRAM()
+    private let wram = WRAM()
+    private let hram = HRAM()
     private let palettes = ColorPalettes()
     private var cartridge: CartridgeType?
 
@@ -36,17 +38,18 @@ public final class GameBoy {
         oam = OAM()
         io = IO(palettes: palettes, oam: oam, timer: timer)
         ppu = PPU(renderer: renderer, io: io, vram: vram, oam: oam)
-        mmu = MMU(vram: vram, wram: WRAM(), oam: oam, io: io, hram: HRAM())
+        mmu = MMU(vram: vram, wram: wram, oam: oam, io: io, hram: hram)
         oam.mmu = mmu
         cpu = CPU()
     }
 
-    public func load(cartridge: CartridgeType) {
+    public func load(cartridge: CartridgeType, saveData: SaveData?) {
         queue.async {
             self.cartridge = cartridge
             self.mmu.load(cartridge: cartridge)
             self.mmu.mask = try! BootROM.dmgBootRom()
 //            self.bootstrap()
+            self.loadSaveDataIfNecessary(saveData)
         }
     }
 
@@ -68,7 +71,32 @@ public final class GameBoy {
         }
     }
 
+    public func getCurrentSaveData() -> SaveData {
+        var saveData: SaveData!
+        queue.sync {
+            saveData = SaveData(
+                vramBytes: self.vram.bytes,
+                externalRAMBytes: self.cartridge?.externalRAMBytes,
+                wramBytes: self.wram.bytes,
+                oamBytes: self.oam.oamBytes,
+                hramBytes: self.hram.bytes
+            )
+        }
+        return saveData
+    }
+
     // MARK: - Helpers
+
+    private func loadSaveDataIfNecessary(_ saveData: SaveData?) {
+        guard let saveData = saveData else { return }
+        vram.loadSavedBytes(saveData.vramBytes)
+        if let externalRAM = saveData.externalRAMBytes {
+            cartridge?.loadExternalRAM(bytes: externalRAM)
+        }
+        wram.loadSavedBytes(saveData.wramBytes)
+        oam.loadSavedBytes(saveData.oamBytes)
+        hram.loadSavedBytes(saveData.oamBytes)
+    }
 
     private func fetchAndExecuteNextInstruction() {
         if mmu.mask != nil && cpu.pc == 0x100 {

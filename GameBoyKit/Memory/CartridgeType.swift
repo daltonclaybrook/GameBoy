@@ -1,3 +1,4 @@
 public protocol CartridgeType: MemoryAddressable {
-    var title: String { get }
+    var externalRAMBytes: [Byte] { get }
+    func loadExternalRAM(bytes: [Byte])
 }

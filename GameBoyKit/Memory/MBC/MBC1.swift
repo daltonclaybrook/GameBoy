@@ -6,7 +6,7 @@ import Foundation
 public final class MBC1: CartridgeType {
     private typealias BankNumber = UInt8
 
-    public let title: String
+    public private(set) var externalRAMBytes: [Byte]
 
     /// This mode determines whether writing to 0x4000...0x5fff sets the
     /// RAM bank number or the upper bits of the ROM bank number
@@ -17,7 +17,6 @@ public final class MBC1: CartridgeType {
     private let romBankSize: UInt16 = 0x4000 // 16KB
     private let ramBankSize: UInt16 = 0x2000 // 8KB
     private let romBytes: [Byte]
-    private var ramBytes: [Byte]
 
     /// Determines whether the the variable register is applied to the RAM bank number
     /// or the upper 2 bits of the ROM bank number
@@ -51,14 +50,13 @@ public final class MBC1: CartridgeType {
         }
     }
 
-    public init(title: String, bytes: [Byte]) {
-        self.title = title
+    public init(bytes: [Byte]) {
         self.romBytes = bytes
         // There can be up to 4 banks of RAM. When RAM banking is enabled,
         // each bank is 8KB.
         // To-do: RAM should be saved between runs of the program if
         // there's a battery in the cartridge.
-        self.ramBytes = [Byte](repeating: 0, count: Int(ramBankSize) * 4)
+        self.externalRAMBytes = [Byte](repeating: 0, count: Int(ramBankSize) * 4)
     }
 
     public func write(byte: Byte, to address: Address) {
@@ -68,7 +66,7 @@ public final class MBC1: CartridgeType {
         case 0xa000...0xbfff: // Write to selected RAM bank
             guard isRAMEnabled else { return }
             let adjustedAddress = (address - 0xa000) + (Address(currentRAMBank) * ramBankSize)
-            ramBytes.write(byte: byte, to: adjustedAddress)
+            externalRAMBytes.write(byte: byte, to: adjustedAddress)
         case 0x2000...0x3fff: // Set ROM bank number (lower 5 bits)
             currentLowROMBankNumber = byte & 0x1f // mask of lower 5 bits
         case 0x4000...0x5fff: // Set RAM bank number ~or~ upper 2 bits of ROM bank number
@@ -90,10 +88,14 @@ public final class MBC1: CartridgeType {
         case 0xa000...0xbfff: // Selected RAM Bank 0x00-0x03
             guard isRAMEnabled else { return 0 } // Is returning zero correct?
             let adjustedAddress = (address - 0xa000) + (Address(currentRAMBank) * ramBankSize)
-            return ramBytes.read(address: adjustedAddress)
+            return externalRAMBytes.read(address: adjustedAddress)
         default:
             return 0
         }
+    }
+
+    public func loadExternalRAM(bytes: [Byte]) {
+        self.externalRAMBytes = bytes
     }
 
     // MARK: - Helpers

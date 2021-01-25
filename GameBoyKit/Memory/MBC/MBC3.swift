@@ -6,14 +6,13 @@ public final class MBC3: CartridgeType {
         case high = 1
     }
 
-    public let title: String
+    public private(set) var externalRAMBytes: [Byte]
 
     private let romBankSize: UInt32 = 0x4000 // 16KB
     private let ramBankSize: UInt16 = 0x2000 // 8KB
     private let ramBankRange: ClosedRange<UInt8> = 0x00...0x03
 
     private let romBytes: [Byte]
-    private var ramBytes: [Byte]
     private let clock = RTC()
 
     private var isRAMAndTimerEnabled: Bool = false
@@ -31,10 +30,9 @@ public final class MBC3: CartridgeType {
         max(currentROMBankNumber & 0x7f, 0x01)
     }
 
-    public init(title: String, bytes: [Byte]) {
-        self.title = title
+    public init(bytes: [Byte]) {
         self.romBytes = bytes
-        self.ramBytes = [Byte](repeating: 0, count: Int(ramBankSize) * 4)
+        self.externalRAMBytes = [Byte](repeating: 0, count: Int(ramBankSize) * 4)
     }
 
     public func write(byte: Byte, to address: Address) {
@@ -70,6 +68,10 @@ public final class MBC3: CartridgeType {
         }
     }
 
+    public func loadExternalRAM(bytes: [Byte]) {
+        self.externalRAMBytes = bytes
+    }
+
     // MARK: - Helpers
 
     private func readFromRAMOrRTC(at address: Address) -> Byte {
@@ -77,7 +79,7 @@ public final class MBC3: CartridgeType {
         switch currentRAMBankNumberOrRTCRegister {
         case ramBankRange: // RAM bank selected
             let adjustedAddress = (address - 0xa000) + (Address(currentRAMBankNumberOrRTCRegister) * ramBankSize)
-            return ramBytes.read(address: adjustedAddress)
+            return externalRAMBytes.read(address: adjustedAddress)
         case RTC.registerRange: // RTC register selected
             return clock.read(register: currentRAMBankNumberOrRTCRegister)
         default:
@@ -89,8 +91,9 @@ public final class MBC3: CartridgeType {
         guard isRAMAndTimerEnabled else { return }
         switch currentRAMBankNumberOrRTCRegister {
         case ramBankRange: // RAM bank selected
+            print("\(Date()): Writing to SRAM...")
             let adjustedAddress = (address - 0xa000) + (Address(currentRAMBankNumberOrRTCRegister) * ramBankSize)
-            ramBytes.write(byte: byte, to: adjustedAddress)
+            externalRAMBytes.write(byte: byte, to: adjustedAddress)
         case RTC.registerRange: // RTC register selected
             clock.updateClockRegister(value: byte, register: currentRAMBankNumberOrRTCRegister)
         default:

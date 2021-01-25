@@ -87,6 +87,10 @@ public final class OAM: MemoryAddressable {
         return SpriteAttributes(rawValue: bytes)
     }
 
+    public func loadSavedBytes(_ bytes: [Byte]) {
+        self.oamBytes = bytes
+    }
+
     // MARK: - Helpers
 
     private func getMMU(file: StaticString = #file, line: UInt = #line) -> MMU {

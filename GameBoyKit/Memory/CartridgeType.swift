@@ -1,4 +1,10 @@
+public protocol CartridgeDelegate: AnyObject {
+    func cartridge(_ cartridge: CartridgeType, didSaveExternalRAM bytes: [Byte])
+}
+
 public protocol CartridgeType: MemoryAddressable {
-    var externalRAMBytes: [Byte] { get }
-    func loadExternalRAM(bytes: [Byte])
+    // Todo: consider making ram and delegate part of another protocol like
+    // `RAMCatridgeType`
+    var ramBytes: [Byte] { get }
+    var delegate: CartridgeDelegate? { set get }
 }

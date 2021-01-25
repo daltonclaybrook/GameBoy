@@ -3,16 +3,17 @@ import Foundation
 /// The most primitive ROM type. It contains no support for
 /// bank switching and supports only 32KB of data.
 public final class ROM: CartridgeType {
-    public var externalRAMBytes: [Byte] { [] }
+    public var ramBytes: [Byte] { [] }
+    public weak var delegate: CartridgeDelegate?
 
-    private var bytes: [Byte]
+    private var romBytes: [Byte]
 
-    public init(bytes: [Byte]) {
-        self.bytes = bytes
+    public init(romBytes: [Byte]) {
+        self.romBytes = romBytes
     }
 
     public func read(address: Address) -> UInt8 {
-        bytes.read(address: address, in: .ROM)
+        romBytes.read(address: address, in: .ROM)
     }
 
     public func write(byte: Byte, to address: Address) {

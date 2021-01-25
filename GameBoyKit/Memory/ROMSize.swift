@@ -1,8 +1,8 @@
 public struct ROMSize {
     /// Size in bytes
-    public let size: UInt32
+    public let size: Int
     /// Each bank is 16KB
-    public let banks: UInt32
+    public let banks: Int
 }
 
 public extension ROMSize {

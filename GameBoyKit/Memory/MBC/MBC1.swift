@@ -6,7 +6,8 @@ import Foundation
 public final class MBC1: CartridgeType {
     private typealias BankNumber = UInt8
 
-    public private(set) var externalRAMBytes: [Byte]
+    public private(set) var ramBytes: [Byte]
+    public weak var delegate: CartridgeDelegate?
 
     /// This mode determines whether writing to 0x4000...0x5fff sets the
     /// RAM bank number or the upper bits of the ROM bank number
@@ -14,6 +15,8 @@ public final class MBC1: CartridgeType {
         case ROM, RAM
     }
 
+    private let romSize: ROMSize
+    private let ramSize: RAMSize
     private let romBankSize: UInt16 = 0x4000 // 16KB
     private let ramBankSize: UInt16 = 0x2000 // 8KB
     private let romBytes: [Byte]
@@ -50,29 +53,31 @@ public final class MBC1: CartridgeType {
         }
     }
 
-    public init(bytes: [Byte]) {
-        self.romBytes = bytes
+    public init(romBytes: [Byte], ramBytes: [Byte]?, romSize: ROMSize, ramSize: RAMSize) {
+        self.romBytes = romBytes
         // There can be up to 4 banks of RAM. When RAM banking is enabled,
         // each bank is 8KB.
-        // To-do: RAM should be saved between runs of the program if
-        // there's a battery in the cartridge.
-        self.externalRAMBytes = [Byte](repeating: 0, count: Int(ramBankSize) * 4)
+        self.ramBytes = ramBytes ?? [Byte](repeating: 0, count: Int(ramSize.size))
+        self.romSize = romSize
+        self.ramSize = ramSize
     }
 
     public func write(byte: Byte, to address: Address) {
         switch address {
         case 0x0000...0x1fff: // Set RAM enabled/disabled
             isRAMEnabled = byte & 0x0f == 0x0a
-        case 0xa000...0xbfff: // Write to selected RAM bank
-            guard isRAMEnabled else { return }
-            let adjustedAddress = (address - 0xa000) + (Address(currentRAMBank) * ramBankSize)
-            externalRAMBytes.write(byte: byte, to: adjustedAddress)
         case 0x2000...0x3fff: // Set ROM bank number (lower 5 bits)
             currentLowROMBankNumber = byte & 0x1f // mask of lower 5 bits
         case 0x4000...0x5fff: // Set RAM bank number ~or~ upper 2 bits of ROM bank number
             currentRAMOrHighROMBankNumber = byte & 0x03
         case 0x6000...0x7fff: // Set the current banking mode
             currentBankMode = byte & 0x01 == 1 ? .RAM : .ROM
+        case 0xa000...0xbfff: // Write to selected RAM bank
+            guard isRAMEnabled else { return }
+            let adjustedAddress = (address - 0xa000) + (Address(currentRAMBank) * ramBankSize)
+            guard Int(adjustedAddress) < ramSize.size else { return }
+            ramBytes.write(byte: byte, to: adjustedAddress)
+            delegate?.cartridge(self, didSaveExternalRAM: ramBytes)
         default:
             break
         }
@@ -84,18 +89,16 @@ public final class MBC1: CartridgeType {
             return romBytes.read(address: address)
         case 0x4000...0x7fff: // Selected Bank 0x01-0x7f
             let adjustedAddress = (address - 0x4000) + (Address(currentROMBank) * romBankSize)
+            guard Int(adjustedAddress) < romSize.size else { return 0xff }
             return romBytes.read(address: adjustedAddress)
         case 0xa000...0xbfff: // Selected RAM Bank 0x00-0x03
             guard isRAMEnabled else { return 0 } // Is returning zero correct?
             let adjustedAddress = (address - 0xa000) + (Address(currentRAMBank) * ramBankSize)
-            return externalRAMBytes.read(address: adjustedAddress)
+            guard Int(adjustedAddress) < ramSize.size else { return 0xff }
+            return ramBytes.read(address: adjustedAddress)
         default:
             return 0
         }
-    }
-
-    public func loadExternalRAM(bytes: [Byte]) {
-        self.externalRAMBytes = bytes
     }
 
     // MARK: - Helpers

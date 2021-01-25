@@ -6,8 +6,11 @@ public final class MBC3: CartridgeType {
         case high = 1
     }
 
-    public private(set) var externalRAMBytes: [Byte]
+    public private(set) var ramBytes: [Byte]
+    public weak var delegate: CartridgeDelegate?
 
+    private let romSize: ROMSize
+    private let ramSize: RAMSize
     private let romBankSize: UInt32 = 0x4000 // 16KB
     private let ramBankSize: UInt16 = 0x2000 // 8KB
     private let ramBankRange: ClosedRange<UInt8> = 0x00...0x03
@@ -30,9 +33,11 @@ public final class MBC3: CartridgeType {
         max(currentROMBankNumber & 0x7f, 0x01)
     }
 
-    public init(bytes: [Byte]) {
-        self.romBytes = bytes
-        self.externalRAMBytes = [Byte](repeating: 0, count: Int(ramBankSize) * 4)
+    public init(romBytes: [Byte], ramBytes: [Byte]?, romSize: ROMSize, ramSize: RAMSize) {
+        self.romBytes = romBytes
+        self.ramBytes = ramBytes ?? [Byte](repeating: 0, count: ramSize.size)
+        self.romSize = romSize
+        self.ramSize = ramSize
     }
 
     public func write(byte: Byte, to address: Address) {
@@ -60,6 +65,7 @@ public final class MBC3: CartridgeType {
             return romBytes.read(address: address)
         case 0x4000...0x7fff: // Selected ROM bank 0x01-0x7f
             let adjustedAddress = (UInt32(address) - 0x4000) + (UInt32(currentROMBank) * romBankSize)
+            guard Int(adjustedAddress) < romSize.size else { return 0xff }
             return romBytes.read(address: adjustedAddress)
         case 0xa000...0xbfff: // RAM or RTC access
             return readFromRAMOrRTC(at: address)
@@ -69,7 +75,7 @@ public final class MBC3: CartridgeType {
     }
 
     public func loadExternalRAM(bytes: [Byte]) {
-        self.externalRAMBytes = bytes
+        self.ramBytes = bytes
     }
 
     // MARK: - Helpers
@@ -79,7 +85,8 @@ public final class MBC3: CartridgeType {
         switch currentRAMBankNumberOrRTCRegister {
         case ramBankRange: // RAM bank selected
             let adjustedAddress = (address - 0xa000) + (Address(currentRAMBankNumberOrRTCRegister) * ramBankSize)
-            return externalRAMBytes.read(address: adjustedAddress)
+            guard Int(adjustedAddress) < ramSize.size else { return 0xff }
+            return ramBytes.read(address: adjustedAddress)
         case RTC.registerRange: // RTC register selected
             return clock.read(register: currentRAMBankNumberOrRTCRegister)
         default:
@@ -92,7 +99,9 @@ public final class MBC3: CartridgeType {
         switch currentRAMBankNumberOrRTCRegister {
         case ramBankRange: // RAM bank selected
             let adjustedAddress = (address - 0xa000) + (Address(currentRAMBankNumberOrRTCRegister) * ramBankSize)
-            externalRAMBytes.write(byte: byte, to: adjustedAddress)
+            guard Int(adjustedAddress) < ramSize.size else { return }
+            ramBytes.write(byte: byte, to: adjustedAddress)
+            delegate?.cartridge(self, didSaveExternalRAM: ramBytes)
         case RTC.registerRange: // RTC register selected
             clock.updateClockRegister(value: byte, register: currentRAMBankNumberOrRTCRegister)
         default:

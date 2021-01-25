@@ -8,11 +8,18 @@ public struct InterruptVectors {
     public static let joypad: Address = 0x0060
 }
 
+public protocol GameBoyDelegate: AnyObject {
+    func gameBoy(_ gameBoy: GameBoy, didSaveExternalRAM bytes: [Byte])
+}
+
 public final class GameBoy {
+    private let delegateQueue: DispatchQueue
     private let queue = DispatchQueue(
         label: "com.daltonclaybrook.GameBoy.GameBoy",
         qos: .userInteractive
     )
+
+    public weak var delegate: GameBoyDelegate?
 
     public var joypad: Joypad {
         io.joypad
@@ -32,7 +39,7 @@ public final class GameBoy {
     private let palettes = ColorPalettes()
     private var cartridge: CartridgeType?
 
-    public init(renderer: Renderer, displayLink: DisplayLinkType) {
+    public init(renderer: Renderer, displayLink: DisplayLinkType, delegateQueue: DispatchQueue = .main) {
         clock = Clock(queue: queue, displayLink: displayLink)
         timer = Timer()
         oam = OAM()
@@ -41,15 +48,16 @@ public final class GameBoy {
         mmu = MMU(vram: vram, wram: wram, oam: oam, io: io, hram: hram)
         oam.mmu = mmu
         cpu = CPU()
+        self.delegateQueue = delegateQueue
     }
 
-    public func load(cartridge: CartridgeType, saveData: SaveData?) {
+    public func load(cartridge: CartridgeType) {
         queue.async {
             self.cartridge = cartridge
+            self.cartridge?.delegate = self
             self.mmu.load(cartridge: cartridge)
             self.mmu.mask = try! BootROM.dmgBootRom()
 //            self.bootstrap()
-            self.loadSaveDataIfNecessary(saveData)
         }
     }
 
@@ -71,32 +79,7 @@ public final class GameBoy {
         }
     }
 
-    public func getCurrentSaveData() -> SaveData {
-        var saveData: SaveData!
-        queue.sync {
-            saveData = SaveData(
-                vramBytes: self.vram.bytes,
-                externalRAMBytes: self.cartridge?.externalRAMBytes,
-                wramBytes: self.wram.bytes,
-                oamBytes: self.oam.oamBytes,
-                hramBytes: self.hram.bytes
-            )
-        }
-        return saveData
-    }
-
     // MARK: - Helpers
-
-    private func loadSaveDataIfNecessary(_ saveData: SaveData?) {
-        guard let saveData = saveData else { return }
-        vram.loadSavedBytes(saveData.vramBytes)
-        if let externalRAM = saveData.externalRAMBytes {
-            cartridge?.loadExternalRAM(bytes: externalRAM)
-        }
-        wram.loadSavedBytes(saveData.wramBytes)
-        oam.loadSavedBytes(saveData.oamBytes)
-        hram.loadSavedBytes(saveData.oamBytes)
-    }
 
     private func fetchAndExecuteNextInstruction() {
         if mmu.mask != nil && cpu.pc == 0x100 {
@@ -189,5 +172,14 @@ extension GameBoy: CPUContext {
 
     public func tickCycle() {
         emulateCycle()
+    }
+}
+
+extension GameBoy: CartridgeDelegate {
+    public func cartridge(_ cartridge: CartridgeType, didSaveExternalRAM bytes: [Byte]) {
+        delegateQueue.async { [weak self] in
+            guard let self = self else { return }
+            self.delegate?.gameBoy(self, didSaveExternalRAM: bytes)
+        }
     }
 }

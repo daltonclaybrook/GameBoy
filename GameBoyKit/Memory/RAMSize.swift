@@ -1,8 +1,8 @@
 public struct RAMSize {
     /// Size in bytes
-    public let size: UInt32
+    public let size: Int
     /// Each bank is 8KB
-    public let banks: UInt32
+    public let banks: Int
 }
 
 public extension RAMSize {

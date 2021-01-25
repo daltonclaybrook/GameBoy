@@ -6,15 +6,22 @@ final class ROMDocument: NSDocument {
 
     private var viewController: GameViewController?
     private var cartridge: CartridgeType? = nil
-    private var saveData: SaveData? = nil
+    private var header: CartridgeHeader?
+    private var queuedSaveExternalRAMBytes: [Byte]? = nil
+    private var latestSavedExternalRAMBytes: [Byte]? = nil
     private var timer: Foundation.Timer?
 
     override func read(from data: Data, ofType typeName: String) throws {
-        let (cartridge, header) = try CartridgeFactory.makeCartridge(romBytes: [Byte](data))
+        self.latestSavedExternalRAMBytes = loadSaveFileBytes()
+        let romBytes = [Byte](data)
+        let (cartridge, header) = try CartridgeFactory.makeCartridge(
+            romBytes: romBytes,
+            externalRAMBytes: latestSavedExternalRAMBytes
+        )
         self.cartridge = cartridge
-        self.saveData = loadSaveData(ramSize: header.ramSize)
-        timer = .scheduledTimer(withTimeInterval: 10, repeats: true) { [weak self] _ in
-            self?.save(nil)
+        self.header = header
+        timer = .scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] _ in
+            self?.attemptSaveLatestGameData()
         }
     }
 
@@ -33,22 +40,14 @@ final class ROMDocument: NSDocument {
         }
         addWindowController(windowController)
         self.viewController = viewController
+        self.viewController?.delegate = self
         windowController.delegate = viewController
-        viewController.loadCartridge(cartridge, saveData: saveData)
-    }
-
-    override func save(_ sender: Any?) {
-        Swift.print("requested save")
-        do {
-            try saveLatestGameData()
-        } catch let error {
-            Swift.print("Error saving file: \(error.localizedDescription)")
-        }
+        viewController.loadCartridge(cartridge)
     }
 
     // MARK: - Helpers
 
-    private func loadSaveData(ramSize: RAMSize) -> SaveData? {
+    private func loadSaveFileBytes() -> [Byte]? {
         guard let saveFileURL = getSaveFileURL() else { return nil }
         guard FileManager.default.fileExists(atPath: saveFileURL.path) else {
             return nil
@@ -57,18 +56,34 @@ final class ROMDocument: NSDocument {
             assertionFailure("Unable to read save data at path: \(saveFileURL.path)")
             return nil
         }
-        return try? SaveData(bytes: [Byte](saveData), ramSize: ramSize)
+        return [Byte](saveData)
     }
 
-    private func saveLatestGameData() throws {
+    private func attemptSaveLatestGameData() {
         guard let saveFileURL = getSaveFileURL(),
-              let saveData = viewController?.getCurrentSaveData() else { return }
-        let data = Data(saveData.allBytes)
-        try data.write(to: saveFileURL, options: .atomic)
+              let queuedSaveExternalRAMBytes = queuedSaveExternalRAMBytes,
+              let latestSavedExternalRAMBytes = latestSavedExternalRAMBytes,
+              queuedSaveExternalRAMBytes != latestSavedExternalRAMBytes
+        else { return }
+        self.queuedSaveExternalRAMBytes = nil
+
+        let data = Data(queuedSaveExternalRAMBytes)
+        do {
+            Swift.print("Saving latest game data...")
+            try data.write(to: saveFileURL, options: .atomic)
+        } catch let error {
+            Swift.print("Failed to save data with error: \(error.localizedDescription)")
+        }
     }
 
     private func getSaveFileURL() -> URL? {
         guard let fileURL = fileURL else { return nil }
         return fileURL.deletingPathExtension().appendingPathExtension("sav")
+    }
+}
+
+extension ROMDocument: GameViewControllerDelegate {
+    func gameViewController(_ viewController: GameViewController, didSaveExternalRAM bytes: [Byte]) {
+        queuedSaveExternalRAMBytes = bytes
     }
 }

@@ -62,14 +62,14 @@ final class ROMDocument: NSDocument {
     private func attemptSaveLatestGameData() {
         guard let saveFileURL = getSaveFileURL(),
               let queuedSaveExternalRAMBytes = queuedSaveExternalRAMBytes,
-              let latestSavedExternalRAMBytes = latestSavedExternalRAMBytes,
               queuedSaveExternalRAMBytes != latestSavedExternalRAMBytes
         else { return }
+
         self.queuedSaveExternalRAMBytes = nil
+        self.latestSavedExternalRAMBytes = queuedSaveExternalRAMBytes
 
         let data = Data(queuedSaveExternalRAMBytes)
         do {
-            Swift.print("Saving latest game data...")
             try data.write(to: saveFileURL, options: .atomic)
         } catch let error {
             Swift.print("Failed to save data with error: \(error.localizedDescription)")

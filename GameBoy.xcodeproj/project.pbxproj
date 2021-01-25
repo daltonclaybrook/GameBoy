@@ -136,8 +136,6 @@
 		75B1F5CD25BCC9D9001BEA37 /* RTC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B1F5CB25BCC9D9001BEA37 /* RTC.swift */; };
 		75B1F5F225BD42B7001BEA37 /* ROMDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B1F5F125BD42B7001BEA37 /* ROMDocument.swift */; };
 		75B1F62625BE066A001BEA37 /* NSView+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B1F62525BE066A001BEA37 /* NSView+Additions.swift */; };
-		75B1F63025BE5FCE001BEA37 /* SaveData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B1F62F25BE5FCD001BEA37 /* SaveData.swift */; };
-		75B1F63525BE60A1001BEA37 /* SaveData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B1F62F25BE5FCD001BEA37 /* SaveData.swift */; };
 		75B1F63B25BE6262001BEA37 /* ROMSize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B1F63A25BE6262001BEA37 /* ROMSize.swift */; };
 		75B1F63C25BE6262001BEA37 /* ROMSize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B1F63A25BE6262001BEA37 /* ROMSize.swift */; };
 		75B1F64625BE64E4001BEA37 /* RAMSize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B1F64525BE64E4001BEA37 /* RAMSize.swift */; };
@@ -350,7 +348,6 @@
 		75B1F5CB25BCC9D9001BEA37 /* RTC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RTC.swift; sourceTree = "<group>"; };
 		75B1F5F125BD42B7001BEA37 /* ROMDocument.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ROMDocument.swift; sourceTree = "<group>"; };
 		75B1F62525BE066A001BEA37 /* NSView+Additions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSView+Additions.swift"; sourceTree = "<group>"; };
-		75B1F62F25BE5FCD001BEA37 /* SaveData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaveData.swift; sourceTree = "<group>"; };
 		75B1F63A25BE6262001BEA37 /* ROMSize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ROMSize.swift; sourceTree = "<group>"; };
 		75B1F64525BE64E4001BEA37 /* RAMSize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RAMSize.swift; sourceTree = "<group>"; };
 		75B1F64C25BE65EA001BEA37 /* CartridgeHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartridgeHeader.swift; sourceTree = "<group>"; };
@@ -671,7 +668,6 @@
 				75B1F64525BE64E4001BEA37 /* RAMSize.swift */,
 				75B1F64C25BE65EA001BEA37 /* CartridgeHeader.swift */,
 				7590E7F225ABA96F005E1280 /* BootROM.swift */,
-				75B1F62F25BE5FCD001BEA37 /* SaveData.swift */,
 			);
 			path = Memory;
 			sourceTree = "<group>";
@@ -1114,7 +1110,6 @@
 			files = (
 				758D864122B48A7400C28791 /* MemoryMap.swift in Sources */,
 				757F390C22B1C69F00BBB570 /* PPU.swift in Sources */,
-				75B1F63525BE60A1001BEA37 /* SaveData.swift in Sources */,
 				75D0E54C22B32DFE0049BF6D /* VRAM+Debug.swift in Sources */,
 				757F38FD22B1C69F00BBB570 /* CPU.swift in Sources */,
 				757F390622B1C69F00BBB570 /* MMU.swift in Sources */,
@@ -1197,7 +1192,6 @@
 			files = (
 				758D864022B4892500C28791 /* MemoryMap.swift in Sources */,
 				75B3AD54229E128900A03C5A /* VRAM.swift in Sources */,
-				75B1F63025BE5FCE001BEA37 /* SaveData.swift in Sources */,
 				75D0E54B22B30C7A0049BF6D /* VRAM+Debug.swift in Sources */,
 				75BD98BE22A4135900CFFB68 /* LCDStatus.swift in Sources */,
 				75BD98B422A0AD9600CFFB68 /* CPU+Instructions.swift in Sources */,

@@ -53,6 +53,8 @@
 		7586A14425AD6B8A008DAD32 /* intr_timing.gb in Resources */ = {isa = PBXBuildFile; fileRef = 7586A14225AD6B8A008DAD32 /* intr_timing.gb */; };
 		7586A14A25ADF2E7008DAD32 /* tim00.gb in Resources */ = {isa = PBXBuildFile; fileRef = 7586A14925ADF2E7008DAD32 /* tim00.gb */; };
 		7586A14B25ADF2E7008DAD32 /* tim00.gb in Resources */ = {isa = PBXBuildFile; fileRef = 7586A14925ADF2E7008DAD32 /* tim00.gb */; };
+		75875A5825C0EF8E005D8059 /* MBC5.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75875A5725C0EF8E005D8059 /* MBC5.swift */; };
+		75875A5925C0EF8E005D8059 /* MBC5.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75875A5725C0EF8E005D8059 /* MBC5.swift */; };
 		758834DA22BB12DF00B80FD0 /* TimerControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 758834D922BB12DF00B80FD0 /* TimerControl.swift */; };
 		758834DB22BB17BB00B80FD0 /* TimerControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 758834D922BB12DF00B80FD0 /* TimerControl.swift */; };
 		758D864022B4892500C28791 /* MemoryMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 758D863F22B4892500C28791 /* MemoryMap.swift */; };
@@ -306,6 +308,7 @@
 		75862E7325AD387E004AACA4 /* Numbers+Additions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Numbers+Additions.swift"; sourceTree = "<group>"; };
 		7586A14225AD6B8A008DAD32 /* intr_timing.gb */ = {isa = PBXFileReference; lastKnownFileType = file; path = intr_timing.gb; sourceTree = "<group>"; };
 		7586A14925ADF2E7008DAD32 /* tim00.gb */ = {isa = PBXFileReference; lastKnownFileType = file; path = tim00.gb; sourceTree = "<group>"; };
+		75875A5725C0EF8E005D8059 /* MBC5.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBC5.swift; sourceTree = "<group>"; };
 		758834D922BB12DF00B80FD0 /* TimerControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerControl.swift; sourceTree = "<group>"; };
 		758D863F22B4892500C28791 /* MemoryMap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoryMap.swift; sourceTree = "<group>"; };
 		758D864222B495BD00C28791 /* load.gb */ = {isa = PBXFileReference; lastKnownFileType = file; path = load.gb; sourceTree = "<group>"; };
@@ -539,6 +542,7 @@
 			children = (
 				7590E7B525AA5703005E1280 /* MBC1.swift */,
 				75B1F5C425BC9B83001BEA37 /* MBC3.swift */,
+				75875A5725C0EF8E005D8059 /* MBC5.swift */,
 				75B1F5CB25BCC9D9001BEA37 /* RTC.swift */,
 			);
 			path = MBC;
@@ -1146,6 +1150,7 @@
 				7590E7C525AACEC6005E1280 /* CartridgeFactory.swift in Sources */,
 				758834DB22BB17BB00B80FD0 /* TimerControl.swift in Sources */,
 				75B1F64E25BE65EA001BEA37 /* CartridgeHeader.swift in Sources */,
+				75875A5925C0EF8E005D8059 /* MBC5.swift in Sources */,
 				757F38FB22B1C69000BBB570 /* AAPLShaders.metal in Sources */,
 				75B1F5CD25BCC9D9001BEA37 /* RTC.swift in Sources */,
 				75B1F64725BE64E4001BEA37 /* RAMSize.swift in Sources */,
@@ -1228,6 +1233,7 @@
 				7590E7B625AA5703005E1280 /* MBC1.swift in Sources */,
 				75BD98C222A41DDC00CFFB68 /* ColorPalettes.swift in Sources */,
 				75B1F64D25BE65EA001BEA37 /* CartridgeHeader.swift in Sources */,
+				75875A5825C0EF8E005D8059 /* MBC5.swift in Sources */,
 				7590E7C425AACEC6005E1280 /* CartridgeFactory.swift in Sources */,
 				75B1F5CC25BCC9D9001BEA37 /* RTC.swift in Sources */,
 				75B1F64625BE64E4001BEA37 /* RAMSize.swift in Sources */,

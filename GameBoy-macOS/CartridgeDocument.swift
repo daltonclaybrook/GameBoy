@@ -2,7 +2,7 @@ import Cocoa
 import GameBoyKit
 
 final class CartridgeDocument: NSDocument {
-    private let storyboardID: NSString = "GameWindowController"
+    private let storyboardID = "GameWindowController"
     private let saveQueue = DispatchQueue(
         label: "com.daltonclaybrook.GameBoy.CartridgeDocument.SaveQueue",
         qos: .userInitiated
@@ -41,7 +41,7 @@ final class CartridgeDocument: NSDocument {
         }
 
         let storyboard = NSStoryboard(name: NSStoryboard.Name("Main"), bundle: nil)
-        guard let windowController = storyboard.instantiateController(withIdentifier: NSStoryboard.SceneIdentifier(storyboardID)) as? GameWindowController else {
+        guard let windowController = storyboard.instantiateController(withIdentifier: storyboardID) as? GameWindowController else {
             fatalError("Could not instantiate game window controller")
         }
         guard let viewController = windowController.contentViewController as? GameViewController else {

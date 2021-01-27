@@ -97,7 +97,7 @@ public final class MBC1: CartridgeType {
             guard Int(adjustedAddress) < ramSize.size else { return 0xff }
             return ramBytes.read(address: adjustedAddress)
         default:
-            return 0
+            return 0xff
         }
     }
 

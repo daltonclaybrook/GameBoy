@@ -38,7 +38,7 @@ public struct CartridgeFactory {
         case 0x0f...0x13:
             cartridge = MBC3(romBytes: romBytes, ramBytes: externalRAMBytes, romSize: romSize, ramSize: ramSize)
         case 0x19...0x1e:
-            throw Error.unsupportedCartridgeType(name: "MBC5")
+            cartridge = MBC5(romBytes: romBytes, ramBytes: externalRAMBytes, romSize: romSize, ramSize: ramSize)
         case 0x20:
             throw Error.unsupportedCartridgeType(name: "MBC6")
         case 0x22:

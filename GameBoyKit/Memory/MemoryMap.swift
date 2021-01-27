@@ -18,13 +18,13 @@ extension Array where Element == Byte {
         return self[Int(address)]
     }
 
+    func read(address: Address, in range: ClosedRange<Address>) -> Byte {
+        return self[Int(address - range.lowerBound)]
+    }
+
     /// Used when reading from a large ROM
     func read(address: UInt32) -> Byte {
         return self[Int(truncatingIfNeeded: address)]
-    }
-
-    func read(address: Address, in range: ClosedRange<Address>) -> Byte {
-        return self[Int(address - range.lowerBound)]
     }
 
     mutating func write(byte: Byte, to address: Address) {
@@ -33,5 +33,10 @@ extension Array where Element == Byte {
 
     mutating func write(byte: Byte, to address: Address, in range: ClosedRange<Address>) {
         self[Int(address - range.lowerBound)] = byte
+    }
+
+    /// Used when writing to a large external RAM
+    mutating func write(byte: Byte, to address: UInt32) {
+        self[Int(address)] = byte
     }
 }

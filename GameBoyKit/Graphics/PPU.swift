@@ -93,6 +93,7 @@ public final class PPU {
         clearPixelBuffer()
         io.lcdYCoordinate = 0
         io.lcdStatus.mode = .searchingOAMRAM
+        cyclesRemaining = getCycles(for: .searchingOAMRAM)
         oam.isBeingReadByPPU = false
         vram.isBeingReadByPPU = false
     }

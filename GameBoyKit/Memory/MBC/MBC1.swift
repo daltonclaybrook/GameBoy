@@ -17,8 +17,8 @@ public final class MBC1: CartridgeType {
 
     private let romSize: ROMSize
     private let ramSize: RAMSize
-    private let romBankSize: UInt16 = 0x4000 // 16KB
-    private let ramBankSize: UInt16 = 0x2000 // 8KB
+    private let romBankSize: UInt32 = 0x4000 // 16KB
+    private let ramBankSize: UInt32 = 0x2000 // 8KB
     private let romBytes: [Byte]
 
     /// Determines whether the the variable register is applied to the RAM bank number
@@ -74,7 +74,7 @@ public final class MBC1: CartridgeType {
             currentBankMode = byte & 0x01 == 1 ? .RAM : .ROM
         case 0xa000...0xbfff: // Write to selected RAM bank
             guard isRAMEnabled else { return }
-            let adjustedAddress = (address - 0xa000) + (Address(currentRAMBank) * ramBankSize)
+            let adjustedAddress = (UInt32(address) - 0xa000) + (UInt32(currentRAMBank) * ramBankSize)
             guard Int(adjustedAddress) < ramSize.size else { return }
             ramBytes.write(byte: byte, to: adjustedAddress)
             delegate?.cartridge(self, didSaveExternalRAM: ramBytes)
@@ -88,12 +88,12 @@ public final class MBC1: CartridgeType {
         case 0x0000...0x3fff: // Always Bank 0x00
             return romBytes.read(address: address)
         case 0x4000...0x7fff: // Selected Bank 0x01-0x7f
-            let adjustedAddress = (address - 0x4000) + (Address(currentROMBank) * romBankSize)
+            let adjustedAddress = (UInt32(address) - 0x4000) + (UInt32(currentROMBank) * romBankSize)
             guard Int(adjustedAddress) < romSize.size else { return 0xff }
             return romBytes.read(address: adjustedAddress)
         case 0xa000...0xbfff: // Selected RAM Bank 0x00-0x03
             guard isRAMEnabled else { return 0 } // Is returning zero correct?
-            let adjustedAddress = (address - 0xa000) + (Address(currentRAMBank) * ramBankSize)
+            let adjustedAddress = (UInt32(address) - 0xa000) + (UInt32(currentRAMBank) * ramBankSize)
             guard Int(adjustedAddress) < ramSize.size else { return 0xff }
             return ramBytes.read(address: adjustedAddress)
         default:

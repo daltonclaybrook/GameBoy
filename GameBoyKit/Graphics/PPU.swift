@@ -118,8 +118,10 @@ public final class PPU {
     }
 
     private func clearPixelBuffer() {
-        pixelBuffer = [Byte](repeating: .max, count: pixelBuffer.count)
-        renderPixelBuffer()
+        queue.async {
+            self.pixelBuffer = [Byte](repeating: .max, count: self.pixelBuffer.count)
+            self.queueRenderPixelBuffer()
+        }
     }
 
     private func changeMode(next: LCDStatus.Mode) {
@@ -332,6 +334,12 @@ public final class PPU {
     }
 
     private func renderPixelBuffer() {
+        queue.async {
+            self.queueRenderPixelBuffer()
+        }
+    }
+
+    private func queueRenderPixelBuffer() {
         let region = PixelRegion(x: 0, y: 0, width: Constants.screenWidth, height: Constants.screenHeight)
         renderer.render(pixelData: pixelBuffer, at: region)
     }

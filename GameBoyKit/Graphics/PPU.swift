@@ -203,8 +203,7 @@ public final class PPU {
             updatePixelsWithSprites(context: context, pixels: &linePixels)
         }
 
-        let lineBuffer = getColorDataLineBuffer(for: linePixels)
-        replaceDataInPixelBuffer(forLine: Int(context.line), with: lineBuffer)
+        replaceDataInPixelBuffer(forLine: Int(context.line), with: linePixels)
     }
 
     /// Update the provided array of pixels with pixels for the background
@@ -309,10 +308,6 @@ public final class PPU {
         }
     }
 
-    private func getColorDataLineBuffer(for pixels: [PixelInfo]) -> [Byte] {
-        pixels.flatMap(\.color.rgbaBytes)
-    }
-
     private func getTile(in mapRange: LCDControl.TileMapDisplayRange, tileRange: LCDControl.TileDataRange, vramView: VRAMView, pixelX: UInt16, pixelY: UInt16) -> Tile {
         let tileX = pixelX / 8
         let tileY = pixelY / 8
@@ -322,10 +317,13 @@ public final class PPU {
         return tileRange.getTile(for: tileNumber)
     }
 
-    private func replaceDataInPixelBuffer(forLine line: Int, with bytes: [Byte]) {
-        let offset = line * Constants.screenWidth * 4 // 4 bytes per pixel
-        let range = (offset..<(offset + bytes.count))
-        pixelBuffer.replaceSubrange(range, with: bytes)
+    private func replaceDataInPixelBuffer(forLine line: Int, with pixels: [PixelInfo]) {
+        let lineOffset = line * Constants.screenWidth * 4 // 4 bytes per pixel
+        pixels.enumerated().forEach { xOffset, pixel in
+            let pixelOffset = lineOffset + xOffset * 4
+            let range = pixelOffset..<(pixelOffset + 4)
+            pixelBuffer.replaceSubrange(range, with: pixel.color.rgbaBytes)
+        }
     }
 
     private func renderPixelBuffer() {

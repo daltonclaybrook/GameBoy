@@ -213,7 +213,7 @@ public final class PPU {
         let lineInMap = context.scrollY &+ context.line
         let pixelYInTile = lineInMap % 8 // tile height in pixels
 
-        (0..<UInt8(Constants.screenWidth)).forEach { screenX in
+        for screenX in 0..<UInt8(Constants.screenWidth) {
             let mapX = screenX &+ context.scrollX
             let pixelXInTile = mapX % 8 // tile width in pixels
             let tile = getTile(in: map, tileRange: tiles, vramView: context.vramView, pixelX: UInt16(mapX), pixelY: UInt16(lineInMap))
@@ -247,7 +247,7 @@ public final class PPU {
         let mapRange = context.lcdControl.windowTileMapDisplay
         let tileRange = context.lcdControl.selectedTileDataRangeForBackgroundAndWindow
 
-        (windowX..<screenWidth).forEach { screenX in
+        for screenX in windowX..<screenWidth {
             let xOffsetInWindow = screenX - windowX
             let xOffsetInTile = xOffsetInWindow % 8
             let tile = getTile(in: mapRange, tileRange: tileRange, vramView: context.vramView, pixelX: UInt16(xOffsetInWindow), pixelY: UInt16(yOffsetInWindow))
@@ -265,19 +265,19 @@ public final class PPU {
 
         // Since these sprites are ordered from highest to lowest priority, we reverse them so
         // that higher priority sprites will overwrite lower priority ones.
-        sprites.reversed().forEach { sprite in
+        for sprite in sprites.reversed() {
             let lineRange = sprite.getLineRangeRelativeToScreen(objectSize: objectSize)
-            guard lineRange.contains(Int16(context.line)) else { return }
+            guard lineRange.contains(Int16(context.line)) else { continue }
 
             let xRange = sprite.getXRangeRelativeToScreen(objectSize: objectSize)
             guard screenXRange.overlaps(xRange) else {
                 // Sprite is off the left or right side of the screen
-                return
+                continue
             }
 
-            (0..<objectSize.width).forEach { xOffsetInSprite in
+            for xOffsetInSprite in 0..<objectSize.width {
                 let xPositionInScreen = xRange.lowerBound + Int16(xOffsetInSprite)
-                guard screenXRange.contains(xPositionInScreen) else { return }
+                guard screenXRange.contains(xPositionInScreen) else { continue }
 
                 let yOffsetInSprite = UInt8(lineRange.lowerBound.distance(to: Int16(context.line)))
                 let yOffsetInTile = yOffsetInSprite % 8
@@ -286,7 +286,7 @@ public final class PPU {
                 let pixelColorNumber = tile.getColorNumber(vramView: context.vramView, xOffset: xOffsetInSprite, xFlipped: sprite.isXFlipped, yOffset: yOffsetInTile, yFlipped: sprite.isYFlipped)
                 guard pixelColorNumber != 0 else {
                     // Sprite color number 0 is always transparent
-                    return
+                    continue
                 }
 
                 let pixelColor = context.paletteView.getColor(for: pixelColorNumber, in: sprite.monochromePalette)
@@ -319,10 +319,15 @@ public final class PPU {
 
     private func replaceDataInPixelBuffer(forLine line: Int, with pixels: [PixelInfo]) {
         let lineOffset = line * Constants.screenWidth * 4 // 4 bytes per pixel
-        pixels.enumerated().forEach { xOffset, pixel in
+        for (xOffset, pixel) in pixels.enumerated() {
             let pixelOffset = lineOffset + xOffset * 4
-            let range = pixelOffset..<(pixelOffset + 4)
-            pixelBuffer.replaceSubrange(range, with: pixel.color.rgbaBytes)
+            let rgbaBytes = pixel.color.rgbaBytes
+
+            // Faster than calling `replaceSubrange`
+            pixelBuffer[pixelOffset] = rgbaBytes[0]
+            pixelBuffer[pixelOffset + 1] = rgbaBytes[1]
+            pixelBuffer[pixelOffset + 2] = rgbaBytes[2]
+            pixelBuffer[pixelOffset + 3] = rgbaBytes[3]
         }
     }
 

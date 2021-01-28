@@ -11,8 +11,9 @@ extension PPU {
         let context = createGraphicsContext(width: fullWidth, height: fullHeight)
         context.setShouldAntialias(false)
 
+        let oamView = oam.currentView
         (0..<40).forEach { index in
-            let sprite = oam.getSprite(atIndex: index)
+            let sprite = oamView.getSprite(atIndex: index)
             guard sprite.getIsOnScreen(objectSize: io.lcdControl.objectSize) else { return }
 
             let tiles = getTiles(for: sprite, dataRange: io.lcdControl.tileDataRangeForObjects)
@@ -56,14 +57,16 @@ extension PPU {
 
     func getColorBytes(for sprite: SpriteAttributes, tile: Tile) -> [Byte] {
         var colorBytes: [Byte] = []
+        let vramView = vram.currentView
+        let paletteView = io.palettes.currentView
         (UInt8(0)..<8).forEach { yOffset in
             (UInt8(0)..<8).forEach { xOffset in
-                let colorNumber = tile.getColorNumber(in: vram, xOffset: xOffset, xFlipped: sprite.isXFlipped, yOffset: yOffset, yFlipped: sprite.isYFlipped)
+                let colorNumber = tile.getColorNumber(vramView: vramView, xOffset: xOffset, xFlipped: sprite.isXFlipped, yOffset: yOffset, yFlipped: sprite.isYFlipped)
                 if colorNumber == 0 {
                     // Color number 0 is transparent in sprites
                     colorBytes.append(contentsOf: Color.white.rgbaBytes)
                 } else {
-                    let color = io.palettes.getColor(for: colorNumber, in: sprite.monochromePalette)
+                    let color = paletteView.getColor(for: colorNumber, in: sprite.monochromePalette)
                     colorBytes.append(contentsOf: color.rgbaBytes)
                 }
             }

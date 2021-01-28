@@ -5,6 +5,11 @@ public final class VRAM: MemoryAddressable {
     /// default value.
     var isBeingReadByPPU: Bool = false
 
+    /// A thread-safe window into the current VRAM data
+    var currentView: VRAMView {
+        VRAMView(bytes: bytes)
+    }
+
     public func read(address: Address) -> Byte {
         read(address: address, privileged: false)
     }
@@ -30,5 +35,19 @@ public final class VRAM: MemoryAddressable {
 
     public func loadSavedBytes(_ bytes: [Byte]) {
         self.bytes = bytes
+    }
+}
+
+public struct VRAMView {
+    let bytes: [Byte]
+
+    public func read(address: Address) -> Byte {
+        bytes.read(address: address, in: .VRAM)
+    }
+
+    public func readWord(address: Address) -> Word {
+        let little = read(address: address)
+        let big = read(address: address + 1)
+        return (UInt16(big) << 8) | UInt16(little)
     }
 }

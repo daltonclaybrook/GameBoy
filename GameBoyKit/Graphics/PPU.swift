@@ -1,5 +1,17 @@
 import Foundation
 
+private struct LineDrawingContext {
+    let line: UInt8
+    let lcdControl: LCDControl
+    let vramView: VRAMView
+    let paletteView: PaletteView
+    let oamView: OAMView
+    let scrollX: UInt8
+    let scrollY: UInt8
+    let windowX: UInt8
+    let windowY: UInt8
+}
+
 public final class PPU {
     /// Represents information about a pixel that might be rendered to the
     /// screen or might be overridden by another pixel based on priority.
@@ -9,6 +21,11 @@ public final class PPU {
         case window(Color, colorNumber: ColorNumber)
         case sprite(Color)
     }
+
+    private let queue = DispatchQueue(
+        label: "com.daltonclaybrook.GameBoy.PPU",
+        qos: .userInteractive
+    )
 
     private let renderer: Renderer
     let io: IO
@@ -76,7 +93,9 @@ public final class PPU {
             if io.lcdYCoordinate >= Constants.screenHeight + vBlankLineCount {
                 // Jump back to the top of the screen
                 io.lcdYCoordinate = 0
-                windowLineCounter = 0
+                queue.async {
+                    self.windowLineCounter = 0
+                }
                 changeMode(next: .searchingOAMRAM)
             } else {
                 cyclesRemaining = getCycles(for: .verticalBlank)
@@ -152,50 +171,62 @@ public final class PPU {
         }
     }
 
-    /// Todo:
-    /// - display window
-    /// - display sprites
     private func drawLine() {
-        let lineOnScreen = io.lcdYCoordinate
+        let context = LineDrawingContext(
+            line: io.lcdYCoordinate,
+            lcdControl: io.lcdControl,
+            vramView: vram.currentView,
+            paletteView: io.palettes.currentView,
+            oamView: oam.currentView,
+            scrollX: io.scrollX,
+            scrollY: io.scrollY,
+            windowX: io.windowX,
+            windowY: io.windowY
+        )
+        queue.async {
+            self.queueDrawScreenLine(with: context)
+        }
+    }
+
+    private func queueDrawScreenLine(with context: LineDrawingContext) {
         var linePixels = [PixelInfo](repeating: .blank, count: Constants.screenWidth)
 
-        if io.lcdControl.backgroundAndWindowDisplayPriority {
-            updatePixelsWithBackground(line: lineOnScreen, pixels: &linePixels)
-            if io.lcdControl.windowDisplayEnabled {
-                updatePixelsWithWindow(line: lineOnScreen, pixels: &linePixels)
+        if context.lcdControl.backgroundAndWindowDisplayPriority {
+            updatePixelsWithBackground(with: context, pixels: &linePixels)
+
+            if context.lcdControl.windowDisplayEnabled {
+                updatePixelsWithWindow(context: context, pixels: &linePixels)
             }
         }
 
-        if io.lcdControl.objectDisplayEnabled {
-            updatePixelsWithSprites(line: lineOnScreen, pixels: &linePixels)
+        if context.lcdControl.objectDisplayEnabled {
+            updatePixelsWithSprites(context: context, pixels: &linePixels)
         }
 
         let lineBuffer = getColorDataLineBuffer(for: linePixels)
-        replaceDataInPixelBuffer(forLine: Int(lineOnScreen), with: lineBuffer)
+        replaceDataInPixelBuffer(forLine: Int(context.line), with: lineBuffer)
     }
 
     /// Update the provided array of pixels with pixels for the background
-    private func updatePixelsWithBackground(line: UInt8, pixels: inout [PixelInfo]) {
-        let scrollX = io.scrollX
-        let map = io.lcdControl.backgroundTileMapDisplay
-        let tiles = io.lcdControl.selectedTileDataRangeForBackgroundAndWindow
-        let lineInMap = io.scrollY &+ line
+    private func updatePixelsWithBackground(with context: LineDrawingContext, pixels: inout [PixelInfo]) {
+        let map = context.lcdControl.backgroundTileMapDisplay
+        let tiles = context.lcdControl.selectedTileDataRangeForBackgroundAndWindow
+        let lineInMap = context.scrollY &+ context.line
         let pixelYInTile = lineInMap % 8 // tile height in pixels
 
         (0..<UInt8(Constants.screenWidth)).forEach { screenX in
-            let mapX = screenX &+ scrollX
+            let mapX = screenX &+ context.scrollX
             let pixelXInTile = mapX % 8 // tile width in pixels
-            let tile = getTile(in: map, tileRange: tiles, pixelX: UInt16(mapX), pixelY: UInt16(lineInMap))
-            let pixelColorNumber = tile.getColorNumber(in: vram, xOffset: pixelXInTile, yOffset: pixelYInTile)
+            let tile = getTile(in: map, tileRange: tiles, vramView: context.vramView, pixelX: UInt16(mapX), pixelY: UInt16(lineInMap))
+            let pixelColorNumber = tile.getColorNumber(vramView: context.vramView, xOffset: pixelXInTile, yOffset: pixelYInTile)
 
-            let pixelColor = io.palettes.getColor(for: pixelColorNumber, in: .monochromeBackgroundAndWindow)
+            let pixelColor = context.paletteView.getColor(for: pixelColorNumber, in: .monochromeBackgroundAndWindow)
             pixels[Int(screenX)] = .background(pixelColor, colorNumber: pixelColorNumber)
         }
     }
 
-    private func updatePixelsWithWindow(line: UInt8, pixels: inout [PixelInfo]) {
-        let windowY = io.windowY
-        guard windowY <= line else {
+    private func updatePixelsWithWindow(context: LineDrawingContext, pixels: inout [PixelInfo]) {
+        guard context.windowY <= context.line else {
             // This line is above where the window is rendered
             return
         }
@@ -203,7 +234,7 @@ public final class PPU {
         // A value of 0-7 positions the window at the left edge of the screen. Positions
         // less than 7 result in hardware glitches on the game boy, but those glitches are
         // not emulated here.
-        let windowX = UInt8(max(Int(io.windowX) - 7, 0))
+        let windowX = UInt8(max(Int(context.windowX) - 7, 0))
         let screenWidth = UInt8(Constants.screenWidth)
         guard windowX < screenWidth else {
             // Window is off the right edge of the screen
@@ -214,30 +245,30 @@ public final class PPU {
         windowLineCounter += 1
 
         let yOffsetInTile = yOffsetInWindow % 8
-        let mapRange = io.lcdControl.windowTileMapDisplay
-        let tileRange = io.lcdControl.selectedTileDataRangeForBackgroundAndWindow
+        let mapRange = context.lcdControl.windowTileMapDisplay
+        let tileRange = context.lcdControl.selectedTileDataRangeForBackgroundAndWindow
 
         (windowX..<screenWidth).forEach { screenX in
             let xOffsetInWindow = screenX - windowX
             let xOffsetInTile = xOffsetInWindow % 8
-            let tile = getTile(in: mapRange, tileRange: tileRange, pixelX: UInt16(xOffsetInWindow), pixelY: UInt16(yOffsetInWindow))
-            let colorNumber = tile.getColorNumber(in: vram, xOffset: xOffsetInTile, yOffset: yOffsetInTile)
-            let pixelColor = io.palettes.getColor(for: colorNumber, in: .monochromeBackgroundAndWindow)
+            let tile = getTile(in: mapRange, tileRange: tileRange, vramView: context.vramView, pixelX: UInt16(xOffsetInWindow), pixelY: UInt16(yOffsetInWindow))
+            let colorNumber = tile.getColorNumber(vramView: context.vramView, xOffset: xOffsetInTile, yOffset: yOffsetInTile)
+            let pixelColor = context.paletteView.getColor(for: colorNumber, in: .monochromeBackgroundAndWindow)
             pixels[Int(screenX)] = .window(pixelColor, colorNumber: colorNumber)
         }
     }
 
     /// Updates the provided array of pixels with pixels for sprites on the same line.
-    private func updatePixelsWithSprites(line: UInt8, pixels: inout [PixelInfo]) {
-        let sprites = oam.findSortedSpriteAttributes(forLine: line, objectSize: io.lcdControl.objectSize)
-        let objectSize = io.lcdControl.objectSize
+    private func updatePixelsWithSprites(context: LineDrawingContext, pixels: inout [PixelInfo]) {
+        let sprites = context.oamView.findSortedSpriteAttributes(forLine: context.line, objectSize: context.lcdControl.objectSize)
+        let objectSize = context.lcdControl.objectSize
         let screenXRange = 0..<Int16(Constants.screenWidth)
 
         // Since these sprites are ordered from highest to lowest priority, we reverse them so
         // that higher priority sprites will overwrite lower priority ones.
         sprites.reversed().forEach { sprite in
             let lineRange = sprite.getLineRangeRelativeToScreen(objectSize: objectSize)
-            guard lineRange.contains(Int16(line)) else { return }
+            guard lineRange.contains(Int16(context.line)) else { return }
 
             let xRange = sprite.getXRangeRelativeToScreen(objectSize: objectSize)
             guard screenXRange.overlaps(xRange) else {
@@ -249,17 +280,17 @@ public final class PPU {
                 let xPositionInScreen = xRange.lowerBound + Int16(xOffsetInSprite)
                 guard screenXRange.contains(xPositionInScreen) else { return }
 
-                let yOffsetInSprite = UInt8(lineRange.lowerBound.distance(to: Int16(line)))
+                let yOffsetInSprite = UInt8(lineRange.lowerBound.distance(to: Int16(context.line)))
                 let yOffsetInTile = yOffsetInSprite % 8
                 let tileNumber = sprite.getTileNumber(yOffsetInSprite: yOffsetInSprite, objectSize: objectSize)
-                let tile = io.lcdControl.tileDataRangeForObjects.getTile(for: tileNumber)
-                let pixelColorNumber = tile.getColorNumber(in: vram, xOffset: xOffsetInSprite, xFlipped: sprite.isXFlipped, yOffset: yOffsetInTile, yFlipped: sprite.isYFlipped)
+                let tile = context.lcdControl.tileDataRangeForObjects.getTile(for: tileNumber)
+                let pixelColorNumber = tile.getColorNumber(vramView: context.vramView, xOffset: xOffsetInSprite, xFlipped: sprite.isXFlipped, yOffset: yOffsetInTile, yFlipped: sprite.isYFlipped)
                 guard pixelColorNumber != 0 else {
                     // Sprite color number 0 is always transparent
                     return
                 }
 
-                let pixelColor = io.palettes.getColor(for: pixelColorNumber, in: sprite.monochromePalette)
+                let pixelColor = context.paletteView.getColor(for: pixelColorNumber, in: sprite.monochromePalette)
                 mergeSpritePixel(color: pixelColor, priority: sprite.backgroundPriority, atIndex: Int(xPositionInScreen), with: &pixels)
             }
         }
@@ -282,12 +313,12 @@ public final class PPU {
         pixels.flatMap(\.color.rgbaBytes)
     }
 
-    private func getTile(in mapRange: LCDControl.TileMapDisplayRange, tileRange: LCDControl.TileDataRange, pixelX: UInt16, pixelY: UInt16) -> Tile {
+    private func getTile(in mapRange: LCDControl.TileMapDisplayRange, tileRange: LCDControl.TileDataRange, vramView: VRAMView, pixelX: UInt16, pixelY: UInt16) -> Tile {
         let tileX = pixelX / 8
         let tileY = pixelY / 8
         let tileOffsetInMap = tileY * mapWidthInTiles + tileX
         let tileAddressInMap = mapRange.mapDataRange.lowerBound + tileOffsetInMap
-        let tileNumber = vram.read(address: tileAddressInMap, privileged: true)
+        let tileNumber = vramView.read(address: tileAddressInMap)
         return tileRange.getTile(for: tileNumber)
     }
 

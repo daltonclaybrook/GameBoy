@@ -9,8 +9,8 @@ extension Tile {
     /// Get the color palette index (aka the "color number") at a given x/y offset
     /// inside the receiver tile. This color number can be combined with the data
     /// from a color palette to determine a pixel color.
-    func getColorNumber(in vram: VRAM, xOffset: UInt8, yOffset: UInt8) -> ColorNumber {
-        let pixelWord = vram.readWord(address: address + Address(yOffset) * 2, privileged: true)
+    func getColorNumber(vramView: VRAMView, xOffset: UInt8, yOffset: UInt8) -> ColorNumber {
+        let pixelWord = vramView.readWord(address: address + Address(yOffset) * 2)
 
         // Example:
         // xOffset == 2
@@ -33,9 +33,9 @@ extension Tile {
     ///   the color number
     ///   - yFlipped: Whether or not to flip the tile along the y-axis before determining
     ///   the color number
-    func getColorNumber(in vram: VRAM, xOffset: UInt8, xFlipped: Bool, yOffset: UInt8, yFlipped: Bool) -> ColorNumber {
+    func getColorNumber(vramView: VRAMView, xOffset: UInt8, xFlipped: Bool, yOffset: UInt8, yFlipped: Bool) -> ColorNumber {
         let adjustedX = xFlipped ? 7 - xOffset : xOffset
         let adjustedY = yFlipped ? 7 - yOffset : yOffset
-        return getColorNumber(in: vram, xOffset: adjustedX, yOffset: adjustedY)
+        return getColorNumber(vramView: vramView, xOffset: adjustedX, yOffset: adjustedY)
     }
 }

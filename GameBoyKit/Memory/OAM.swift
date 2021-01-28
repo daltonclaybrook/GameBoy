@@ -3,9 +3,13 @@ public final class OAM: MemoryAddressable {
     var isBeingReadByPPU = false
     private(set) var oamBytes = [Byte](repeating: 0, count: MemoryMap.OAM.count)
 
+    /// Clients use this view to access sprites from OAM memory at a discrete point
+    /// in time. Unlike the `OAM` class, `OAMView` is thread safe.
+    public var currentView: OAMView {
+        OAMView(oamBytes: oamBytes)
+    }
+
     private let dmaTransferDuration: Cycles = 160
-    private let totalSpriteCount = 40
-    private let spritesPerLine = 10
 
     private var cyclesSinceStartOfTransfer: Cycles = 0
     private var requestedSource: Byte?
@@ -57,36 +61,6 @@ public final class OAM: MemoryAddressable {
         }
     }
 
-    /// This function is used by the PPU for Mode 2, i.e. searching OAM. It returns up to 10 sprites that
-    /// are visible on the provided line.
-    public func findSortedSpriteAttributes(forLine line: UInt8, objectSize: LCDControl.ObjectSize) -> [SpriteAttributes] {
-        var sprites: [SpriteAttributes] = []
-        for index in (0..<totalSpriteCount) {
-            let sprite = getSprite(atIndex: index)
-            let lineRange = sprite.getLineRangeRelativeToScreen(objectSize: objectSize)
-            guard lineRange.contains(Int16(line)) else {
-                continue
-            }
-
-            sprites.append(sprite)
-            if sprites.count == spritesPerLine {
-                break
-            }
-        }
-
-        // This sorting is only done on non-color Game Boy. CGB uses the order in OAM.
-        return sprites.sorted { left, right in
-            left.position.x < right.position.x
-        }
-    }
-
-    func getSprite(atIndex: Int) -> SpriteAttributes {
-        let byteOffset = atIndex * 4
-        let range = byteOffset..<(byteOffset + 4)
-        let bytes = oamBytes[range]
-        return SpriteAttributes(rawValue: bytes)
-    }
-
     public func loadSavedBytes(_ bytes: [Byte]) {
         self.oamBytes = bytes
     }
@@ -123,5 +97,44 @@ public final class OAM: MemoryAddressable {
             let byte = mmu.read(address: from, privileged: true)
             oamBytes.write(byte: byte, to: offset)
         }
+    }
+}
+
+public struct OAMView {
+    let oamBytes: [Byte]
+
+    private let totalSpriteCount = 40
+    private let spritesPerLine = 10
+
+    /// This function is used by the PPU for Mode 2, i.e. searching OAM. It returns up to 10 sprites that
+    /// are visible on the provided line.
+    public func findSortedSpriteAttributes(forLine line: UInt8, objectSize: LCDControl.ObjectSize) -> [SpriteAttributes] {
+        var sprites: [SpriteAttributes] = []
+        for index in (0..<totalSpriteCount) {
+            let sprite = getSprite(atIndex: index)
+            let lineRange = sprite.getLineRangeRelativeToScreen(objectSize: objectSize)
+            guard lineRange.contains(Int16(line)) else {
+                continue
+            }
+
+            sprites.append(sprite)
+            if sprites.count == spritesPerLine {
+                break
+            }
+        }
+
+        // This sorting is only done on non-color Game Boy. CGB uses the order in OAM.
+        return sprites.sorted { left, right in
+            left.position.x < right.position.x
+        }
+    }
+
+    // MARK: - Internal Helpers
+
+    func getSprite(atIndex: Int) -> SpriteAttributes {
+        let byteOffset = atIndex * 4
+        let range = byteOffset..<(byteOffset + 4)
+        let bytes = oamBytes[range]
+        return SpriteAttributes(rawValue: bytes)
     }
 }

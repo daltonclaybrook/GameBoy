@@ -31,6 +31,7 @@ public final class GameBoy {
     private let wram = WRAM()
     private let hram = HRAM()
     private let palettes = ColorPalettes()
+    private let apu = APU()
     private var cartridge: CartridgeType?
 
     public init(renderer: Renderer, displayLink: DisplayLinkType, delegateQueue: DispatchQueue = .main) {
@@ -60,6 +61,7 @@ public final class GameBoy {
             self.clock.start { [weak self] in
                 self?.fetchAndExecuteNextInstruction()
             }
+            self.apu.start()
         }
     }
 
@@ -69,6 +71,7 @@ public final class GameBoy {
         // that happens.
         queue.sync {
             self.clock.stop()
+            self.apu.stop()
         }
     }
 

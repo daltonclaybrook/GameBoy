@@ -196,8 +196,12 @@
 		75D0E54322B26E670049BF6D /* cpu_instrs.gb in Resources */ = {isa = PBXBuildFile; fileRef = 75D0E54122B26E670049BF6D /* cpu_instrs.gb */; };
 		75D0E54B22B30C7A0049BF6D /* VRAM+Debug.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75D0E54A22B30C790049BF6D /* VRAM+Debug.swift */; };
 		75D0E54C22B32DFE0049BF6D /* VRAM+Debug.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75D0E54A22B30C790049BF6D /* VRAM+Debug.swift */; };
+		75E0E3FC25C2653D00AFE57E /* APU.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75E0E3FB25C2653D00AFE57E /* APU.swift */; };
+		75E0E3FD25C2653D00AFE57E /* APU.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75E0E3FB25C2653D00AFE57E /* APU.swift */; };
 		75E85C6F25AE8C9300DD9A9F /* CPUContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75E85C6E25AE8C9300DD9A9F /* CPUContext.swift */; };
 		75E85C7025AE8C9300DD9A9F /* CPUContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75E85C6E25AE8C9300DD9A9F /* CPUContext.swift */; };
+		75ED9D0625C61B4600DBC61B /* SoundControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75ED9D0525C61B4600DBC61B /* SoundControl.swift */; };
+		75ED9D0725C61B4600DBC61B /* SoundControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75ED9D0525C61B4600DBC61B /* SoundControl.swift */; };
 		75EE74AD25B14C070030D57D /* MockCPUContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75EE74AC25B14C070030D57D /* MockCPUContext.swift */; };
 		75EE74AE25B14C070030D57D /* MockCPUContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75EE74AC25B14C070030D57D /* MockCPUContext.swift */; };
 		75F61DA724FC269700FA095F /* call_timing.gb in Resources */ = {isa = PBXBuildFile; fileRef = 75F61DA624FC269700FA095F /* call_timing.gb */; };
@@ -401,7 +405,9 @@
 		75D0E53E22B1C9CB0049BF6D /* HRAM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HRAM.swift; sourceTree = "<group>"; };
 		75D0E54122B26E670049BF6D /* cpu_instrs.gb */ = {isa = PBXFileReference; lastKnownFileType = file; path = cpu_instrs.gb; sourceTree = "<group>"; };
 		75D0E54A22B30C790049BF6D /* VRAM+Debug.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "VRAM+Debug.swift"; sourceTree = "<group>"; };
+		75E0E3FB25C2653D00AFE57E /* APU.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APU.swift; sourceTree = "<group>"; };
 		75E85C6E25AE8C9300DD9A9F /* CPUContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CPUContext.swift; sourceTree = "<group>"; };
+		75ED9D0525C61B4600DBC61B /* SoundControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundControl.swift; sourceTree = "<group>"; };
 		75EE74AC25B14C070030D57D /* MockCPUContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockCPUContext.swift; sourceTree = "<group>"; };
 		75F61DA624FC269700FA095F /* call_timing.gb */ = {isa = PBXFileReference; lastKnownFileType = file; path = call_timing.gb; sourceTree = "<group>"; };
 		75F61DA824FC26A100FA095F /* call_timing2.gb */ = {isa = PBXFileReference; lastKnownFileType = file; path = call_timing2.gb; sourceTree = "<group>"; };
@@ -618,6 +624,7 @@
 		75B3AD2E229DEED400A03C5A /* GameBoyKit */ = {
 			isa = PBXGroup;
 			children = (
+				75E0E3FA25C2653000AFE57E /* Sound */,
 				75862E7225AD3871004AACA4 /* Extensions */,
 				7590E7DC25ABA529005E1280 /* Resources */,
 				75CAF07F22BD009A00E04FAC /* Device */,
@@ -776,6 +783,15 @@
 				758D864222B495BD00C28791 /* load.gb */,
 			);
 			path = roms;
+			sourceTree = "<group>";
+		};
+		75E0E3FA25C2653000AFE57E /* Sound */ = {
+			isa = PBXGroup;
+			children = (
+				75E0E3FB25C2653D00AFE57E /* APU.swift */,
+				75ED9D0525C61B4600DBC61B /* SoundControl.swift */,
+			);
+			path = Sound;
 			sourceTree = "<group>";
 		};
 		75F61DA524FC203900FA095F /* mooneye_test_roms */ = {
@@ -1119,6 +1135,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				758D864122B48A7400C28791 /* MemoryMap.swift in Sources */,
+				75ED9D0725C61B4600DBC61B /* SoundControl.swift in Sources */,
 				757F390C22B1C69F00BBB570 /* PPU.swift in Sources */,
 				75D0E54C22B32DFE0049BF6D /* VRAM+Debug.swift in Sources */,
 				757F38FD22B1C69F00BBB570 /* CPU.swift in Sources */,
@@ -1170,6 +1187,7 @@
 				75B1F63C25BE6262001BEA37 /* ROMSize.swift in Sources */,
 				75FDE26225B625DB00C2A5FB /* Joypad.swift in Sources */,
 				757F390922B1C69F00BBB570 /* LCDControl.swift in Sources */,
+				75E0E3FD25C2653D00AFE57E /* APU.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1202,6 +1220,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				758D864022B4892500C28791 /* MemoryMap.swift in Sources */,
+				75ED9D0625C61B4600DBC61B /* SoundControl.swift in Sources */,
 				75B3AD54229E128900A03C5A /* VRAM.swift in Sources */,
 				75D0E54B22B30C7A0049BF6D /* VRAM+Debug.swift in Sources */,
 				75BD98BE22A4135900CFFB68 /* LCDStatus.swift in Sources */,
@@ -1253,6 +1272,7 @@
 				75B1F63B25BE6262001BEA37 /* ROMSize.swift in Sources */,
 				75FDE26125B625DB00C2A5FB /* Joypad.swift in Sources */,
 				75B3AD4E229DEFB400A03C5A /* MMU.swift in Sources */,
+				75E0E3FC25C2653D00AFE57E /* APU.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1348,7 +1368,6 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.daltonclaybrook.GameBoy-macOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
@@ -1371,7 +1390,6 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.daltonclaybrook.GameBoy-macOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
@@ -1535,7 +1553,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.2;
-				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -1591,7 +1609,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.2;
-				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;

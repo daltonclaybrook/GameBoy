@@ -21,15 +21,15 @@ public final class SoundControl: MemoryAddressable {
     /// them when the sound length expires for a channel.
     internal var enabledChannels: ChannelEnabled = []
 
-    private var volumeByte: Byte = 0x00
-    private var routingByte: Byte = 0x00
+    private var volumeRegister: Byte = 0x00
+    private var routingRegister: Byte = 0x00
 
     public func write(byte: Byte, to address: Address) {
         switch address {
         case 0xff24: // Volume control for left/right + Vin
-            volumeByte = byte
+            volumeRegister = byte
         case 0xff25: // Channel routing to terminals
-            routingByte = byte
+            routingRegister = byte
         case 0xff26: // Turn all sound on/off
             isSoundEnabled = (byte >> 7) & 1 == 1
         default:
@@ -40,9 +40,9 @@ public final class SoundControl: MemoryAddressable {
     public func read(address: Address) -> Byte {
         switch address {
         case 0xff24: // Volume control for left/right + Vin
-            return volumeByte
+            return volumeRegister
         case 0xff25: // Channel routing to terminals
-            return routingByte
+            return routingRegister
         case 0xff26: // Turn all sound on/off
             let isEnabledBit: Byte = isSoundEnabled ? 0x80 : 0x00
             return isEnabledBit | enabledChannels.rawValue

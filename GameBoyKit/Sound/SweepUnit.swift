@@ -23,7 +23,7 @@ public final class SweepUnit {
 
         let currentFrequency = Int32(shadowFrequencyRegister)
         let nextFrequency = (currentFrequency >> channel1.sweepShiftNumber) * channel1.sweepDirection.multiplier + currentFrequency
-        if nextFrequency > 2047 {
+        guard nextFrequency <= 2047 else {
             isEnabled = false
             return
         }

@@ -24,6 +24,8 @@ public final class APU: MemoryAddressable {
     private var timer: DispatchSourceTimer?
     private let timeInterval: TimeInterval = 1.0 / 512.0 // 512 Hz
 
+    private let control = SoundControl()
+
     init() {
 //        @param isSilence
 //            The client may use this flag to indicate that the buffer it vends contains only silence.
@@ -44,11 +46,22 @@ public final class APU: MemoryAddressable {
     }
 
     public func write(byte: Byte, to address: Address) {
+        switch address {
+        case Registers.controlRange:
+            control.write(byte: byte, to: address)
+        default:
+            break // todo: implement
+        }
 
     }
 
     public func read(address: Address) -> Byte {
-
+        switch address {
+        case Registers.controlRange:
+            return control.read(address: address)
+        default:
+            return 0xff // todo: implement
+        }
     }
 
     func start() {

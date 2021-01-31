@@ -25,11 +25,13 @@ public final class IO: MemoryAddressable {
 
     private var bytes = [Byte](repeating: 0, count: MemoryMap.IO.count)
     private let oam: OAM
+    private let apu: APU
     private let timer: Timer
 
-    public init(palettes: ColorPalettes, oam: OAM, timer: Timer) {
+    public init(palettes: ColorPalettes, oam: OAM, apu: APU, timer: Timer) {
         self.palettes = palettes
         self.oam = oam
+        self.apu = apu
         self.timer = timer
         timer.delegate = self
         joypad.delegate = self
@@ -43,6 +45,8 @@ public final class IO: MemoryAddressable {
             return timer.read(address: address)
         case Registers.interruptFlags:
             return interruptFlags.rawValue
+        case APU.Registers.lowerRange, APU.Registers.upperRange:
+            return apu.read(address: address)
         case Registers.lcdControl:
             return lcdControl.rawValue
         case Registers.lcdStatus:
@@ -65,6 +69,8 @@ public final class IO: MemoryAddressable {
             timer.write(byte: byte, to: address)
         case Registers.interruptFlags:
             interruptFlags = Interrupts(rawValue: byte)
+        case APU.Registers.lowerRange, APU.Registers.upperRange:
+            return apu.write(byte: byte, to: address)
         case Registers.lcdControl:
             lcdControl = LCDControl(rawValue: byte)
         case Registers.lcdStatus:

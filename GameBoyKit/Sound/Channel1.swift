@@ -6,21 +6,21 @@ public final class Channel1: MemoryAddressable {
     public enum WaveDuty: UInt8 {
         case twelvePointFivePercent // 12.5%
         case twentyFivePercent // 25%
-        case fiftyPercent // 50%
+        case fiftyPercent // 50%, default
         case seventyFivePercent // 75%
     }
 
     public weak var delegate: Channel1Delegate?
-    public private(set) var waveDuty: WaveDuty = .twelvePointFivePercent
+    public private(set) var waveDuty: WaveDuty = .fiftyPercent
     public private(set) var soundLength: UInt8 = 0
     public private(set) var isSoundLengthEnabled = false
-
-    private var sweepRegister: Byte = 0x00
-    private var volumeEnvelopeRegister: Byte = 0x00
     /// This variable contains the combined values of `0xff13` and the
     /// relevant bits of `0xff14`. The actual frequency is derived from
     /// this value.
-    private var combinedFrequencyRegister: UInt16 = 0x00
+    public internal(set) var combinedFrequencyRegister: UInt16 = 0x00
+
+    private var sweepRegister: Byte = 0x00
+    private var volumeEnvelopeRegister: Byte = 0x00
 
     public func write(byte: Byte, to address: Address) {
         switch address {

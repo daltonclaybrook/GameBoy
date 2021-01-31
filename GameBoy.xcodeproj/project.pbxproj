@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		754013D225B7225C005951E0 /* SpriteAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 754013D125B7225C005951E0 /* SpriteAttributes.swift */; };
 		754013D325B7225C005951E0 /* SpriteAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 754013D125B7225C005951E0 /* SpriteAttributes.swift */; };
+		754AA55B25C72AA900977142 /* SweepUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 754AA55A25C72AA900977142 /* SweepUnit.swift */; };
+		754AA55C25C72AA900977142 /* SweepUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 754AA55A25C72AA900977142 /* SweepUnit.swift */; };
 		7573111425BF08A6001530DC /* pokemon-pinball.gbc in Resources */ = {isa = PBXBuildFile; fileRef = 7573111325BF08A6001530DC /* pokemon-pinball.gbc */; };
 		7573111525BF08A7001530DC /* pokemon-pinball.gbc in Resources */ = {isa = PBXBuildFile; fileRef = 7573111325BF08A6001530DC /* pokemon-pinball.gbc */; };
 		757F38C422B0731E00BBB570 /* Renderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 757F38C322B0731E00BBB570 /* Renderer.swift */; };
@@ -294,6 +296,7 @@
 
 /* Begin PBXFileReference section */
 		754013D125B7225C005951E0 /* SpriteAttributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpriteAttributes.swift; sourceTree = "<group>"; };
+		754AA55A25C72AA900977142 /* SweepUnit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SweepUnit.swift; sourceTree = "<group>"; };
 		7573111325BF08A6001530DC /* pokemon-pinball.gbc */ = {isa = PBXFileReference; lastKnownFileType = file; path = "pokemon-pinball.gbc"; sourceTree = "<group>"; };
 		757F38C322B0731E00BBB570 /* Renderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Renderer.swift; sourceTree = "<group>"; };
 		757F38C522B0765E00BBB570 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
@@ -793,6 +796,7 @@
 			children = (
 				75E0E3FB25C2653D00AFE57E /* APU.swift */,
 				75ED9D0C25C65FCE00DBC61B /* Channel1.swift */,
+				754AA55A25C72AA900977142 /* SweepUnit.swift */,
 				75ED9D0525C61B4600DBC61B /* SoundControl.swift */,
 			);
 			path = Sound;
@@ -1192,6 +1196,7 @@
 				75B1F63C25BE6262001BEA37 /* ROMSize.swift in Sources */,
 				75FDE26225B625DB00C2A5FB /* Joypad.swift in Sources */,
 				757F390922B1C69F00BBB570 /* LCDControl.swift in Sources */,
+				754AA55C25C72AA900977142 /* SweepUnit.swift in Sources */,
 				75E0E3FD25C2653D00AFE57E /* APU.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1278,6 +1283,7 @@
 				75B1F63B25BE6262001BEA37 /* ROMSize.swift in Sources */,
 				75FDE26125B625DB00C2A5FB /* Joypad.swift in Sources */,
 				75B3AD4E229DEFB400A03C5A /* MMU.swift in Sources */,
+				754AA55B25C72AA900977142 /* SweepUnit.swift in Sources */,
 				75E0E3FC25C2653D00AFE57E /* APU.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

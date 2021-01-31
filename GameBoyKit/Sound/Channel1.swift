@@ -56,9 +56,15 @@ public final class Channel1: MemoryAddressable {
         case 0xff10:
             return sweepRegister
         case 0xff11:
+            // Sound length is not returned because it is write-only
+            return waveDuty.rawValue << 6
         case 0xff12:
+            return volumeEnvelopeRegister
         case 0xff13:
+            return 0x00 // This register is write-only
         case 0xff14:
+            // Only bit 6 is able to be read. The others are write-only
+            return isSoundLengthEnabled ? 0x40 : 0x00
         default:
             fatalError("Invalid address: \(address)")
         }

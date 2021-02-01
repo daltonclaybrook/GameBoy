@@ -113,4 +113,8 @@ extension APU: Channel1Delegate {
     public func channel1ShouldRestart(_ channel1: Channel1) {
         // restart
     }
+
+    public func channel1(_ channel1: Channel1, loadedSoundLength soundLength: UInt8) {
+        // update volume envelope
+    }
 }

@@ -11,6 +11,10 @@
 		754013D325B7225C005951E0 /* SpriteAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 754013D125B7225C005951E0 /* SpriteAttributes.swift */; };
 		754AA55B25C72AA900977142 /* SweepUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 754AA55A25C72AA900977142 /* SweepUnit.swift */; };
 		754AA55C25C72AA900977142 /* SweepUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 754AA55A25C72AA900977142 /* SweepUnit.swift */; };
+		754AA56225C75BDD00977142 /* LengthCounterUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 754AA56125C75BDD00977142 /* LengthCounterUnit.swift */; };
+		754AA56325C75BDD00977142 /* LengthCounterUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 754AA56125C75BDD00977142 /* LengthCounterUnit.swift */; };
+		754AA56925C76BCF00977142 /* VolumeEnvelopeUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 754AA56825C76BCF00977142 /* VolumeEnvelopeUnit.swift */; };
+		754AA56A25C76BCF00977142 /* VolumeEnvelopeUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 754AA56825C76BCF00977142 /* VolumeEnvelopeUnit.swift */; };
 		7573111425BF08A6001530DC /* pokemon-pinball.gbc in Resources */ = {isa = PBXBuildFile; fileRef = 7573111325BF08A6001530DC /* pokemon-pinball.gbc */; };
 		7573111525BF08A7001530DC /* pokemon-pinball.gbc in Resources */ = {isa = PBXBuildFile; fileRef = 7573111325BF08A6001530DC /* pokemon-pinball.gbc */; };
 		757F38C422B0731E00BBB570 /* Renderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 757F38C322B0731E00BBB570 /* Renderer.swift */; };
@@ -297,6 +301,8 @@
 /* Begin PBXFileReference section */
 		754013D125B7225C005951E0 /* SpriteAttributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpriteAttributes.swift; sourceTree = "<group>"; };
 		754AA55A25C72AA900977142 /* SweepUnit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SweepUnit.swift; sourceTree = "<group>"; };
+		754AA56125C75BDD00977142 /* LengthCounterUnit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LengthCounterUnit.swift; sourceTree = "<group>"; };
+		754AA56825C76BCF00977142 /* VolumeEnvelopeUnit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VolumeEnvelopeUnit.swift; sourceTree = "<group>"; };
 		7573111325BF08A6001530DC /* pokemon-pinball.gbc */ = {isa = PBXFileReference; lastKnownFileType = file; path = "pokemon-pinball.gbc"; sourceTree = "<group>"; };
 		757F38C322B0731E00BBB570 /* Renderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Renderer.swift; sourceTree = "<group>"; };
 		757F38C522B0765E00BBB570 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
@@ -796,6 +802,8 @@
 			children = (
 				75E0E3FB25C2653D00AFE57E /* APU.swift */,
 				75ED9D0C25C65FCE00DBC61B /* Channel1.swift */,
+				754AA56125C75BDD00977142 /* LengthCounterUnit.swift */,
+				754AA56825C76BCF00977142 /* VolumeEnvelopeUnit.swift */,
 				754AA55A25C72AA900977142 /* SweepUnit.swift */,
 				75ED9D0525C61B4600DBC61B /* SoundControl.swift */,
 			);
@@ -1147,6 +1155,7 @@
 				757F390C22B1C69F00BBB570 /* PPU.swift in Sources */,
 				75D0E54C22B32DFE0049BF6D /* VRAM+Debug.swift in Sources */,
 				757F38FD22B1C69F00BBB570 /* CPU.swift in Sources */,
+				754AA56A25C76BCF00977142 /* VolumeEnvelopeUnit.swift in Sources */,
 				757F390622B1C69F00BBB570 /* MMU.swift in Sources */,
 				757F390E22B1C69F00BBB570 /* GameBoy.swift in Sources */,
 				7590E7FB25ABE242005E1280 /* Numbers+Debug.swift in Sources */,
@@ -1181,6 +1190,7 @@
 				75B1F5CD25BCC9D9001BEA37 /* RTC.swift in Sources */,
 				75B1F64725BE64E4001BEA37 /* RAMSize.swift in Sources */,
 				757F390F22B1C69F00BBB570 /* Clock.swift in Sources */,
+				754AA56325C75BDD00977142 /* LengthCounterUnit.swift in Sources */,
 				757F390222B1C69F00BBB570 /* IO.swift in Sources */,
 				75D0E53D22B1C8430049BF6D /* WRAM.swift in Sources */,
 				75AC8EE025AFEFEF00C4A1DA /* DisplayLink.swift in Sources */,
@@ -1234,6 +1244,7 @@
 				75B3AD54229E128900A03C5A /* VRAM.swift in Sources */,
 				75D0E54B22B30C7A0049BF6D /* VRAM+Debug.swift in Sources */,
 				75BD98BE22A4135900CFFB68 /* LCDStatus.swift in Sources */,
+				754AA56925C76BCF00977142 /* VolumeEnvelopeUnit.swift in Sources */,
 				75BD98B422A0AD9600CFFB68 /* CPU+Instructions.swift in Sources */,
 				75BD98C422A49C0C00CFFB68 /* OAM.swift in Sources */,
 				7590E7FA25ABE242005E1280 /* Numbers+Debug.swift in Sources */,
@@ -1268,6 +1279,7 @@
 				75B1F5CC25BCC9D9001BEA37 /* RTC.swift in Sources */,
 				75B1F64625BE64E4001BEA37 /* RAMSize.swift in Sources */,
 				758834DA22BB12DF00B80FD0 /* TimerControl.swift in Sources */,
+				754AA56225C75BDD00977142 /* LengthCounterUnit.swift in Sources */,
 				75BD98C022A413AA00CFFB68 /* LCDControl.swift in Sources */,
 				757F38CA22B08A5500BBB570 /* AAPLShaders.metal in Sources */,
 				75B3AD58229EA1DD00A03C5A /* GameBoy.swift in Sources */,

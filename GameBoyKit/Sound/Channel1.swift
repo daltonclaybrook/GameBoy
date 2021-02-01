@@ -1,5 +1,6 @@
 public protocol Channel1Delegate: AnyObject {
     func channel1ShouldRestart(_ channel1: Channel1)
+    func channel1(_ channel1: Channel1, loadedSoundLength soundLength: UInt8)
 }
 
 public final class Channel1: MemoryAddressable {
@@ -30,6 +31,7 @@ public final class Channel1: MemoryAddressable {
             // only lower 6 bits affect sound length
             soundLength = byte & 0x3f
             waveDuty = WaveDuty(rawValue: byte >> 6)! // Cannot crash or I'll eat my hat
+            delegate?.channel1(self, loadedSoundLength: soundLength)
         case 0xff12: // Set volume envelope
             volumeEnvelopeRegister = byte
         case 0xff13: // Set lower 8 bits of frequency register

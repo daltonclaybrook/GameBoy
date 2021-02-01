@@ -1,3 +1,5 @@
+import Foundation
+
 public protocol Channel1Delegate: AnyObject {
     func channel1ShouldRestart(_ channel1: Channel1)
     func channel1(_ channel1: Channel1, loadedSoundLength soundLength: UInt8)
@@ -18,12 +20,16 @@ public final class Channel1: MemoryAddressable {
     /// This variable contains the combined values of `0xff13` and the
     /// relevant bits of `0xff14`. The actual frequency is derived from
     /// this value.
-    public internal(set) var combinedFrequencyRegister: UInt16 = 0x00
+    public private(set) var combinedFrequencyRegister: UInt16 = 0x00
 
     private var sweepRegister: Byte = 0x00
     private var volumeEnvelopeRegister: Byte = 0x00
+    private let lock = NSRecursiveLock()
 
     public func write(byte: Byte, to address: Address) {
+        lock.lock()
+        defer { lock.unlock() }
+
         switch address {
         case 0xff10: // Set sweep
             sweepRegister = byte
@@ -65,6 +71,12 @@ public final class Channel1: MemoryAddressable {
             fatalError("Invalid address: \(address)")
         }
     }
+
+    internal func update(frequency: UInt16) {
+        lock.lock()
+        defer { lock.unlock() }
+        combinedFrequencyRegister = frequency
+    }
 }
 
 public extension Channel1 {
@@ -75,8 +87,8 @@ public extension Channel1 {
 
     /// The frequency is derived by combining the registers `0xff13` and
     /// part of `0xff14`, then applying a formula.
-    var frequency: Double {
-        131_072.0 / (2_048.0 - Double(combinedFrequencyRegister))
+    var frequency: Float {
+        131_072.0 / (2_048.0 - Float(combinedFrequencyRegister))
     }
 
     /// The count of cycles @ 128 Hz to wait before performing each
@@ -119,5 +131,20 @@ public extension Channel1 {
     var envelopeCycleModulus: UInt8 {
         // Bits 0-2
         volumeEnvelopeRegister & 0x07
+    }
+}
+
+public extension Channel1.WaveDuty {
+    var waveform: [Float] {
+        switch self {
+        case .twelvePointFivePercent:
+            return [-1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, 1.0]
+        case .twentyFivePercent:
+            return [1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, 1.0]
+        case .fiftyPercent:
+            return [1.0, -1.0, -1.0, -1.0, -1.0, 1.0, 1.0, 1.0]
+        case .seventyFivePercent:
+            return [-1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, -1.0]
+        }
     }
 }

@@ -1,5 +1,8 @@
 public final class VolumeEnvelopeUnit {
     public private(set) var currentVolume: UInt8 = 0
+    public var normalizedVolume: Float {
+        Float(currentVolume) / Float(volumeRange.upperBound)
+    }
 
     private let channel1: Channel1
     private var isEnabled = false

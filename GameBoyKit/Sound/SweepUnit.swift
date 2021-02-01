@@ -29,7 +29,7 @@ public final class SweepUnit {
         }
 
         shadowFrequencyRegister = UInt16(nextFrequency)
-        channel1.combinedFrequencyRegister = shadowFrequencyRegister
+        channel1.update(frequency: shadowFrequencyRegister)
     }
 
     // MARK: - Helpers

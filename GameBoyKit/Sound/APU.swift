@@ -24,10 +24,22 @@ public final class APU: MemoryAddressable {
     private var timer: DispatchSourceTimer?
     private let timeInterval: TimeInterval = 1.0 / 512.0 // 512 Hz
 
-    private let channel1 = Channel1()
     private let control = SoundControl()
 
+    // Channel 1 + associated units. Todo: consider abstracting this a bit better
+    // to enable reusable APIs between different channels with the same units
+    private let channel1 = Channel1()
+    private let sweepUnit: SweepUnit
+    private let lengthCounterUnit: LengthCounterUnit
+    private let volumeEnvelopeUnit: VolumeEnvelopeUnit
+
+    private let audioEngine = AVAudioEngine()
+    private let twoPi = 2 * Float.pi
+
     init() {
+        sweepUnit = SweepUnit(channel1: channel1)
+        lengthCounterUnit = LengthCounterUnit(channel1: channel1)
+        volumeEnvelopeUnit = VolumeEnvelopeUnit(channel1: channel1)
         channel1.delegate = self
 //        @param isSilence
 //            The client may use this flag to indicate that the buffer it vends contains only silence.
@@ -42,9 +54,8 @@ public final class APU: MemoryAddressable {
 //            The number of sample frames of audio data requested.
 //        @param outputData
 //            The output data.
-//        let node = AVAudioSourceNode { (isSilence, timestamp, frameCount, outputData) -> OSStatus in
-//            return noErr
-//        }
+
+        setupAudioNode()
     }
 
     public func write(byte: Byte, to address: Address) {
@@ -82,39 +93,110 @@ public final class APU: MemoryAddressable {
         }
         timer.schedule(deadline: .now(), repeating: timeInterval)
         timer.resume()
+
+        do {
+            try audioEngine.start()
+        } catch let error {
+            print("error starting audio engine: \(error.localizedDescription)")
+            stop()
+        }
     }
 
     func stop() {
         timer?.setEventHandler(handler: nil)
         timer?.cancel()
         timer = nil
+        audioEngine.stop()
     }
 
     // MARK: - Helpers
 
+    private func setupAudioNode() {
+        let mainMixer = audioEngine.mainMixerNode
+        let output = audioEngine.outputNode
+        let outputFormat = output.inputFormat(forBus: 0)
+        let sampleRate = Float(outputFormat.sampleRate)
+
+        let inputFormat = AVAudioFormat(
+            commonFormat: outputFormat.commonFormat,
+            sampleRate: outputFormat.sampleRate,
+            channels: 1, // should eventually support two channels
+            interleaved: outputFormat.isInterleaved
+        )
+
+        var currentPhase: Float = 0
+        let node = AVAudioSourceNode { [weak self] isSilence, timestamp, frameCount, audioBufferList -> OSStatus in
+            guard let self = self else { return -1 }
+
+            // The interval by which we advance the phase each frame.
+            let frequency = self.channel1.frequency
+            let phaseIncrement = (self.twoPi / sampleRate) * frequency
+            let amplitude = self.getCurrentAmplitudeForChannel1()
+
+            let buffers = UnsafeMutableAudioBufferListPointer(audioBufferList)
+            for frame in 0..<Int(frameCount) {
+                // Get signal value for this frame at time.
+                let signal = self.getSignalForChannel1(currentPhase: currentPhase)
+                let value = signal * amplitude
+                // Advance the phase for the next frame.
+                currentPhase += phaseIncrement
+                if currentPhase >= self.twoPi {
+                    currentPhase -= self.twoPi
+                }
+                if currentPhase < 0.0 {
+                    currentPhase += self.twoPi
+                }
+                // Set the same value on all channels (due to the inputFormat we have only 1 channel though).
+                for buffer in buffers {
+                    let bufferPointer = UnsafeMutableBufferPointer<Float>(buffer)
+                    bufferPointer[frame] = value
+                }
+            }
+
+            return noErr
+        }
+
+        audioEngine.attach(node)
+        audioEngine.connect(node, to: mainMixer, format: inputFormat)
+        audioEngine.connect(mainMixer, to: output, format: outputFormat)
+        mainMixer.outputVolume = 0.5
+    }
+
+    private func getCurrentAmplitudeForChannel1() -> Float {
+        guard lengthCounterUnit.channelIsEnabled else { return 0 }
+        return volumeEnvelopeUnit.normalizedVolume
+    }
+
+    private func getSignalForChannel1(currentPhase: Float) -> Float {
+        let waveform = channel1.waveDuty.waveform
+        let index = Int((currentPhase / twoPi) * Float(waveform.count))
+        return waveform[index]
+    }
+
     private func advanceFrameSequencer(step: UInt64) {
-        print("step: \(step)")
         if step % 2 == 0 {
-            // length counter
-            print("length counter clock")
+            lengthCounterUnit.clockTick()
         }
         if (step + 1) % 8 == 0 {
-            // volume envelope
-            print("volume envelope clock")
+            volumeEnvelopeUnit.clockTick()
         }
         if (step + 2) % 4 == 0 {
-            // sweep
-            print("sweep clock")
+            sweepUnit.clockTick()
         }
     }
 }
 
 extension APU: Channel1Delegate {
     public func channel1ShouldRestart(_ channel1: Channel1) {
-        // restart
+        queue.async { [sweepUnit, volumeEnvelopeUnit] in
+            sweepUnit.restart()
+            volumeEnvelopeUnit.restart()
+        }
     }
 
     public func channel1(_ channel1: Channel1, loadedSoundLength soundLength: UInt8) {
-        // update volume envelope
+        queue.async { [lengthCounterUnit] in
+            lengthCounterUnit.load(soundLength: soundLength)
+        }
     }
 }

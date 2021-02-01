@@ -38,7 +38,7 @@ public final class APU: MemoryAddressable {
 
     init() {
         sweepUnit = SweepUnit(channel1: channel1)
-        lengthCounterUnit = LengthCounterUnit(channel1: channel1)
+        lengthCounterUnit = LengthCounterUnit(channel1: channel1, control: control)
         volumeEnvelopeUnit = VolumeEnvelopeUnit(channel1: channel1)
         channel1.delegate = self
 //        @param isSilence
@@ -163,8 +163,8 @@ public final class APU: MemoryAddressable {
     }
 
     private func getCurrentAmplitudeForChannel1() -> Float {
-        guard lengthCounterUnit.channelIsEnabled else { return 0 }
-        return volumeEnvelopeUnit.normalizedVolume
+        guard control.isSoundEnabled && lengthCounterUnit.channelIsEnabled else { return 0 }
+        return volumeEnvelopeUnit.normalizedVolume * 0.1
     }
 
     private func getSignalForChannel1(currentPhase: Float) -> Float {
@@ -173,14 +173,15 @@ public final class APU: MemoryAddressable {
         return waveform[index]
     }
 
+    /// This function is called 512 times per second
     private func advanceFrameSequencer(step: UInt64) {
-        if step % 2 == 0 {
+        if step % 2 == 0 { // 256 Hz
             lengthCounterUnit.clockTick()
         }
-        if (step + 1) % 8 == 0 {
+        if (step + 1) % 8 == 0 { // 64 Hz
             volumeEnvelopeUnit.clockTick()
         }
-        if (step + 2) % 4 == 0 {
+        if (step + 2) % 4 == 0 { // 128 Hz
             sweepUnit.clockTick()
         }
     }
@@ -188,7 +189,8 @@ public final class APU: MemoryAddressable {
 
 extension APU: Channel1Delegate {
     public func channel1ShouldRestart(_ channel1: Channel1) {
-        queue.async { [sweepUnit, volumeEnvelopeUnit] in
+        queue.async { [control, sweepUnit, volumeEnvelopeUnit] in
+            control.enabledChannels.insert(.channel1)
             sweepUnit.restart()
             volumeEnvelopeUnit.restart()
         }

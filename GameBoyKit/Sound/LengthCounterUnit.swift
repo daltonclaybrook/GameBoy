@@ -8,11 +8,19 @@ public final class LengthCounterUnit {
     }
 
     private let channel1: Channel1
-    private var remainingCycles: UInt8 = 0
+    private let control: SoundControl
     private let maxCycles: UInt8 = 64
+    private var remainingCycles: UInt8 = 0 {
+        didSet {
+            if remainingCycles == 0 && channel1.isSoundLengthEnabled {
+                control.enabledChannels.remove(.channel1)
+            }
+        }
+    }
 
-    public init(channel1: Channel1) {
+    public init(channel1: Channel1, control: SoundControl) {
         self.channel1 = channel1
+        self.control = control
     }
 
     func restart() {

@@ -1,6 +1,7 @@
 public final class SweepUnit {
+    public private(set) var isEnabled = false
+
     private let channel1: Channel1
-    private var isEnabled = false
     private var shadowFrequencyRegister: UInt16 = 0
     private var cyclesRemaining: UInt8 = 0
 

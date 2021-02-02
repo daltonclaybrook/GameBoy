@@ -9,8 +9,6 @@ private protocol AudioDataProvider {
     func getSignal(fromCoefficients coefficients: [Float], currentPhase: Float) -> Float
 }
 
-private let twoPi = 2 * Float.pi
-
 final class AudioSourceNode: AudioDataProvider {
     fileprivate let sampleRate: Float
 
@@ -91,7 +89,9 @@ final class AudioSourceNode: AudioDataProvider {
 // MARK: - Free helper functions
 
 private func createAudioRenderBlock(provider: AudioDataProvider) -> AVAudioSourceNodeRenderBlock {
+    let twoPi = 2 * Float.pi
     var currentPhase: Float = 0
+
     return { isSilence, timestamp, frameCount, audioBufferList in
         // The interval by which we advance the phase each frame.
         let frequency = provider.frequency

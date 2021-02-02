@@ -5,7 +5,8 @@ private protocol AudioDataProvider {
     var sampleRate: Float { get }
     var amplitude: Float { get }
 
-    func getSignal(forCurrentPhase phase: Float) -> Float
+    func calculateCoefficients(forFrequency frequency: Float) -> [Float]
+    func getSignal(fromCoefficients coefficients: [Float], currentPhase: Float) -> Float
 }
 
 private let twoPi = 2 * Float.pi
@@ -17,6 +18,7 @@ final class AudioSourceNode: AudioDataProvider {
     private let control: SoundControl
     private let lengthCounterUnit: LengthCounterUnit
     private let volumeEnvelopeUnit: VolumeEnvelopeUnit
+    private let lock = NSRecursiveLock()
 
     fileprivate var frequency: Float {
         channel.frequency
@@ -46,10 +48,43 @@ final class AudioSourceNode: AudioDataProvider {
         AVAudioSourceNode(renderBlock: createAudioRenderBlock(provider: self))
     }
 
-    fileprivate func getSignal(forCurrentPhase phase: Float) -> Float {
-        let waveform = channel.waveDuty.waveform
-        let index = Int((phase / twoPi) * Float(waveform.count))
-        return waveform[index]
+    struct MemoKey: Hashable {
+        let frequency: Float
+        let dutyCycle: Float
+    }
+
+    private static var coefficientsMemo: [MemoKey: [Float]] = [:]
+    /// Calculate the set of coefficients used to produce band-limited square waves.
+    /// Producing signals using this method eliminates audible artifacts. More info
+    /// here: https://www.nayuki.io/page/band-limited-square-waves
+    fileprivate func calculateCoefficients(forFrequency frequency: Float) -> [Float] {
+        let dutyCycle = channel.waveDuty.percent
+        let key = MemoKey(frequency: frequency, dutyCycle: dutyCycle)
+        if let coefficients = Self.coefficientsMemo[key] {
+            return coefficients
+        }
+
+        let harmonicsCount = Int(sampleRate / (frequency * 2))
+        var coefficients: [Float] = []
+        coefficients.reserveCapacity(harmonicsCount + 1)
+        coefficients.append(dutyCycle - 0.5) // Start with the duty cycle coefficient
+
+        (1..<(harmonicsCount + 1)).forEach { index in
+            let floatIndex = Float(index)
+            let nextCoefficient = sin(floatIndex * dutyCycle * .pi) * 2 / (floatIndex * .pi)
+            coefficients.append(nextCoefficient)
+        }
+
+        lock.lock()
+        Self.coefficientsMemo[key] = coefficients
+        lock.unlock()
+        return coefficients
+    }
+
+    fileprivate func getSignal(fromCoefficients coefficients: [Float], currentPhase: Float) -> Float {
+        (1..<coefficients.count).reduce(coefficients[0]) { result, index in
+            result + cos(Float(index) * currentPhase) * coefficients[index]
+        }
     }
 }
 
@@ -67,10 +102,11 @@ private func createAudioRenderBlock(provider: AudioDataProvider) -> AVAudioSourc
             return noErr
         }
 
+        let coefficients = provider.calculateCoefficients(forFrequency: frequency)
         let buffers = UnsafeMutableAudioBufferListPointer(audioBufferList)
         for frame in 0..<Int(frameCount) {
             // Get signal value for this frame at time.
-            let signal = provider.getSignal(forCurrentPhase: currentPhase)
+            let signal = provider.getSignal(fromCoefficients: coefficients, currentPhase: currentPhase)
             let value = signal * amplitude
             // Advance the phase for the next frame.
             currentPhase += phaseIncrement

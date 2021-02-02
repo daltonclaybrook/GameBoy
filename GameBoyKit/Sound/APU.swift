@@ -120,17 +120,6 @@ public final class APU: MemoryAddressable {
         mainMixer.outputVolume = 0.5
     }
 
-    private func getCurrentAmplitudeForChannel1() -> Float {
-        guard control.isSoundEnabled && lengthCounterUnit.channelIsEnabled else { return 0 }
-        return volumeEnvelopeUnit.normalizedVolume * 0.1
-    }
-
-    private func getSignalForChannel1(currentPhase: Float) -> Float {
-        let waveform = channel1.waveDuty.waveform
-        let index = Int((currentPhase / twoPi) * Float(waveform.count))
-        return waveform[index]
-    }
-
     /// This function is called 512 times per second
     private func advanceFrameSequencer(step: UInt64) {
         if step % 2 == 0 { // 256 Hz

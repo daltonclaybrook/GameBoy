@@ -147,19 +147,6 @@ public extension Channel1 {
 }
 
 public extension Channel1.WaveDuty {
-    var waveform: [Float] {
-        switch self {
-        case .twelvePointFivePercent:
-            return [-1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, 1.0]
-        case .twentyFivePercent:
-            return [1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, 1.0]
-        case .fiftyPercent:
-            return [1.0, -1.0, -1.0, -1.0, -1.0, 1.0, 1.0, 1.0]
-        case .seventyFivePercent:
-            return [-1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, -1.0]
-        }
-    }
-
     var percent: Float {
         switch self {
         case .twelvePointFivePercent:

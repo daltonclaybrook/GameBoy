@@ -19,6 +19,11 @@ public final class VolumeEnvelopeUnit {
         isEnabled = cyclesRemaining > 0
     }
 
+    func reset() {
+        cyclesRemaining = 0
+        isEnabled = false
+    }
+
     func clockTick() {
         guard updateAndReturnIsEnabled() else { return }
 

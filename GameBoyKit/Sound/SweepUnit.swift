@@ -15,6 +15,10 @@ public final class SweepUnit {
         cyclesRemaining = channel1.sweepCycleModulus
     }
 
+    func reset() {
+        isEnabled = false
+    }
+
     func clockTick() {
         guard updateAndReturnIsEnabled() else { return }
 

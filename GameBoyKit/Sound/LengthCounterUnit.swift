@@ -27,6 +27,10 @@ public final class LengthCounterUnit {
         updateRemainingCycles(soundLength: channel1.soundLength)
     }
 
+    func reset() {
+        remainingCycles = 0
+    }
+
     public func load(soundLength: UInt8) {
         updateRemainingCycles(soundLength: soundLength)
     }

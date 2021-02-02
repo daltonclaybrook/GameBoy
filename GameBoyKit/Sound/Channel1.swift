@@ -77,6 +77,18 @@ public final class Channel1: MemoryAddressable {
         defer { lock.unlock() }
         combinedFrequencyRegister = frequency
     }
+
+    internal func reset() {
+        lock.lock()
+        defer { lock.unlock() }
+
+        waveDuty = .fiftyPercent
+        soundLength = 0
+        isSoundLengthEnabled = false
+        combinedFrequencyRegister = 0
+        sweepRegister = 0
+        volumeEnvelopeRegister = 0
+    }
 }
 
 public extension Channel1 {
@@ -145,6 +157,19 @@ public extension Channel1.WaveDuty {
             return [1.0, -1.0, -1.0, -1.0, -1.0, 1.0, 1.0, 1.0]
         case .seventyFivePercent:
             return [-1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, -1.0]
+        }
+    }
+
+    var percent: Float {
+        switch self {
+        case .twelvePointFivePercent:
+            return 0.125
+        case .twentyFivePercent:
+            return 0.25
+        case .fiftyPercent:
+            return 0.50
+        case .seventyFivePercent:
+            return 0.75
         }
     }
 }

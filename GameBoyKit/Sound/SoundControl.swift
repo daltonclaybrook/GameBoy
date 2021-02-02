@@ -1,3 +1,7 @@
+public protocol SoundControlDelegate: AnyObject {
+    func soundControlDidStopAllSound(_ control: SoundControl)
+}
+
 /// This type represents the three sound control registers in the Game Boy
 public final class SoundControl: MemoryAddressable {
     public struct ChannelEnabled: OptionSet {
@@ -12,6 +16,8 @@ public final class SoundControl: MemoryAddressable {
             self.rawValue = rawValue
         }
     }
+
+    weak var delegate: SoundControlDelegate?
 
     /// This is the master flag to determine if all sound is enabled
     /// or disabled. On the Game Boy, setting this to false can save
@@ -32,6 +38,9 @@ public final class SoundControl: MemoryAddressable {
             routingRegister = byte
         case 0xff26: // Turn all sound on/off
             isSoundEnabled = (byte >> 7) & 1 == 1
+            if !isSoundEnabled {
+                delegate?.soundControlDidStopAllSound(self)
+            }
         default:
             fatalError("Invalid address: \(address)")
         }

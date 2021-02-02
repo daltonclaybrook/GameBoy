@@ -15,6 +15,8 @@
 		754AA56325C75BDD00977142 /* LengthCounterUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 754AA56125C75BDD00977142 /* LengthCounterUnit.swift */; };
 		754AA56925C76BCF00977142 /* VolumeEnvelopeUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 754AA56825C76BCF00977142 /* VolumeEnvelopeUnit.swift */; };
 		754AA56A25C76BCF00977142 /* VolumeEnvelopeUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 754AA56825C76BCF00977142 /* VolumeEnvelopeUnit.swift */; };
+		754AA76925C8FC2B00977142 /* AudioSourceNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 754AA76825C8FC2B00977142 /* AudioSourceNode.swift */; };
+		754AA76A25C8FC2B00977142 /* AudioSourceNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 754AA76825C8FC2B00977142 /* AudioSourceNode.swift */; };
 		7573111425BF08A6001530DC /* pokemon-pinball.gbc in Resources */ = {isa = PBXBuildFile; fileRef = 7573111325BF08A6001530DC /* pokemon-pinball.gbc */; };
 		7573111525BF08A7001530DC /* pokemon-pinball.gbc in Resources */ = {isa = PBXBuildFile; fileRef = 7573111325BF08A6001530DC /* pokemon-pinball.gbc */; };
 		757F38C422B0731E00BBB570 /* Renderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 757F38C322B0731E00BBB570 /* Renderer.swift */; };
@@ -303,6 +305,7 @@
 		754AA55A25C72AA900977142 /* SweepUnit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SweepUnit.swift; sourceTree = "<group>"; };
 		754AA56125C75BDD00977142 /* LengthCounterUnit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LengthCounterUnit.swift; sourceTree = "<group>"; };
 		754AA56825C76BCF00977142 /* VolumeEnvelopeUnit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VolumeEnvelopeUnit.swift; sourceTree = "<group>"; };
+		754AA76825C8FC2B00977142 /* AudioSourceNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioSourceNode.swift; sourceTree = "<group>"; };
 		7573111325BF08A6001530DC /* pokemon-pinball.gbc */ = {isa = PBXFileReference; lastKnownFileType = file; path = "pokemon-pinball.gbc"; sourceTree = "<group>"; };
 		757F38C322B0731E00BBB570 /* Renderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Renderer.swift; sourceTree = "<group>"; };
 		757F38C522B0765E00BBB570 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
@@ -801,6 +804,7 @@
 			isa = PBXGroup;
 			children = (
 				75E0E3FB25C2653D00AFE57E /* APU.swift */,
+				754AA76825C8FC2B00977142 /* AudioSourceNode.swift */,
 				75ED9D0C25C65FCE00DBC61B /* Channel1.swift */,
 				754AA56125C75BDD00977142 /* LengthCounterUnit.swift */,
 				754AA56825C76BCF00977142 /* VolumeEnvelopeUnit.swift */,
@@ -1156,6 +1160,7 @@
 				75D0E54C22B32DFE0049BF6D /* VRAM+Debug.swift in Sources */,
 				757F38FD22B1C69F00BBB570 /* CPU.swift in Sources */,
 				754AA56A25C76BCF00977142 /* VolumeEnvelopeUnit.swift in Sources */,
+				754AA76A25C8FC2B00977142 /* AudioSourceNode.swift in Sources */,
 				757F390622B1C69F00BBB570 /* MMU.swift in Sources */,
 				757F390E22B1C69F00BBB570 /* GameBoy.swift in Sources */,
 				7590E7FB25ABE242005E1280 /* Numbers+Debug.swift in Sources */,
@@ -1245,6 +1250,7 @@
 				75D0E54B22B30C7A0049BF6D /* VRAM+Debug.swift in Sources */,
 				75BD98BE22A4135900CFFB68 /* LCDStatus.swift in Sources */,
 				754AA56925C76BCF00977142 /* VolumeEnvelopeUnit.swift in Sources */,
+				754AA76925C8FC2B00977142 /* AudioSourceNode.swift in Sources */,
 				75BD98B422A0AD9600CFFB68 /* CPU+Instructions.swift in Sources */,
 				75BD98C422A49C0C00CFFB68 /* OAM.swift in Sources */,
 				7590E7FA25ABE242005E1280 /* Numbers+Debug.swift in Sources */,

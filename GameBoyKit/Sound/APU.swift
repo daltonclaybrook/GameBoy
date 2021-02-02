@@ -34,26 +34,13 @@ public final class APU: MemoryAddressable {
     private let volumeEnvelopeUnit: VolumeEnvelopeUnit
 
     private let audioEngine = AVAudioEngine()
-    private let twoPi = 2 * Float.pi
 
     init() {
         sweepUnit = SweepUnit(channel1: channel1)
         lengthCounterUnit = LengthCounterUnit(channel1: channel1, control: control)
         volumeEnvelopeUnit = VolumeEnvelopeUnit(channel1: channel1)
         channel1.delegate = self
-//        @param isSilence
-//            The client may use this flag to indicate that the buffer it vends contains only silence.
-//            The receiver of the buffer can then use the flag as a hint as to whether the buffer needs
-//            to be processed or not.
-//            Note that because the flag is only a hint, when setting the silence flag, the originator of
-//            a buffer must also ensure that it contains silence (zeroes).
-//        @param timestamp
-//            The HAL time at which the audio data will be rendered. If there is a sample rate conversion
-//            or time compression/expansion downstream, the sample time will not be valid.
-//        @param frameCount
-//            The number of sample frames of audio data requested.
-//        @param outputData
-//            The output data.
+        control.delegate = self
 
         setupAudioNode()
     }
@@ -124,40 +111,11 @@ public final class APU: MemoryAddressable {
             interleaved: outputFormat.isInterleaved
         )
 
-        var currentPhase: Float = 0
-        let node = AVAudioSourceNode { [weak self] isSilence, timestamp, frameCount, audioBufferList -> OSStatus in
-            guard let self = self else { return -1 }
+        let node = AudioSourceNode(sampleRate: sampleRate, channel: channel1, control: control, lengthCounterUnit: lengthCounterUnit, volumeEnvelopeUnit: volumeEnvelopeUnit)
+        let sourceNode = node.makeSourceNode()
 
-            // The interval by which we advance the phase each frame.
-            let frequency = self.channel1.frequency
-            let phaseIncrement = (self.twoPi / sampleRate) * frequency
-            let amplitude = self.getCurrentAmplitudeForChannel1()
-
-            let buffers = UnsafeMutableAudioBufferListPointer(audioBufferList)
-            for frame in 0..<Int(frameCount) {
-                // Get signal value for this frame at time.
-                let signal = self.getSignalForChannel1(currentPhase: currentPhase)
-                let value = signal * amplitude
-                // Advance the phase for the next frame.
-                currentPhase += phaseIncrement
-                if currentPhase >= self.twoPi {
-                    currentPhase -= self.twoPi
-                }
-                if currentPhase < 0.0 {
-                    currentPhase += self.twoPi
-                }
-                // Set the same value on all channels (due to the inputFormat we have only 1 channel though).
-                for buffer in buffers {
-                    let bufferPointer = UnsafeMutableBufferPointer<Float>(buffer)
-                    bufferPointer[frame] = value
-                }
-            }
-
-            return noErr
-        }
-
-        audioEngine.attach(node)
-        audioEngine.connect(node, to: mainMixer, format: inputFormat)
+        audioEngine.attach(sourceNode)
+        audioEngine.connect(sourceNode, to: mainMixer, format: inputFormat)
         audioEngine.connect(mainMixer, to: output, format: outputFormat)
         mainMixer.outputVolume = 0.5
     }
@@ -199,6 +157,18 @@ extension APU: Channel1Delegate {
     public func channel1(_ channel1: Channel1, loadedSoundLength soundLength: UInt8) {
         queue.async { [lengthCounterUnit] in
             lengthCounterUnit.load(soundLength: soundLength)
+        }
+    }
+}
+
+extension APU: SoundControlDelegate {
+    public func soundControlDidStopAllSound(_ control: SoundControl) {
+        print("stop all sound")
+        queue.async { [channel1, sweepUnit, lengthCounterUnit, volumeEnvelopeUnit] in
+            channel1.reset()
+            sweepUnit.reset()
+            lengthCounterUnit.reset()
+            volumeEnvelopeUnit.reset()
         }
     }
 }

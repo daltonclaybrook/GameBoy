@@ -46,7 +46,7 @@ final class AudioSourceNode: AudioDataProvider {
         AVAudioSourceNode(renderBlock: createAudioRenderBlock(provider: self))
     }
 
-    struct MemoKey: Hashable {
+    private struct MemoKey: Hashable {
         let frequency: Float
         let dutyCycle: Float
     }

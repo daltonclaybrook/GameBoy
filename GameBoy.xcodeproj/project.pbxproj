@@ -142,6 +142,10 @@
 		7596942225B0017C008BDF67 /* DisplayLinkType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7596942125B0017C008BDF67 /* DisplayLinkType.swift */; };
 		7596942325B0017C008BDF67 /* DisplayLinkType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7596942125B0017C008BDF67 /* DisplayLinkType.swift */; };
 		7596942B25B001C2008BDF67 /* DisplayLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7596942A25B001C2008BDF67 /* DisplayLink.swift */; };
+		75A84F7225CA57F800C353FA /* ChannelDriver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75A84F7125CA57F800C353FA /* ChannelDriver.swift */; };
+		75A84F7325CA57F800C353FA /* ChannelDriver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75A84F7125CA57F800C353FA /* ChannelDriver.swift */; };
+		75A84F7E25CA59F900C353FA /* ChannelFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75A84F7D25CA59F900C353FA /* ChannelFactory.swift */; };
+		75A84F7F25CA59F900C353FA /* ChannelFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75A84F7D25CA59F900C353FA /* ChannelFactory.swift */; };
 		75AC8EE025AFEFEF00C4A1DA /* DisplayLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75AC8EDE25AFEFEF00C4A1DA /* DisplayLink.swift */; };
 		75B0E21A25B87F8E0021B3C9 /* Range+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B0E21925B87F8E0021B3C9 /* Range+Additions.swift */; };
 		75B0E21B25B87F8E0021B3C9 /* Range+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B0E21925B87F8E0021B3C9 /* Range+Additions.swift */; };
@@ -375,6 +379,8 @@
 		7590E81625AC0BF7005E1280 /* dmg-acid2.gb */ = {isa = PBXFileReference; lastKnownFileType = file; path = "dmg-acid2.gb"; sourceTree = "<group>"; };
 		7596942125B0017C008BDF67 /* DisplayLinkType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayLinkType.swift; sourceTree = "<group>"; };
 		7596942A25B001C2008BDF67 /* DisplayLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayLink.swift; sourceTree = "<group>"; };
+		75A84F7125CA57F800C353FA /* ChannelDriver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelDriver.swift; sourceTree = "<group>"; };
+		75A84F7D25CA59F900C353FA /* ChannelFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelFactory.swift; sourceTree = "<group>"; };
 		75AC8EDE25AFEFEF00C4A1DA /* DisplayLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayLink.swift; sourceTree = "<group>"; };
 		75B0E21925B87F8E0021B3C9 /* Range+Additions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Range+Additions.swift"; sourceTree = "<group>"; };
 		75B0E22425B915AC0021B3C9 /* PPU+Debug.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PPU+Debug.swift"; sourceTree = "<group>"; };
@@ -613,6 +619,16 @@
 			path = iOS;
 			sourceTree = "<group>";
 		};
+		75A84F7825CA58BD00C353FA /* Units */ = {
+			isa = PBXGroup;
+			children = (
+				754AA55A25C72AA900977142 /* SweepUnit.swift */,
+				754AA56825C76BCF00977142 /* VolumeEnvelopeUnit.swift */,
+				754AA56125C75BDD00977142 /* LengthCounterUnit.swift */,
+			);
+			path = Units;
+			sourceTree = "<group>";
+		};
 		75B3ACFC229DEEA500A03C5A = {
 			isa = PBXGroup;
 			children = (
@@ -824,16 +840,16 @@
 		75E0E3FA25C2653000AFE57E /* Sound */ = {
 			isa = PBXGroup;
 			children = (
+				75A84F7825CA58BD00C353FA /* Units */,
 				75E0E3FB25C2653D00AFE57E /* APU.swift */,
 				754AA76825C8FC2B00977142 /* AudioSourceNode.swift */,
 				75524EC925CA4A3E002D05F4 /* Square1Channel.swift */,
 				75524EBB25CA398A002D05F4 /* Channel.swift */,
 				75524EC225CA3FFD002D05F4 /* WaveDuty.swift */,
 				75524ED425CA4DAC002D05F4 /* SweepVolumeDirection.swift */,
-				754AA56125C75BDD00977142 /* LengthCounterUnit.swift */,
-				754AA56825C76BCF00977142 /* VolumeEnvelopeUnit.swift */,
-				754AA55A25C72AA900977142 /* SweepUnit.swift */,
 				75ED9D0525C61B4600DBC61B /* SoundControl.swift */,
+				75A84F7125CA57F800C353FA /* ChannelDriver.swift */,
+				75A84F7D25CA59F900C353FA /* ChannelFactory.swift */,
 			);
 			path = Sound;
 			sourceTree = "<group>";
@@ -1197,6 +1213,7 @@
 				7590E7F425ABA96F005E1280 /* BootROM.swift in Sources */,
 				757F391122B1C69F00BBB570 /* MemoryProtocols.swift in Sources */,
 				75524ED625CA4DAC002D05F4 /* SweepVolumeDirection.swift in Sources */,
+				75A84F7325CA57F800C353FA /* ChannelDriver.swift in Sources */,
 				75CAF08022BD00D700E04FAC /* Constants.swift in Sources */,
 				7590E80225ABE353005E1280 /* CPU+Assertions.swift in Sources */,
 				757F390A22B1C69F00BBB570 /* ColorPalettes.swift in Sources */,
@@ -1219,6 +1236,7 @@
 				75875A5925C0EF8E005D8059 /* MBC5.swift in Sources */,
 				757F38FB22B1C69000BBB570 /* AAPLShaders.metal in Sources */,
 				75B1F5CD25BCC9D9001BEA37 /* RTC.swift in Sources */,
+				75A84F7F25CA59F900C353FA /* ChannelFactory.swift in Sources */,
 				75B1F64725BE64E4001BEA37 /* RAMSize.swift in Sources */,
 				757F390F22B1C69F00BBB570 /* Clock.swift in Sources */,
 				754AA56325C75BDD00977142 /* LengthCounterUnit.swift in Sources */,
@@ -1291,6 +1309,7 @@
 				7590E7BD25AACE15005E1280 /* CartridgeType.swift in Sources */,
 				757F38C422B0731E00BBB570 /* Renderer.swift in Sources */,
 				75524ED525CA4DAC002D05F4 /* SweepVolumeDirection.swift in Sources */,
+				75A84F7225CA57F800C353FA /* ChannelDriver.swift in Sources */,
 				7590E7F325ABA96F005E1280 /* BootROM.swift in Sources */,
 				75BD98BA22A40D6000CFFB68 /* IO.swift in Sources */,
 				75B3AD5A229EA57700A03C5A /* Clock.swift in Sources */,
@@ -1313,6 +1332,7 @@
 				75875A5825C0EF8E005D8059 /* MBC5.swift in Sources */,
 				7590E7C425AACEC6005E1280 /* CartridgeFactory.swift in Sources */,
 				75B1F5CC25BCC9D9001BEA37 /* RTC.swift in Sources */,
+				75A84F7E25CA59F900C353FA /* ChannelFactory.swift in Sources */,
 				75B1F64625BE64E4001BEA37 /* RAMSize.swift in Sources */,
 				758834DA22BB12DF00B80FD0 /* TimerControl.swift in Sources */,
 				754AA56225C75BDD00977142 /* LengthCounterUnit.swift in Sources */,

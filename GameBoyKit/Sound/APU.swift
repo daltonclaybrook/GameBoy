@@ -25,42 +25,32 @@ public final class APU: MemoryAddressable {
     private let timeInterval: TimeInterval = 1.0 / 512.0 // 512 Hz
 
     private let control = SoundControl()
-
-    // Channel 1 + associated units. Todo: consider abstracting this a bit better
-    // to enable reusable APIs between different channels with the same units
-    private let channel1 = SquareChannel1()
-    private let sweepUnit: SweepUnit
-    private let lengthCounterUnit: LengthCounterUnit
-    private let volumeEnvelopeUnit: VolumeEnvelopeUnit
+    private let channelDriver1: ChannelDriver
 
     private let audioEngine = AVAudioEngine()
 
     init() {
-        sweepUnit = SweepUnit(channel: channel1)
-        lengthCounterUnit = LengthCounterUnit(channel: channel1, control: control)
-        volumeEnvelopeUnit = VolumeEnvelopeUnit(channel: channel1)
-        channel1.delegate = self
+        let factory = ChannelFactory(control: control, queue: queue)
+        channelDriver1 = factory.makeChannel1()
         control.delegate = self
-
         setupAudioNode()
     }
 
     public func write(byte: Byte, to address: Address) {
         switch address {
         case Registers.channel1Range:
-            channel1.write(byte: byte, to: address)
+            channelDriver1.channel.write(byte: byte, to: address)
         case Registers.controlRange:
             control.write(byte: byte, to: address)
         default:
             break // todo: implement
         }
-
     }
 
     public func read(address: Address) -> Byte {
         switch address {
         case Registers.channel1Range:
-            return channel1.read(address: address)
+            return channelDriver1.channel.read(address: address)
         case Registers.controlRange:
             return control.read(address: address)
         default:
@@ -111,53 +101,34 @@ public final class APU: MemoryAddressable {
             interleaved: outputFormat.isInterleaved
         )
 
-        let node = AudioSourceNode(sampleRate: sampleRate, channel: channel1, control: control, lengthCounterUnit: lengthCounterUnit, volumeEnvelopeUnit: volumeEnvelopeUnit)
-        let sourceNode = node.makeSourceNode()
+        if let node1 = channelDriver1.makeAudioSourceNode(sampleRate: sampleRate) {
+            let sourceNode = node1.makeSourceNode()
+            audioEngine.attach(sourceNode)
+            audioEngine.connect(sourceNode, to: mainMixer, format: inputFormat)
+        }
 
-        audioEngine.attach(sourceNode)
-        audioEngine.connect(sourceNode, to: mainMixer, format: inputFormat)
         audioEngine.connect(mainMixer, to: output, format: outputFormat)
         mainMixer.outputVolume = 0.5
     }
 
-    /// This function is called 512 times per second
+    /// This function is called @ 512 Hz
     private func advanceFrameSequencer(step: UInt64) {
         if step % 2 == 0 { // 256 Hz
-            lengthCounterUnit.clockTick()
+            channelDriver1.lengthCounterUnit?.clockTick()
         }
         if (step + 1) % 8 == 0 { // 64 Hz
-            volumeEnvelopeUnit.clockTick()
+            channelDriver1.volumeEnvelopeUnit?.clockTick()
         }
         if (step + 2) % 4 == 0 { // 128 Hz
-            sweepUnit.clockTick()
-        }
-    }
-}
-
-extension APU: ChannelDelegate {
-    public func channelShouldRestart(_ channel: Channel) {
-        queue.async { [control, sweepUnit, volumeEnvelopeUnit] in
-            control.enabledChannels.insert(.channel1)
-            sweepUnit.restart()
-            volumeEnvelopeUnit.restart()
-        }
-    }
-
-    public func channel(_ channel: Channel, loadedSoundLength soundLength: UInt8) {
-        queue.async { [lengthCounterUnit] in
-            lengthCounterUnit.load(soundLength: soundLength)
+            channelDriver1.sweepUnit?.clockTick()
         }
     }
 }
 
 extension APU: SoundControlDelegate {
     public func soundControlDidStopAllSound(_ control: SoundControl) {
-        print("stop all sound")
-        queue.async { [channel1, sweepUnit, lengthCounterUnit, volumeEnvelopeUnit] in
-            channel1.reset()
-            sweepUnit.reset()
-            lengthCounterUnit.reset()
-            volumeEnvelopeUnit.reset()
+        queue.async { [channelDriver1] in
+            channelDriver1.reset()
         }
     }
 }

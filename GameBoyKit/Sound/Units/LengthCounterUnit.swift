@@ -13,7 +13,7 @@ public final class LengthCounterUnit {
     private var remainingCycles: UInt8 = 0 {
         didSet {
             if remainingCycles == 0 && channel.isSoundLengthEnabled {
-                control.enabledChannels.remove(.channel1)
+                control.enabledChannels.remove(channel.controlFlag)
             }
         }
     }

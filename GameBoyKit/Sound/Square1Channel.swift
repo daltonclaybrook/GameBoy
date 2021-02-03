@@ -20,6 +20,9 @@ public class SquareChannel:
     public var firstRegisterAddress: Address {
         fatalError("This property must be implemented in a subclass")
     }
+    public var controlFlag: SoundControl.ChannelEnabled {
+        fatalError("This property must be implemented in a subclass")
+    }
 
     public func reset() {
         lock.lock()
@@ -47,6 +50,9 @@ public final class SquareChannel1: SquareChannel, SweepChannel {
     public override var firstRegisterAddress: Address {
         return 0xff10
     }
+    public override var controlFlag: SoundControl.ChannelEnabled {
+        return .channel1
+    }
 
     public override func reset() {
         super.reset()
@@ -59,5 +65,8 @@ public final class SquareChannel1: SquareChannel, SweepChannel {
 public final class SquareChannel2: SquareChannel {
     public override var firstRegisterAddress: Address {
         return 0xff15
+    }
+    public override var controlFlag: SoundControl.ChannelEnabled {
+        return .channel2
     }
 }

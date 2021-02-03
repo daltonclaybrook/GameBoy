@@ -9,7 +9,7 @@ private protocol AudioDataProvider {
     func getSignal(fromHarmonics harmonics: [Float], currentPhase: Float) -> Float
 }
 
-final class AudioSourceNode: AudioDataProvider {
+public final class AudioSourceNode: AudioDataProvider {
     fileprivate let sampleRate: Float
 
     private let channel: FrequencyChannel & WaveDutyChannel
@@ -27,7 +27,7 @@ final class AudioSourceNode: AudioDataProvider {
         return volumeEnvelopeUnit.normalizedVolume * 0.1
     }
 
-    init(
+    public init(
         sampleRate: Float,
         channel: FrequencyChannel & WaveDutyChannel,
         control: SoundControl,
@@ -41,9 +41,11 @@ final class AudioSourceNode: AudioDataProvider {
         self.volumeEnvelopeUnit = volumeEnvelopeUnit
     }
 
-    func makeSourceNode() -> AVAudioSourceNode {
+    public func makeSourceNode() -> AVAudioSourceNode {
         AVAudioSourceNode(renderBlock: createAudioRenderBlock(provider: self))
     }
+
+    // MARK: - Helpers
 
     private struct MemoKey: Hashable {
         let frequency: Float

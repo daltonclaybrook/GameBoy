@@ -4,18 +4,18 @@ public final class VolumeEnvelopeUnit {
         Float(currentVolume) / Float(volumeRange.upperBound)
     }
 
-    private let channel1: Channel1
+    private let channel: VolumeEnvelopeChannel
     private var isEnabled = false
     private var cyclesRemaining: UInt8 = 0
     private let volumeRange: ClosedRange<Int8> = 0...15
 
-    public init(channel1: Channel1) {
-        self.channel1 = channel1
+    public init(channel: VolumeEnvelopeChannel) {
+        self.channel = channel
     }
 
     func restart() {
-        currentVolume = channel1.initialVolumeOfEnvelope
-        cyclesRemaining = channel1.envelopeCycleModulus
+        currentVolume = channel.initialVolumeOfEnvelope
+        cyclesRemaining = channel.envelopeCycleModulus
         isEnabled = cyclesRemaining > 0
     }
 
@@ -29,9 +29,9 @@ public final class VolumeEnvelopeUnit {
 
         cyclesRemaining -= 1
         guard cyclesRemaining == 0 else { return }
-        cyclesRemaining = channel1.envelopeCycleModulus
+        cyclesRemaining = channel.envelopeCycleModulus
 
-        let unclampedVolume = (Int8(currentVolume) + channel1.envelopeDirection.adjustment)
+        let unclampedVolume = (Int8(currentVolume) + channel.envelopeDirection.adjustment)
         currentVolume = UInt8(unclampedVolume.clamped(to: volumeRange))
 
         if !volumeRange.contains(unclampedVolume) {
@@ -44,12 +44,12 @@ public final class VolumeEnvelopeUnit {
 
     private func updateAndReturnIsEnabled() -> Bool {
         guard isEnabled else { return false }
-        isEnabled = channel1.envelopeCycleModulus > 0
+        isEnabled = channel.envelopeCycleModulus > 0
         return isEnabled
     }
 }
 
-private extension Channel1.Direction {
+private extension SweepVolumeDirection {
     /// Used in the volume adjustment
     var adjustment: Int8 {
         switch self {

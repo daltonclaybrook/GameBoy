@@ -1,18 +1,18 @@
 public final class SweepUnit {
     public private(set) var isEnabled = false
 
-    private let channel1: Channel1
+    private let channel: SweepChannel & FrequencyChannel
     private var shadowFrequencyRegister: UInt16 = 0
     private var cyclesRemaining: UInt8 = 0
 
-    public init(channel1: Channel1) {
-        self.channel1 = channel1
+    public init(channel: SweepChannel & FrequencyChannel) {
+        self.channel = channel
     }
 
     func restart() {
-        isEnabled = channel1.sweepCycleModulus > 0 && channel1.sweepShiftNumber > 0
-        shadowFrequencyRegister = channel1.combinedFrequencyRegister
-        cyclesRemaining = channel1.sweepCycleModulus
+        isEnabled = channel.sweepCycleModulus > 0 && channel.sweepShiftNumber > 0
+        shadowFrequencyRegister = channel.combinedFrequencyRegister
+        cyclesRemaining = channel.sweepCycleModulus
     }
 
     func reset() {
@@ -24,29 +24,29 @@ public final class SweepUnit {
 
         cyclesRemaining -= 1
         guard cyclesRemaining == 0 else { return }
-        cyclesRemaining = channel1.sweepCycleModulus
+        cyclesRemaining = channel.sweepCycleModulus
 
         let currentFrequency = Int32(shadowFrequencyRegister)
-        let nextFrequency = (currentFrequency >> channel1.sweepShiftNumber) * channel1.sweepDirection.multiplier + currentFrequency
+        let nextFrequency = (currentFrequency >> channel.sweepShiftNumber) * channel.sweepDirection.multiplier + currentFrequency
         guard nextFrequency <= 2047 else {
             isEnabled = false
             return
         }
 
         shadowFrequencyRegister = UInt16(nextFrequency)
-        channel1.update(frequency: shadowFrequencyRegister)
+        channel.update(frequency: shadowFrequencyRegister)
     }
 
     // MARK: - Helpers
 
     private func updateAndReturnIsEnabled() -> Bool {
         guard isEnabled else { return false }
-        isEnabled = channel1.sweepCycleModulus > 0 && channel1.sweepShiftNumber > 0
+        isEnabled = channel.sweepCycleModulus > 0 && channel.sweepShiftNumber > 0
         return isEnabled
     }
 }
 
-private extension Channel1.Direction {
+private extension SweepVolumeDirection {
     /// Used in the sweep calculation
     var multiplier: Int32 {
         switch self {

@@ -12,7 +12,7 @@ private protocol AudioDataProvider {
 final class AudioSourceNode: AudioDataProvider {
     fileprivate let sampleRate: Float
 
-    private let channel: Channel1
+    private let channel: FrequencyChannel & WaveDutyChannel
     private let control: SoundControl
     private let lengthCounterUnit: LengthCounterUnit
     private let volumeEnvelopeUnit: VolumeEnvelopeUnit
@@ -29,7 +29,7 @@ final class AudioSourceNode: AudioDataProvider {
 
     init(
         sampleRate: Float,
-        channel: Channel1,
+        channel: FrequencyChannel & WaveDutyChannel,
         control: SoundControl,
         lengthCounterUnit: LengthCounterUnit,
         volumeEnvelopeUnit: VolumeEnvelopeUnit

@@ -19,6 +19,14 @@
 		754AA76A25C8FC2B00977142 /* AudioSourceNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 754AA76825C8FC2B00977142 /* AudioSourceNode.swift */; };
 		75524EB125CA32C5002D05F4 /* Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75524EB025CA32C5002D05F4 /* Cache.swift */; };
 		75524EB225CA32C5002D05F4 /* Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75524EB025CA32C5002D05F4 /* Cache.swift */; };
+		75524EBC25CA398A002D05F4 /* Channel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75524EBB25CA398A002D05F4 /* Channel.swift */; };
+		75524EBD25CA398A002D05F4 /* Channel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75524EBB25CA398A002D05F4 /* Channel.swift */; };
+		75524EC325CA3FFD002D05F4 /* WaveDuty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75524EC225CA3FFD002D05F4 /* WaveDuty.swift */; };
+		75524EC425CA3FFD002D05F4 /* WaveDuty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75524EC225CA3FFD002D05F4 /* WaveDuty.swift */; };
+		75524ECA25CA4A3E002D05F4 /* Square1Channel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75524EC925CA4A3E002D05F4 /* Square1Channel.swift */; };
+		75524ECB25CA4A3E002D05F4 /* Square1Channel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75524EC925CA4A3E002D05F4 /* Square1Channel.swift */; };
+		75524ED525CA4DAC002D05F4 /* SweepVolumeDirection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75524ED425CA4DAC002D05F4 /* SweepVolumeDirection.swift */; };
+		75524ED625CA4DAC002D05F4 /* SweepVolumeDirection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75524ED425CA4DAC002D05F4 /* SweepVolumeDirection.swift */; };
 		7573111425BF08A6001530DC /* pokemon-pinball.gbc in Resources */ = {isa = PBXBuildFile; fileRef = 7573111325BF08A6001530DC /* pokemon-pinball.gbc */; };
 		7573111525BF08A7001530DC /* pokemon-pinball.gbc in Resources */ = {isa = PBXBuildFile; fileRef = 7573111325BF08A6001530DC /* pokemon-pinball.gbc */; };
 		757F38C422B0731E00BBB570 /* Renderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 757F38C322B0731E00BBB570 /* Renderer.swift */; };
@@ -309,6 +317,10 @@
 		754AA56825C76BCF00977142 /* VolumeEnvelopeUnit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VolumeEnvelopeUnit.swift; sourceTree = "<group>"; };
 		754AA76825C8FC2B00977142 /* AudioSourceNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioSourceNode.swift; sourceTree = "<group>"; };
 		75524EB025CA32C5002D05F4 /* Cache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cache.swift; sourceTree = "<group>"; };
+		75524EBB25CA398A002D05F4 /* Channel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Channel.swift; sourceTree = "<group>"; };
+		75524EC225CA3FFD002D05F4 /* WaveDuty.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaveDuty.swift; sourceTree = "<group>"; };
+		75524EC925CA4A3E002D05F4 /* Square1Channel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Square1Channel.swift; sourceTree = "<group>"; };
+		75524ED425CA4DAC002D05F4 /* SweepVolumeDirection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SweepVolumeDirection.swift; sourceTree = "<group>"; };
 		7573111325BF08A6001530DC /* pokemon-pinball.gbc */ = {isa = PBXFileReference; lastKnownFileType = file; path = "pokemon-pinball.gbc"; sourceTree = "<group>"; };
 		757F38C322B0731E00BBB570 /* Renderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Renderer.swift; sourceTree = "<group>"; };
 		757F38C522B0765E00BBB570 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
@@ -818,6 +830,10 @@
 				75E0E3FB25C2653D00AFE57E /* APU.swift */,
 				754AA76825C8FC2B00977142 /* AudioSourceNode.swift */,
 				75ED9D0C25C65FCE00DBC61B /* Channel1.swift */,
+				75524EC925CA4A3E002D05F4 /* Square1Channel.swift */,
+				75524EBB25CA398A002D05F4 /* Channel.swift */,
+				75524EC225CA3FFD002D05F4 /* WaveDuty.swift */,
+				75524ED425CA4DAC002D05F4 /* SweepVolumeDirection.swift */,
 				754AA56125C75BDD00977142 /* LengthCounterUnit.swift */,
 				754AA56825C76BCF00977142 /* VolumeEnvelopeUnit.swift */,
 				754AA55A25C72AA900977142 /* SweepUnit.swift */,
@@ -1175,6 +1191,7 @@
 				754AA76A25C8FC2B00977142 /* AudioSourceNode.swift in Sources */,
 				757F390622B1C69F00BBB570 /* MMU.swift in Sources */,
 				757F390E22B1C69F00BBB570 /* GameBoy.swift in Sources */,
+				75524ECB25CA4A3E002D05F4 /* Square1Channel.swift in Sources */,
 				7590E7FB25ABE242005E1280 /* Numbers+Debug.swift in Sources */,
 				757F390822B1C69F00BBB570 /* LCDStatus.swift in Sources */,
 				757F391022B1C69F00BBB570 /* ROM.swift in Sources */,
@@ -1183,12 +1200,14 @@
 				757F38FE22B1C69F00BBB570 /* CPU+Opcodes.swift in Sources */,
 				7590E7F425ABA96F005E1280 /* BootROM.swift in Sources */,
 				757F391122B1C69F00BBB570 /* MemoryProtocols.swift in Sources */,
+				75524ED625CA4DAC002D05F4 /* SweepVolumeDirection.swift in Sources */,
 				75CAF08022BD00D700E04FAC /* Constants.swift in Sources */,
 				7590E80225ABE353005E1280 /* CPU+Assertions.swift in Sources */,
 				757F390A22B1C69F00BBB570 /* ColorPalettes.swift in Sources */,
 				75B0E22625B915AC0021B3C9 /* PPU+Debug.swift in Sources */,
 				757F390122B1C69F00BBB570 /* CPU+Instructions+CB.swift in Sources */,
 				757F390022B1C69F00BBB570 /* CPU+Instructions.swift in Sources */,
+				75524EBD25CA398A002D05F4 /* Channel.swift in Sources */,
 				75B1F5C625BC9B84001BEA37 /* MBC3.swift in Sources */,
 				75D0E54022B1C9F50049BF6D /* HRAM.swift in Sources */,
 				7590E7ED25ABA935005E1280 /* MemoryMasking.swift in Sources */,
@@ -1209,6 +1228,7 @@
 				757F390F22B1C69F00BBB570 /* Clock.swift in Sources */,
 				754AA56325C75BDD00977142 /* LengthCounterUnit.swift in Sources */,
 				757F390222B1C69F00BBB570 /* IO.swift in Sources */,
+				75524EC425CA3FFD002D05F4 /* WaveDuty.swift in Sources */,
 				75D0E53D22B1C8430049BF6D /* WRAM.swift in Sources */,
 				75AC8EE025AFEFEF00C4A1DA /* DisplayLink.swift in Sources */,
 				75B6D62A22BA6D67009E6E82 /* Timer.swift in Sources */,
@@ -1266,6 +1286,7 @@
 				754AA76925C8FC2B00977142 /* AudioSourceNode.swift in Sources */,
 				75BD98B422A0AD9600CFFB68 /* CPU+Instructions.swift in Sources */,
 				75BD98C422A49C0C00CFFB68 /* OAM.swift in Sources */,
+				75524ECA25CA4A3E002D05F4 /* Square1Channel.swift in Sources */,
 				7590E7FA25ABE242005E1280 /* Numbers+Debug.swift in Sources */,
 				7596942B25B001C2008BDF67 /* DisplayLink.swift in Sources */,
 				75BD98B022A0A93B00CFFB68 /* CPU+Opcodes.swift in Sources */,
@@ -1274,12 +1295,14 @@
 				7596942225B0017C008BDF67 /* DisplayLinkType.swift in Sources */,
 				7590E7BD25AACE15005E1280 /* CartridgeType.swift in Sources */,
 				757F38C422B0731E00BBB570 /* Renderer.swift in Sources */,
+				75524ED525CA4DAC002D05F4 /* SweepVolumeDirection.swift in Sources */,
 				7590E7F325ABA96F005E1280 /* BootROM.swift in Sources */,
 				75BD98BA22A40D6000CFFB68 /* IO.swift in Sources */,
 				75B3AD5A229EA57700A03C5A /* Clock.swift in Sources */,
 				75B0E22525B915AC0021B3C9 /* PPU+Debug.swift in Sources */,
 				7590E80125ABE353005E1280 /* CPU+Assertions.swift in Sources */,
 				757F38C622B0765E00BBB570 /* Constants.swift in Sources */,
+				75524EBC25CA398A002D05F4 /* Channel.swift in Sources */,
 				75B1F5C525BC9B84001BEA37 /* MBC3.swift in Sources */,
 				75B3AD56229E13B700A03C5A /* PPU.swift in Sources */,
 				75D0E53F22B1C9CB0049BF6D /* HRAM.swift in Sources */,
@@ -1300,6 +1323,7 @@
 				758834DA22BB12DF00B80FD0 /* TimerControl.swift in Sources */,
 				754AA56225C75BDD00977142 /* LengthCounterUnit.swift in Sources */,
 				75BD98C022A413AA00CFFB68 /* LCDControl.swift in Sources */,
+				75524EC325CA3FFD002D05F4 /* WaveDuty.swift in Sources */,
 				757F38CA22B08A5500BBB570 /* AAPLShaders.metal in Sources */,
 				75B3AD58229EA1DD00A03C5A /* GameBoy.swift in Sources */,
 				75D0E53C22B1C7BC0049BF6D /* WRAM.swift in Sources */,

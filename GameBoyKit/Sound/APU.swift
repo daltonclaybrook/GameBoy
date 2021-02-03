@@ -28,7 +28,7 @@ public final class APU: MemoryAddressable {
 
     // Channel 1 + associated units. Todo: consider abstracting this a bit better
     // to enable reusable APIs between different channels with the same units
-    private let channel1 = Channel1()
+    private let channel1 = Square1Channel()
     private let sweepUnit: SweepUnit
     private let lengthCounterUnit: LengthCounterUnit
     private let volumeEnvelopeUnit: VolumeEnvelopeUnit
@@ -36,9 +36,9 @@ public final class APU: MemoryAddressable {
     private let audioEngine = AVAudioEngine()
 
     init() {
-        sweepUnit = SweepUnit(channel1: channel1)
-        lengthCounterUnit = LengthCounterUnit(channel1: channel1, control: control)
-        volumeEnvelopeUnit = VolumeEnvelopeUnit(channel1: channel1)
+        sweepUnit = SweepUnit(channel: channel1)
+        lengthCounterUnit = LengthCounterUnit(channel: channel1, control: control)
+        volumeEnvelopeUnit = VolumeEnvelopeUnit(channel: channel1)
         channel1.delegate = self
         control.delegate = self
 
@@ -134,8 +134,8 @@ public final class APU: MemoryAddressable {
     }
 }
 
-extension APU: Channel1Delegate {
-    public func channel1ShouldRestart(_ channel1: Channel1) {
+extension APU: ChannelDelegate {
+    public func channelShouldRestart(_ channel: Channel) {
         queue.async { [control, sweepUnit, volumeEnvelopeUnit] in
             control.enabledChannels.insert(.channel1)
             sweepUnit.restart()
@@ -143,7 +143,7 @@ extension APU: Channel1Delegate {
         }
     }
 
-    public func channel1(_ channel1: Channel1, loadedSoundLength soundLength: UInt8) {
+    public func channel(_ channel: Channel, loadedSoundLength soundLength: UInt8) {
         queue.async { [lengthCounterUnit] in
             lengthCounterUnit.load(soundLength: soundLength)
         }

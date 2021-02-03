@@ -4,27 +4,27 @@ public final class LengthCounterUnit {
     /// the length counter and whether sound length is enabled in the
     /// appropriate channel register.
     public var channelIsEnabled: Bool {
-        remainingCycles > 0 || !channel1.isSoundLengthEnabled
+        remainingCycles > 0 || !channel.isSoundLengthEnabled
     }
 
-    private let channel1: Channel1
+    private let channel: LengthChannel
     private let control: SoundControl
     private let maxCycles: UInt8 = 64
     private var remainingCycles: UInt8 = 0 {
         didSet {
-            if remainingCycles == 0 && channel1.isSoundLengthEnabled {
+            if remainingCycles == 0 && channel.isSoundLengthEnabled {
                 control.enabledChannels.remove(.channel1)
             }
         }
     }
 
-    public init(channel1: Channel1, control: SoundControl) {
-        self.channel1 = channel1
+    public init(channel: LengthChannel, control: SoundControl) {
+        self.channel = channel
         self.control = control
     }
 
     func restart() {
-        updateRemainingCycles(soundLength: channel1.soundLength)
+        updateRemainingCycles(soundLength: channel.soundLength)
     }
 
     func reset() {

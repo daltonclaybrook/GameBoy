@@ -5,8 +5,8 @@ private protocol AudioDataProvider {
     var sampleRate: Float { get }
     var amplitude: Float { get }
 
-    func calculateCoefficients(forFrequency frequency: Float) -> [Float]
-    func getSignal(fromCoefficients coefficients: [Float], currentPhase: Float) -> Float
+    func calculateBandLimitedHarmonics(forFrequency frequency: Float) -> [Float]
+    func getSignal(fromHarmonics harmonics: [Float], currentPhase: Float) -> Float
 }
 
 final class AudioSourceNode: AudioDataProvider {
@@ -16,7 +16,6 @@ final class AudioSourceNode: AudioDataProvider {
     private let control: SoundControl
     private let lengthCounterUnit: LengthCounterUnit
     private let volumeEnvelopeUnit: VolumeEnvelopeUnit
-    private let lock = NSRecursiveLock()
 
     fileprivate var frequency: Float {
         channel.frequency
@@ -51,37 +50,35 @@ final class AudioSourceNode: AudioDataProvider {
         let dutyCycle: Float
     }
 
-    private static var coefficientsMemo: [MemoKey: [Float]] = [:]
+    private static var harmonicsCache = Cache<MemoKey, [Float]>()
     /// Calculate the set of coefficients used to produce band-limited square waves.
     /// Producing signals using this method eliminates audible artifacts. More info
     /// here: https://www.nayuki.io/page/band-limited-square-waves
-    fileprivate func calculateCoefficients(forFrequency frequency: Float) -> [Float] {
+    fileprivate func calculateBandLimitedHarmonics(forFrequency frequency: Float) -> [Float] {
         let dutyCycle = channel.waveDuty.percent
         let key = MemoKey(frequency: frequency, dutyCycle: dutyCycle)
-        if let coefficients = Self.coefficientsMemo[key] {
-            return coefficients
+        if let harmonics = Self.harmonicsCache.value(forKey: key) {
+            return harmonics
         }
 
         let harmonicsCount = Int(sampleRate / (frequency * 2))
-        var coefficients: [Float] = []
-        coefficients.reserveCapacity(harmonicsCount + 1)
-        coefficients.append(dutyCycle - 0.5) // Start with the duty cycle coefficient
+        var harmonics: [Float] = []
+        harmonics.reserveCapacity(harmonicsCount + 1)
+        harmonics.append(dutyCycle - 0.5) // Start with the duty cycle coefficient
 
         (1..<(harmonicsCount + 1)).forEach { index in
             let floatIndex = Float(index)
-            let nextCoefficient = sin(floatIndex * dutyCycle * .pi) * 2 / (floatIndex * .pi)
-            coefficients.append(nextCoefficient)
+            let nextHarmonic = sin(floatIndex * dutyCycle * .pi) * 2 / (floatIndex * .pi)
+            harmonics.append(nextHarmonic)
         }
 
-        lock.lock()
-        Self.coefficientsMemo[key] = coefficients
-        lock.unlock()
-        return coefficients
+        Self.harmonicsCache.insert(harmonics, forKey: key)
+        return harmonics
     }
 
-    fileprivate func getSignal(fromCoefficients coefficients: [Float], currentPhase: Float) -> Float {
-        (1..<coefficients.count).reduce(coefficients[0]) { result, index in
-            result + cos(Float(index) * currentPhase) * coefficients[index]
+    fileprivate func getSignal(fromHarmonics harmonics: [Float], currentPhase: Float) -> Float {
+        (1..<harmonics.count).reduce(harmonics[0]) { result, index in
+            result + cos(Float(index) * currentPhase) * harmonics[index]
         }
     }
 }
@@ -102,11 +99,11 @@ private func createAudioRenderBlock(provider: AudioDataProvider) -> AVAudioSourc
             return noErr
         }
 
-        let coefficients = provider.calculateCoefficients(forFrequency: frequency)
+        let harmonics = provider.calculateBandLimitedHarmonics(forFrequency: frequency)
         let buffers = UnsafeMutableAudioBufferListPointer(audioBufferList)
         for frame in 0..<Int(frameCount) {
             // Get signal value for this frame at time.
-            let signal = provider.getSignal(fromCoefficients: coefficients, currentPhase: currentPhase)
+            let signal = provider.getSignal(fromHarmonics: harmonics, currentPhase: currentPhase)
             let value = signal * amplitude
             // Advance the phase for the next frame.
             currentPhase += phaseIncrement

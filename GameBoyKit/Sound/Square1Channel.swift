@@ -44,6 +44,8 @@ public class SquareChannel:
     }
 }
 
+// MARK: - Square Channel 1
+
 public final class SquareChannel1: SquareChannel, SweepChannel {
     public var sweepRegister: Byte = 0x00
 
@@ -60,7 +62,17 @@ public final class SquareChannel1: SquareChannel, SweepChannel {
         defer { lock.unlock() }
         sweepRegister = 0
     }
+
+    public override func writeSweepInfo(byte: Byte) {
+        sweepRegister = byte
+    }
+
+    public override func getSweepInfo() -> Byte {
+        sweepRegister
+    }
 }
+
+// MARK: - Square Channel 2
 
 public final class SquareChannel2: SquareChannel {
     public override var firstRegisterAddress: Address {

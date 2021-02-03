@@ -220,8 +220,6 @@
 		75E85C7025AE8C9300DD9A9F /* CPUContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75E85C6E25AE8C9300DD9A9F /* CPUContext.swift */; };
 		75ED9D0625C61B4600DBC61B /* SoundControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75ED9D0525C61B4600DBC61B /* SoundControl.swift */; };
 		75ED9D0725C61B4600DBC61B /* SoundControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75ED9D0525C61B4600DBC61B /* SoundControl.swift */; };
-		75ED9D0D25C65FCE00DBC61B /* Channel1.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75ED9D0C25C65FCE00DBC61B /* Channel1.swift */; };
-		75ED9D0E25C65FCE00DBC61B /* Channel1.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75ED9D0C25C65FCE00DBC61B /* Channel1.swift */; };
 		75EE74AD25B14C070030D57D /* MockCPUContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75EE74AC25B14C070030D57D /* MockCPUContext.swift */; };
 		75EE74AE25B14C070030D57D /* MockCPUContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75EE74AC25B14C070030D57D /* MockCPUContext.swift */; };
 		75F61DA724FC269700FA095F /* call_timing.gb in Resources */ = {isa = PBXBuildFile; fileRef = 75F61DA624FC269700FA095F /* call_timing.gb */; };
@@ -437,7 +435,6 @@
 		75E0E3FB25C2653D00AFE57E /* APU.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APU.swift; sourceTree = "<group>"; };
 		75E85C6E25AE8C9300DD9A9F /* CPUContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CPUContext.swift; sourceTree = "<group>"; };
 		75ED9D0525C61B4600DBC61B /* SoundControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundControl.swift; sourceTree = "<group>"; };
-		75ED9D0C25C65FCE00DBC61B /* Channel1.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Channel1.swift; sourceTree = "<group>"; };
 		75EE74AC25B14C070030D57D /* MockCPUContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockCPUContext.swift; sourceTree = "<group>"; };
 		75F61DA624FC269700FA095F /* call_timing.gb */ = {isa = PBXFileReference; lastKnownFileType = file; path = call_timing.gb; sourceTree = "<group>"; };
 		75F61DA824FC26A100FA095F /* call_timing2.gb */ = {isa = PBXFileReference; lastKnownFileType = file; path = call_timing2.gb; sourceTree = "<group>"; };
@@ -829,7 +826,6 @@
 			children = (
 				75E0E3FB25C2653D00AFE57E /* APU.swift */,
 				754AA76825C8FC2B00977142 /* AudioSourceNode.swift */,
-				75ED9D0C25C65FCE00DBC61B /* Channel1.swift */,
 				75524EC925CA4A3E002D05F4 /* Square1Channel.swift */,
 				75524EBB25CA398A002D05F4 /* Channel.swift */,
 				75524EC225CA3FFD002D05F4 /* WaveDuty.swift */,
@@ -1211,7 +1207,6 @@
 				75B1F5C625BC9B84001BEA37 /* MBC3.swift in Sources */,
 				75D0E54022B1C9F50049BF6D /* HRAM.swift in Sources */,
 				7590E7ED25ABA935005E1280 /* MemoryMasking.swift in Sources */,
-				75ED9D0E25C65FCE00DBC61B /* Channel1.swift in Sources */,
 				754013D325B7225C005951E0 /* SpriteAttributes.swift in Sources */,
 				75B1F65525BE6F0F001BEA37 /* Array+Additions.swift in Sources */,
 				75B0E21B25B87F8E0021B3C9 /* Range+Additions.swift in Sources */,
@@ -1306,7 +1301,6 @@
 				75B1F5C525BC9B84001BEA37 /* MBC3.swift in Sources */,
 				75B3AD56229E13B700A03C5A /* PPU.swift in Sources */,
 				75D0E53F22B1C9CB0049BF6D /* HRAM.swift in Sources */,
-				75ED9D0D25C65FCE00DBC61B /* Channel1.swift in Sources */,
 				754013D225B7225C005951E0 /* SpriteAttributes.swift in Sources */,
 				75B1F65425BE6F0F001BEA37 /* Array+Additions.swift in Sources */,
 				75B0E21A25B87F8E0021B3C9 /* Range+Additions.swift in Sources */,

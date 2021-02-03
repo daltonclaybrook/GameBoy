@@ -28,7 +28,7 @@ public final class APU: MemoryAddressable {
 
     // Channel 1 + associated units. Todo: consider abstracting this a bit better
     // to enable reusable APIs between different channels with the same units
-    private let channel1 = Square1Channel()
+    private let channel1 = SquareChannel1()
     private let sweepUnit: SweepUnit
     private let lengthCounterUnit: LengthCounterUnit
     private let volumeEnvelopeUnit: VolumeEnvelopeUnit

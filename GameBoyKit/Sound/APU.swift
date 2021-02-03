@@ -26,12 +26,17 @@ public final class APU: MemoryAddressable {
 
     private let control = SoundControl()
     private let channelDriver1: ChannelDriver
+    private let channelDriver2: ChannelDriver
+    private var allDrivers: [ChannelDriver] {
+        [channelDriver1, channelDriver2]
+    }
 
     private let audioEngine = AVAudioEngine()
 
     init() {
         let factory = ChannelFactory(control: control, queue: queue)
         channelDriver1 = factory.makeChannel1()
+        channelDriver2 = factory.makeChannel2()
         control.delegate = self
         setupAudioNode()
     }
@@ -40,6 +45,8 @@ public final class APU: MemoryAddressable {
         switch address {
         case Registers.channel1Range:
             channelDriver1.channel.write(byte: byte, to: address)
+        case Registers.channel2Range:
+            channelDriver2.channel.write(byte: byte, to: address)
         case Registers.controlRange:
             control.write(byte: byte, to: address)
         default:
@@ -51,6 +58,8 @@ public final class APU: MemoryAddressable {
         switch address {
         case Registers.channel1Range:
             return channelDriver1.channel.read(address: address)
+        case Registers.channel2Range:
+            return channelDriver2.channel.read(address: address)
         case Registers.controlRange:
             return control.read(address: address)
         default:
@@ -101,8 +110,9 @@ public final class APU: MemoryAddressable {
             interleaved: outputFormat.isInterleaved
         )
 
-        if let node1 = channelDriver1.makeAudioSourceNode(sampleRate: sampleRate) {
-            let sourceNode = node1.makeSourceNode()
+        allDrivers.forEach { driver in
+            guard let node = driver.makeAudioSourceNode(sampleRate: sampleRate) else { return }
+            let sourceNode = node.makeSourceNode()
             audioEngine.attach(sourceNode)
             audioEngine.connect(sourceNode, to: mainMixer, format: inputFormat)
         }
@@ -114,21 +124,21 @@ public final class APU: MemoryAddressable {
     /// This function is called @ 512 Hz
     private func advanceFrameSequencer(step: UInt64) {
         if step % 2 == 0 { // 256 Hz
-            channelDriver1.lengthCounterUnit?.clockTick()
+            allDrivers.forEach { $0.lengthCounterUnit?.clockTick() }
         }
         if (step + 1) % 8 == 0 { // 64 Hz
-            channelDriver1.volumeEnvelopeUnit?.clockTick()
+            allDrivers.forEach { $0.volumeEnvelopeUnit?.clockTick() }
         }
         if (step + 2) % 4 == 0 { // 128 Hz
-            channelDriver1.sweepUnit?.clockTick()
+            allDrivers.forEach { $0.sweepUnit?.clockTick() }
         }
     }
 }
 
 extension APU: SoundControlDelegate {
     public func soundControlDidStopAllSound(_ control: SoundControl) {
-        queue.async { [channelDriver1] in
-            channelDriver1.reset()
+        queue.async { [allDrivers] in
+            allDrivers.forEach { $0.reset() }
         }
     }
 }

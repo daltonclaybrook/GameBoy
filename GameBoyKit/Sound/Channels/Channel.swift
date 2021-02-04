@@ -19,7 +19,7 @@ public protocol Channel: AnyObject, MemoryAddressable {
 
     // MARK: - Writes
 
-    func writeSweepInfo(byte: Byte)
+    func writeSweepInfoOrWaveEnabled(byte: Byte)
     func writeWaveDutyAndLength(byte: Byte)
     func writeVolumeInfo(byte: Byte)
     func writeLowFrequencyOrNoiseInfo(byte: Byte)
@@ -27,7 +27,7 @@ public protocol Channel: AnyObject, MemoryAddressable {
 
     // MARK: - Reads
 
-    func getSweepInfo() -> Byte
+    func getSweepInfoOrWaveEnabled() -> Byte
     func getWaveDutyAndLength() -> Byte
     func getVolumeInfo() -> Byte
     func getLowFrequencyOrNoiseInfo() -> Byte
@@ -41,7 +41,7 @@ public extension Channel {
 
         switch address {
         case firstRegisterAddress:
-            writeSweepInfo(byte: byte)
+            writeSweepInfoOrWaveEnabled(byte: byte)
         case firstRegisterAddress + 1:
             writeWaveDutyAndLength(byte: byte)
         case firstRegisterAddress + 2:
@@ -58,7 +58,7 @@ public extension Channel {
     func read(address: Address) -> Byte {
         switch address {
         case firstRegisterAddress:
-            return getSweepInfo()
+            return getSweepInfoOrWaveEnabled()
         case firstRegisterAddress + 1:
             return getWaveDutyAndLength()
         case firstRegisterAddress + 2:

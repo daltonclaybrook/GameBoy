@@ -34,11 +34,11 @@ public class SquareChannel:
         volumeEnvelopeRegister = 0
     }
 
-    public func writeSweepInfo(byte: Byte) {
+    public func writeSweepInfoOrWaveEnabled(byte: Byte) {
         // no-op
     }
 
-    public func getSweepInfo() -> Byte {
+    public func getSweepInfoOrWaveEnabled() -> Byte {
         // no-op
         return 0
     }
@@ -63,11 +63,11 @@ public final class SquareChannel1: SquareChannel, SweepChannel {
         sweepRegister = 0
     }
 
-    public override func writeSweepInfo(byte: Byte) {
+    public override func writeSweepInfoOrWaveEnabled(byte: Byte) {
         sweepRegister = byte
     }
 
-    public override func getSweepInfo() -> Byte {
+    public override func getSweepInfoOrWaveEnabled() -> Byte {
         sweepRegister
     }
 }

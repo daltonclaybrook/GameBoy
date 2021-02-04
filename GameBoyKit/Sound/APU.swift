@@ -25,20 +25,33 @@ public final class APU: MemoryAddressable {
     private let timeInterval: TimeInterval = 1.0 / 512.0 // 512 Hz
 
     private let control = SoundControl()
+    private let wavePattern = WavePattern()
+
     private let channelDriver1: ChannelDriver
     private let channelDriver2: ChannelDriver
+    private let channelDriver3: ChannelDriver
+
     private var allDrivers: [ChannelDriver] {
-        [channelDriver1, channelDriver2]
+        [channelDriver1, channelDriver2, channelDriver3]
     }
 
     private let audioEngine = AVAudioEngine()
 
     init() {
-        let factory = ChannelFactory(control: control, queue: queue)
+        let mainMixer = audioEngine.mainMixerNode
+        let output = audioEngine.outputNode
+        let outputFormat = output.inputFormat(forBus: 0)
+        let factory = ChannelFactory(
+            control: control,
+            queue: queue,
+            sampleRate: Float(outputFormat.sampleRate)
+        )
+
         channelDriver1 = factory.makeChannel1()
         channelDriver2 = factory.makeChannel2()
+        channelDriver3 = factory.makeChannel3(wavePattern: wavePattern)
         control.delegate = self
-        setupAudioNode()
+        setupAudioEngine(mainMixer: mainMixer, output: output, outputFormat: outputFormat)
     }
 
     public func write(byte: Byte, to address: Address) {
@@ -47,8 +60,12 @@ public final class APU: MemoryAddressable {
             channelDriver1.channel.write(byte: byte, to: address)
         case Registers.channel2Range:
             channelDriver2.channel.write(byte: byte, to: address)
+        case Registers.channel3Range:
+            channelDriver3.channel.write(byte: byte, to: address)
         case Registers.controlRange:
             control.write(byte: byte, to: address)
+        case Registers.wavePatternRange:
+            wavePattern.write(byte: byte, to: address)
         default:
             break // todo: implement
         }
@@ -60,8 +77,12 @@ public final class APU: MemoryAddressable {
             return channelDriver1.channel.read(address: address)
         case Registers.channel2Range:
             return channelDriver2.channel.read(address: address)
+        case Registers.channel3Range:
+            return channelDriver3.channel.read(address: address)
         case Registers.controlRange:
             return control.read(address: address)
+        case Registers.wavePatternRange:
+            return wavePattern.read(address: address)
         default:
             return 0xff // todo: implement
         }
@@ -97,12 +118,7 @@ public final class APU: MemoryAddressable {
 
     // MARK: - Helpers
 
-    private func setupAudioNode() {
-        let mainMixer = audioEngine.mainMixerNode
-        let output = audioEngine.outputNode
-        let outputFormat = output.inputFormat(forBus: 0)
-        let sampleRate = Float(outputFormat.sampleRate)
-
+    private func setupAudioEngine(mainMixer: AVAudioMixerNode, output: AVAudioOutputNode, outputFormat: AVAudioFormat) {
         let inputFormat = AVAudioFormat(
             commonFormat: outputFormat.commonFormat,
             sampleRate: outputFormat.sampleRate,
@@ -111,8 +127,7 @@ public final class APU: MemoryAddressable {
         )
 
         allDrivers.forEach { driver in
-            guard let node = driver.makeAudioSourceNode(sampleRate: sampleRate) else { return }
-            let sourceNode = node.makeSourceNode()
+            let sourceNode = driver.sourceNode.makeSourceNode()
             audioEngine.attach(sourceNode)
             audioEngine.connect(sourceNode, to: mainMixer, format: inputFormat)
         }

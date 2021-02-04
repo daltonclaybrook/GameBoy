@@ -60,3 +60,18 @@ public final class WaveChannel:
         volume.rawValue << 5
     }
 }
+
+public extension WaveChannel.Volume {
+    var percent: Float {
+        switch self {
+        case .muted:
+            return 0.0
+        case .fullVolume:
+            return 1.0
+        case .fiftyPercent:
+            return 0.5
+        case .twentyFivePercent:
+            return 0.25
+        }
+    }
+}

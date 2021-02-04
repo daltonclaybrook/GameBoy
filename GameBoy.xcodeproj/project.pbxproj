@@ -15,8 +15,8 @@
 		754AA56325C75BDD00977142 /* LengthCounterUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 754AA56125C75BDD00977142 /* LengthCounterUnit.swift */; };
 		754AA56925C76BCF00977142 /* VolumeEnvelopeUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 754AA56825C76BCF00977142 /* VolumeEnvelopeUnit.swift */; };
 		754AA56A25C76BCF00977142 /* VolumeEnvelopeUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 754AA56825C76BCF00977142 /* VolumeEnvelopeUnit.swift */; };
-		754AA76925C8FC2B00977142 /* AudioSourceNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 754AA76825C8FC2B00977142 /* AudioSourceNode.swift */; };
-		754AA76A25C8FC2B00977142 /* AudioSourceNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 754AA76825C8FC2B00977142 /* AudioSourceNode.swift */; };
+		754AA76925C8FC2B00977142 /* SquareSourceNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 754AA76825C8FC2B00977142 /* SquareSourceNode.swift */; };
+		754AA76A25C8FC2B00977142 /* SquareSourceNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 754AA76825C8FC2B00977142 /* SquareSourceNode.swift */; };
 		75524EB125CA32C5002D05F4 /* Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75524EB025CA32C5002D05F4 /* Cache.swift */; };
 		75524EB225CA32C5002D05F4 /* Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75524EB025CA32C5002D05F4 /* Cache.swift */; };
 		75524EBC25CA398A002D05F4 /* Channel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75524EBB25CA398A002D05F4 /* Channel.swift */; };
@@ -228,6 +228,10 @@
 		75ED9D0725C61B4600DBC61B /* SoundControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75ED9D0525C61B4600DBC61B /* SoundControl.swift */; };
 		75EE74AD25B14C070030D57D /* MockCPUContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75EE74AC25B14C070030D57D /* MockCPUContext.swift */; };
 		75EE74AE25B14C070030D57D /* MockCPUContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75EE74AC25B14C070030D57D /* MockCPUContext.swift */; };
+		75F14CAE25CB7119006ECE2B /* WaveSourceNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75F14CAD25CB7119006ECE2B /* WaveSourceNode.swift */; };
+		75F14CAF25CB7119006ECE2B /* WaveSourceNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75F14CAD25CB7119006ECE2B /* WaveSourceNode.swift */; };
+		75F14CB525CB74B6006ECE2B /* WavePattern.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75F14CB425CB74B6006ECE2B /* WavePattern.swift */; };
+		75F14CB625CB74B6006ECE2B /* WavePattern.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75F14CB425CB74B6006ECE2B /* WavePattern.swift */; };
 		75F61DA724FC269700FA095F /* call_timing.gb in Resources */ = {isa = PBXBuildFile; fileRef = 75F61DA624FC269700FA095F /* call_timing.gb */; };
 		75F61DA924FC26A100FA095F /* call_timing2.gb in Resources */ = {isa = PBXBuildFile; fileRef = 75F61DA824FC26A100FA095F /* call_timing2.gb */; };
 		75FDE24525B3AB9600C2A5FB /* div_timing.gb in Resources */ = {isa = PBXBuildFile; fileRef = 75FDE24425B3AB9600C2A5FB /* div_timing.gb */; };
@@ -319,7 +323,7 @@
 		754AA55A25C72AA900977142 /* SweepUnit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SweepUnit.swift; sourceTree = "<group>"; };
 		754AA56125C75BDD00977142 /* LengthCounterUnit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LengthCounterUnit.swift; sourceTree = "<group>"; };
 		754AA56825C76BCF00977142 /* VolumeEnvelopeUnit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VolumeEnvelopeUnit.swift; sourceTree = "<group>"; };
-		754AA76825C8FC2B00977142 /* AudioSourceNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioSourceNode.swift; sourceTree = "<group>"; };
+		754AA76825C8FC2B00977142 /* SquareSourceNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SquareSourceNode.swift; sourceTree = "<group>"; };
 		75524EB025CA32C5002D05F4 /* Cache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cache.swift; sourceTree = "<group>"; };
 		75524EBB25CA398A002D05F4 /* Channel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Channel.swift; sourceTree = "<group>"; };
 		75524EC225CA3FFD002D05F4 /* WaveDuty.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaveDuty.swift; sourceTree = "<group>"; };
@@ -445,6 +449,8 @@
 		75E85C6E25AE8C9300DD9A9F /* CPUContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CPUContext.swift; sourceTree = "<group>"; };
 		75ED9D0525C61B4600DBC61B /* SoundControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundControl.swift; sourceTree = "<group>"; };
 		75EE74AC25B14C070030D57D /* MockCPUContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockCPUContext.swift; sourceTree = "<group>"; };
+		75F14CAD25CB7119006ECE2B /* WaveSourceNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaveSourceNode.swift; sourceTree = "<group>"; };
+		75F14CB425CB74B6006ECE2B /* WavePattern.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WavePattern.swift; sourceTree = "<group>"; };
 		75F61DA624FC269700FA095F /* call_timing.gb */ = {isa = PBXFileReference; lastKnownFileType = file; path = call_timing.gb; sourceTree = "<group>"; };
 		75F61DA824FC26A100FA095F /* call_timing2.gb */ = {isa = PBXFileReference; lastKnownFileType = file; path = call_timing2.gb; sourceTree = "<group>"; };
 		75FDE24425B3AB9600C2A5FB /* div_timing.gb */ = {isa = PBXFileReference; lastKnownFileType = file; path = div_timing.gb; sourceTree = "<group>"; };
@@ -856,12 +862,14 @@
 				75CF895125CAE9BF00C206DC /* Channels */,
 				75A84F7825CA58BD00C353FA /* Units */,
 				75E0E3FB25C2653D00AFE57E /* APU.swift */,
-				754AA76825C8FC2B00977142 /* AudioSourceNode.swift */,
+				754AA76825C8FC2B00977142 /* SquareSourceNode.swift */,
+				75F14CAD25CB7119006ECE2B /* WaveSourceNode.swift */,
 				75524EC225CA3FFD002D05F4 /* WaveDuty.swift */,
 				75524ED425CA4DAC002D05F4 /* SweepVolumeDirection.swift */,
 				75ED9D0525C61B4600DBC61B /* SoundControl.swift */,
 				75A84F7125CA57F800C353FA /* ChannelDriver.swift */,
 				75A84F7D25CA59F900C353FA /* ChannelFactory.swift */,
+				75F14CB425CB74B6006ECE2B /* WavePattern.swift */,
 			);
 			path = Sound;
 			sourceTree = "<group>";
@@ -1212,8 +1220,9 @@
 				75D0E54C22B32DFE0049BF6D /* VRAM+Debug.swift in Sources */,
 				757F38FD22B1C69F00BBB570 /* CPU.swift in Sources */,
 				754AA56A25C76BCF00977142 /* VolumeEnvelopeUnit.swift in Sources */,
-				754AA76A25C8FC2B00977142 /* AudioSourceNode.swift in Sources */,
+				754AA76A25C8FC2B00977142 /* SquareSourceNode.swift in Sources */,
 				757F390622B1C69F00BBB570 /* MMU.swift in Sources */,
+				75F14CAF25CB7119006ECE2B /* WaveSourceNode.swift in Sources */,
 				757F390E22B1C69F00BBB570 /* GameBoy.swift in Sources */,
 				75524ECB25CA4A3E002D05F4 /* SquareChannel.swift in Sources */,
 				7590E7FB25ABE242005E1280 /* Numbers+Debug.swift in Sources */,
@@ -1238,6 +1247,7 @@
 				75D0E54022B1C9F50049BF6D /* HRAM.swift in Sources */,
 				7590E7ED25ABA935005E1280 /* MemoryMasking.swift in Sources */,
 				754013D325B7225C005951E0 /* SpriteAttributes.swift in Sources */,
+				75F14CB625CB74B6006ECE2B /* WavePattern.swift in Sources */,
 				75B1F65525BE6F0F001BEA37 /* Array+Additions.swift in Sources */,
 				75B0E21B25B87F8E0021B3C9 /* Range+Additions.swift in Sources */,
 				757F390522B1C69F00BBB570 /* Opcode.swift in Sources */,
@@ -1309,8 +1319,9 @@
 				75D0E54B22B30C7A0049BF6D /* VRAM+Debug.swift in Sources */,
 				75BD98BE22A4135900CFFB68 /* LCDStatus.swift in Sources */,
 				754AA56925C76BCF00977142 /* VolumeEnvelopeUnit.swift in Sources */,
-				754AA76925C8FC2B00977142 /* AudioSourceNode.swift in Sources */,
+				754AA76925C8FC2B00977142 /* SquareSourceNode.swift in Sources */,
 				75BD98B422A0AD9600CFFB68 /* CPU+Instructions.swift in Sources */,
+				75F14CAE25CB7119006ECE2B /* WaveSourceNode.swift in Sources */,
 				75BD98C422A49C0C00CFFB68 /* OAM.swift in Sources */,
 				75524ECA25CA4A3E002D05F4 /* SquareChannel.swift in Sources */,
 				7590E7FA25ABE242005E1280 /* Numbers+Debug.swift in Sources */,
@@ -1335,6 +1346,7 @@
 				75B3AD56229E13B700A03C5A /* PPU.swift in Sources */,
 				75D0E53F22B1C9CB0049BF6D /* HRAM.swift in Sources */,
 				754013D225B7225C005951E0 /* SpriteAttributes.swift in Sources */,
+				75F14CB525CB74B6006ECE2B /* WavePattern.swift in Sources */,
 				75B1F65425BE6F0F001BEA37 /* Array+Additions.swift in Sources */,
 				75B0E21A25B87F8E0021B3C9 /* Range+Additions.swift in Sources */,
 				75BD98B222A0AA8600CFFB68 /* Opcode.swift in Sources */,

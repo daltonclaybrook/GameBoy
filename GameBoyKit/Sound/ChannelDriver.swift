@@ -1,6 +1,7 @@
 /// Objects of this type manage a channel and its associated audio units.
 public final class ChannelDriver {
     public let channel: Channel
+    public let sourceNode: AudioSourceNode
 
     private let control: SoundControl
     private let queue: DispatchQueue
@@ -10,10 +11,11 @@ public final class ChannelDriver {
     var lengthCounterUnit: LengthCounterUnit?
     var volumeEnvelopeUnit: VolumeEnvelopeUnit?
 
-    public init(channel: Channel, control: SoundControl, queue: DispatchQueue) {
+    public init(channel: Channel, control: SoundControl, queue: DispatchQueue, sourceNode: AudioSourceNode) {
         self.channel = channel
         self.control = control
         self.queue = queue
+        self.sourceNode = sourceNode
         channel.delegate = self
     }
 
@@ -23,32 +25,20 @@ public final class ChannelDriver {
         lengthCounterUnit?.reset()
         volumeEnvelopeUnit?.reset()
     }
-
-    public func makeAudioSourceNode(sampleRate: Float) -> AudioSourceNode? {
-        guard let lengthCounterUnit = lengthCounterUnit,
-              let volumeEnvelopeUnit = volumeEnvelopeUnit,
-              let channel = channel as? (FrequencyChannel & WaveDutyChannel)
-        else { return nil }
-        return AudioSourceNode(
-            sampleRate: sampleRate,
-            channel: channel,
-            control: control,
-            lengthCounterUnit: lengthCounterUnit,
-            volumeEnvelopeUnit: volumeEnvelopeUnit
-        )
-    }
 }
 
 extension ChannelDriver: ChannelDelegate {
     public func channelShouldRestart(_ channel: Channel) {
-        queue.async { [control, sweepUnit, volumeEnvelopeUnit] in
+        queue.async { [control, sweepUnit, lengthCounterUnit, volumeEnvelopeUnit, sourceNode] in
             control.enabledChannels.insert(channel.controlFlag)
             sweepUnit?.restart()
+            lengthCounterUnit?.restart()
             volumeEnvelopeUnit?.restart()
+            sourceNode.restart()
         }
     }
 
-    public func channel(_ channel1: Channel, loadedSoundLength soundLength: UInt8) {
+    public func channel(_ channel: Channel, loadedSoundLength soundLength: UInt8) {
         queue.async { [lengthCounterUnit] in
             lengthCounterUnit?.load(soundLength: soundLength)
         }

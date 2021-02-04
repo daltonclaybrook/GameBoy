@@ -1,5 +1,10 @@
 import AVFoundation
 
+public protocol AudioSourceNode {
+    func makeSourceNode() -> AVAudioSourceNode
+    func restart()
+}
+
 private protocol AudioDataProvider {
     var frequency: Float { get }
     var sampleRate: Float { get }
@@ -9,7 +14,7 @@ private protocol AudioDataProvider {
     func getSignal(fromHarmonics harmonics: [Float], currentPhase: Float) -> Float
 }
 
-public final class AudioSourceNode: AudioDataProvider {
+public final class SquareSourceNode: AudioSourceNode, AudioDataProvider {
     fileprivate let sampleRate: Float
 
     private let channel: FrequencyChannel & WaveDutyChannel
@@ -18,7 +23,7 @@ public final class AudioSourceNode: AudioDataProvider {
     private let volumeEnvelopeUnit: VolumeEnvelopeUnit
 
     fileprivate var frequency: Float {
-        channel.frequency
+        channel.squareFrequency
     }
 
     fileprivate var amplitude: Float {
@@ -43,6 +48,10 @@ public final class AudioSourceNode: AudioDataProvider {
 
     public func makeSourceNode() -> AVAudioSourceNode {
         AVAudioSourceNode(renderBlock: createAudioRenderBlock(provider: self))
+    }
+
+    public func restart() {
+        // no-op
     }
 
     // MARK: - Helpers

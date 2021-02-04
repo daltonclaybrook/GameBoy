@@ -2,7 +2,7 @@ import Foundation
 
 public protocol ChannelDelegate: AnyObject {
     func channelShouldRestart(_ channel: Channel)
-    func channel(_ channel1: Channel, loadedSoundLength soundLength: UInt8)
+    func channel(_ channel: Channel, loadedSoundLength soundLength: UInt8)
 }
 
 public protocol Channel: AnyObject, MemoryAddressable {
@@ -225,10 +225,14 @@ public protocol FrequencyChannel: Channel {
 }
 
 public extension FrequencyChannel {
-    /// The frequency is derived by combining the registers `NRx3` and
-    /// part of `NRx4`, then applying a formula.
-    var frequency: Float {
+    /// The frequency used by the square channels
+    var squareFrequency: Float {
         131_072.0 / (2_048.0 - Float(combinedFrequencyRegister))
+    }
+
+    /// The frequency used by the wave channel
+    var waveFrequency: Float {
+        65_536.0 / (2_048.0 - Float(combinedFrequencyRegister))
     }
 
     func writeLowFrequencyOrNoiseInfo(byte: Byte) {

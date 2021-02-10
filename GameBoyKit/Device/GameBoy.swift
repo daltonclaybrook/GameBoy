@@ -34,8 +34,8 @@ public final class GameBoy {
     private let apu = APU()
     private var cartridge: CartridgeType?
 
-    public init(renderer: Renderer, displayLink: DisplayLinkType, delegateQueue: DispatchQueue = .main) {
-        clock = Clock(queue: queue, displayLink: displayLink)
+    public init(renderer: Renderer, delegateQueue: DispatchQueue = .main) {
+        clock = Clock(queue: queue)
         timer = Timer()
         oam = OAM()
         io = IO(palettes: palettes, oam: oam, apu: apu, timer: timer)
@@ -117,6 +117,7 @@ public final class GameBoy {
         // emulate components
         oam.emulate()
         ppu.emulate()
+        apu.emulate()
         // emulate timer
         timer.emulate()
     }

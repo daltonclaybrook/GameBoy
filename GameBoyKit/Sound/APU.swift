@@ -17,13 +17,7 @@ public final class APU: MemoryAddressable {
         }
     }
 
-    private let queue = DispatchQueue(
-        label: "com.daltonclaybrook.GameBoy.APU",
-        qos: .userInteractive
-    )
-    private var timer: DispatchSourceTimer?
-    private let timeInterval: TimeInterval = 1.0 / 256.0 // 256 Hz
-
+    private var mCycles: Cycles = 0
     private let control = SoundControl()
     private let wavePattern = WavePattern()
 
@@ -43,7 +37,6 @@ public final class APU: MemoryAddressable {
         let outputFormat = output.inputFormat(forBus: 0)
         let factory = ChannelFactory(
             control: control,
-            queue: queue,
             sampleRate: Float(outputFormat.sampleRate)
         )
 
@@ -90,17 +83,6 @@ public final class APU: MemoryAddressable {
 
     func start() {
         stop()
-        let timer = DispatchSource.makeTimerSource(flags: .strict, queue: queue)
-        self.timer = timer
-
-        var currentStep: UInt64 = 0
-        timer.setEventHandler {
-            self.advanceFrameSequencer(step: currentStep)
-            currentStep += 1
-        }
-        timer.schedule(deadline: .now(), repeating: timeInterval)
-        timer.resume()
-
         do {
             try audioEngine.start()
         } catch let error {
@@ -110,10 +92,27 @@ public final class APU: MemoryAddressable {
     }
 
     func stop() {
-        timer?.setEventHandler(handler: nil)
-        timer?.cancel()
-        timer = nil
         audioEngine.stop()
+    }
+
+    /// Called once per m-cycle
+    func emulate() {
+        mCycles += 1
+        let tickLengthCounter = mCycles % (Clock.effectiveMachineSpeed / 256) == 0
+        let tickSweep = mCycles % (Clock.effectiveMachineSpeed / 128) == 0
+        let tickVolumeEnvelope = mCycles % (Clock.effectiveMachineSpeed / 64) == 0
+
+        allDrivers.forEach { driver in
+            if tickLengthCounter {
+                driver.lengthCounterUnit?.clockTick()
+            }
+            if tickVolumeEnvelope {
+                driver.volumeEnvelopeUnit?.clockTick()
+            }
+            if tickSweep {
+                driver.sweepUnit?.clockTick()
+            }
+        }
     }
 
     // MARK: - Helpers
@@ -135,28 +134,10 @@ public final class APU: MemoryAddressable {
         audioEngine.connect(mainMixer, to: output, format: outputFormat)
         mainMixer.outputVolume = 0.5
     }
-
-    /// This function is called @ 256 Hz
-    private func advanceFrameSequencer(step: UInt64) {
-        let tickVolumeEnvelope = step % 4 == 0 // 64 Hz
-        let tickSweep = step % 2 == 0 // 128 Hz
-
-        allDrivers.forEach { driver in
-            driver.lengthCounterUnit?.clockTick()
-            if tickVolumeEnvelope {
-                driver.volumeEnvelopeUnit?.clockTick()
-            }
-            if tickSweep {
-                driver.sweepUnit?.clockTick()
-            }
-        }
-    }
 }
 
 extension APU: SoundControlDelegate {
     public func soundControlDidStopAllSound(_ control: SoundControl) {
-        queue.async { [allDrivers] in
-            allDrivers.forEach { $0.reset() }
-        }
+        allDrivers.forEach { $0.reset() }
     }
 }

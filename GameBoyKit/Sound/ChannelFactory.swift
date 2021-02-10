@@ -1,6 +1,5 @@
 public struct ChannelFactory {
     let control: SoundControl
-    let queue: DispatchQueue
     let sampleRate: Float
 
     func makeChannel1() -> ChannelDriver {
@@ -11,7 +10,6 @@ public struct ChannelFactory {
         let driver = ChannelDriver(
             channel: channel,
             control: control,
-            queue: queue,
             sourceNode: SquareSourceNode(
                 sampleRate: sampleRate,
                 channel: channel,
@@ -35,7 +33,6 @@ public struct ChannelFactory {
         let driver = ChannelDriver(
             channel: channel,
             control: control,
-            queue: queue,
             sourceNode: SquareSourceNode(
                 sampleRate: sampleRate,
                 channel: channel,
@@ -57,7 +54,6 @@ public struct ChannelFactory {
         let driver = ChannelDriver(
             channel: channel,
             control: control,
-            queue: queue,
             sourceNode: WaveSourceNode(
                 sampleRate: sampleRate,
                 channel: channel,

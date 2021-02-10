@@ -70,7 +70,7 @@ public final class PPU {
         cyclesRemaining -= 1
         if cyclesRemaining == 1 && io.lcdStatus.mode == .transferingToLCD && io.lcdStatus.hBlankInterruptEnabled {
             // Interrupt occurs 1 cycle before mode switch
-            io.interruptFlags.formUnion(.lcdStat)
+            io.interruptFlags.insert(.lcdStat)
         }
 
         guard cyclesRemaining == 0 else { return }
@@ -132,7 +132,7 @@ public final class PPU {
         case .searchingOAMRAM:
             oam.isBeingReadByPPU = true
             if io.lcdStatus.oamInterruptEnabled {
-                io.interruptFlags.formUnion(.lcdStat)
+                io.interruptFlags.insert(.lcdStat)
             }
         case .transferingToLCD:
             vram.isBeingReadByPPU = true
@@ -141,12 +141,12 @@ public final class PPU {
             vram.isBeingReadByPPU = false
         case .verticalBlank:
             renderPixelBuffer()
-            io.interruptFlags.formUnion(.vBlank)
+            io.interruptFlags.insert(.vBlank)
             if io.lcdStatus.vBlankInterruptEnabled {
-                io.interruptFlags.formUnion(.lcdStat)
+                io.interruptFlags.insert(.lcdStat)
             }
             if io.lcdStatus.oamInterruptEnabled {
-                io.interruptFlags.formUnion(.lcdStat)
+                io.interruptFlags.insert(.lcdStat)
             }
         }
     }
@@ -154,7 +154,7 @@ public final class PPU {
     private func checkAndHandleYCompare() {
         io.lcdStatus.lcdYCompare = io.lcdYCoordinate == io.lcdYCoordinateCompare
         if io.lcdStatus.lcdYCompare && io.lcdStatus.lcdYCompareInterruptEnabled {
-            io.interruptFlags.formUnion(.lcdStat)
+            io.interruptFlags.insert(.lcdStat)
         }
     }
 

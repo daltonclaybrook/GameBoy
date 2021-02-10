@@ -22,7 +22,7 @@ public final class APU: MemoryAddressable {
         qos: .userInteractive
     )
     private var timer: DispatchSourceTimer?
-    private let timeInterval: TimeInterval = 1.0 / 512.0 // 512 Hz
+    private let timeInterval: TimeInterval = 1.0 / 256.0 // 256 Hz
 
     private let control = SoundControl()
     private let wavePattern = WavePattern()
@@ -90,7 +90,7 @@ public final class APU: MemoryAddressable {
 
     func start() {
         stop()
-        let timer = DispatchSource.makeTimerSource(queue: queue)
+        let timer = DispatchSource.makeTimerSource(flags: .strict, queue: queue)
         self.timer = timer
 
         var currentStep: UInt64 = 0
@@ -136,16 +136,19 @@ public final class APU: MemoryAddressable {
         mainMixer.outputVolume = 0.5
     }
 
-    /// This function is called @ 512 Hz
+    /// This function is called @ 256 Hz
     private func advanceFrameSequencer(step: UInt64) {
-        if step % 2 == 0 { // 256 Hz
-            allDrivers.forEach { $0.lengthCounterUnit?.clockTick() }
-        }
-        if (step + 1) % 8 == 0 { // 64 Hz
-            allDrivers.forEach { $0.volumeEnvelopeUnit?.clockTick() }
-        }
-        if (step + 2) % 4 == 0 { // 128 Hz
-            allDrivers.forEach { $0.sweepUnit?.clockTick() }
+        let tickVolumeEnvelope = step % 4 == 0 // 64 Hz
+        let tickSweep = step % 2 == 0 // 128 Hz
+
+        allDrivers.forEach { driver in
+            driver.lengthCounterUnit?.clockTick()
+            if tickVolumeEnvelope {
+                driver.volumeEnvelopeUnit?.clockTick()
+            }
+            if tickSweep {
+                driver.sweepUnit?.clockTick()
+            }
         }
     }
 }

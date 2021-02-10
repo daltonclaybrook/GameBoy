@@ -26,7 +26,7 @@ public final class WaveSourceNode: AudioSourceNode, AudioDataProvider {
 
     fileprivate var amplitude: Float {
         guard control.isSoundEnabled &&
-                lengthCounterUnit.channelIsEnabled &&
+                lengthCounterUnit.isEnabled &&
                 channel.isWaveEnabled
         else { return 0 }
         return channel.volume.percent * 0.1
@@ -64,15 +64,10 @@ public final class WaveSourceNode: AudioSourceNode, AudioDataProvider {
 
         // phase range 0..<1
         let normalizedPhase = currentPhase / twoPi
-        let sampleIndex = min(Int(normalizedPhase * 32), 31)
-        let byteIndex = sampleIndex / 2
-        // high nibble is played first
-        let shiftInByte = sampleIndex % 2 == 0 ? 4 : 0
-        let byte = wavePattern.bytes[byteIndex]
-        // value in the range 0 - 15
-        let nibble = (byte >> shiftInByte) & 0x0f
+        let sample = wavePattern.getInterpolatedSample(atNormalizedPhase: normalizedPhase)
+
         // value in the range -1.0 - 1.0
-        let normalizedSignal = (Float(nibble) / 0x0f) * 2 - 1
+        let normalizedSignal = (sample / 0x0f) * 2 - 1
         return normalizedSignal
     }
 

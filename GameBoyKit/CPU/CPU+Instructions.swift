@@ -110,10 +110,10 @@ extension CPU {
         let toAdd32 = Int32(toAdd)
 
         if sp32 & 0xff + toAdd32 & 0xff > 0xff {
-            flags.formUnion(.fullCarry)
+            flags.insert(.fullCarry)
         }
         if sp32 & 0x0f + toAdd32 & 0x0f > 0x0f {
-            flags.formUnion(.halfCarry)
+            flags.insert(.halfCarry)
         }
         context.tickCycle()
     }
@@ -144,52 +144,52 @@ extension CPU {
         flags.formIntersection([.subtract, .fullCarry])
 
         if register & 0x100 != 0 {
-            flags.formUnion(.fullCarry)
+            flags.insert(.fullCarry)
         }
 
         register &= 0xff
 
         if register == 0 {
-            flags.formUnion(.zero)
+            flags.insert(.zero)
         }
         a = UInt8(register)
     }
 
     func increment(register: inout Byte) {
         flags.formIntersection(.fullCarry) // preserve old carry flag
-        if register == 0xff { flags.formUnion(.zero) }
-        if register & 0x0f == 0x0f { flags.formUnion(.halfCarry) }
+        if register == 0xff { flags.insert(.zero) }
+        if register & 0x0f == 0x0f { flags.insert(.halfCarry) }
         register &+= 1
     }
 
     func incrementValue(at address: Address, context: CPUContext) {
         flags.formIntersection(.fullCarry) // preserve the carry flag
         let value = context.readCycle(address: address)
-        if value & 0x0f == 0x0f { flags.formUnion(.halfCarry) }
-        if value == 0xff { flags.formUnion(.zero) }
+        if value & 0x0f == 0x0f { flags.insert(.halfCarry) }
+        if value == 0xff { flags.insert(.zero) }
         context.writeCycle(byte: value &+ 1, to: address)
     }
 
     func decrement(register: inout Byte) {
         flags.formIntersection(.fullCarry) // preserve old carry flag
-        flags.formUnion(.subtract)
-        if register == 1 { flags.formUnion(.zero) }
-        if register & 0x0f == 0 { flags.formUnion(.halfCarry) }
+        flags.insert(.subtract)
+        if register == 1 { flags.insert(.zero) }
+        if register & 0x0f == 0 { flags.insert(.halfCarry) }
         register &-= 1
     }
 
     func decrementValue(at address: Address, context: CPUContext) {
         flags.formIntersection(.fullCarry)
-        flags.formUnion(.subtract)
+        flags.insert(.subtract)
         let value = context.readCycle(address: address)
-        if value & 0x0f == 0 { flags.formUnion(.halfCarry) }
-        if value == 1 { flags.formUnion(.zero) }
+        if value & 0x0f == 0 { flags.insert(.halfCarry) }
+        if value == 1 { flags.insert(.zero) }
         context.writeCycle(byte: value &- 1, to: address)
     }
 
     func setCarryFlag() {
         flags.formIntersection(.zero) // preserve zero flag
-        flags.formUnion(.fullCarry)
+        flags.insert(.fullCarry)
     }
 
     func complementAccumulator() {
@@ -204,10 +204,10 @@ extension CPU {
 
     func add(value: Byte, to register: inout Byte) {
         flags = []
-        if register > register &+ value { flags.formUnion(.fullCarry) }
-        if register & 0x0f + value & 0x0f > 0x0f { flags.formUnion(.halfCarry) }
+        if register > register &+ value { flags.insert(.fullCarry) }
+        if register & 0x0f + value & 0x0f > 0x0f { flags.insert(.halfCarry) }
         register &+= value
-        if register == 0 { flags.formUnion(.zero) }
+        if register == 0 { flags.insert(.zero) }
     }
 
     func add(address: Address, to register: inout Byte, context: CPUContext) {
@@ -218,13 +218,13 @@ extension CPU {
     func addWithCarry(value: Byte, to register: inout Byte) {
         let carry: Byte = flags.contains(.fullCarry) ? 1 : 0
         flags = []
-        if register > register &+ value { flags.formUnion(.fullCarry) }
-        if register & 0x0f + value & 0x0f > 0x0f { flags.formUnion(.halfCarry) }
+        if register > register &+ value { flags.insert(.fullCarry) }
+        if register & 0x0f + value & 0x0f > 0x0f { flags.insert(.halfCarry) }
         register &+= value
-        if register > register &+ carry { flags.formUnion(.fullCarry) }
-        if register & 0x0f + carry > 0x0f { flags.formUnion(.halfCarry) }
+        if register > register &+ carry { flags.insert(.fullCarry) }
+        if register & 0x0f + carry > 0x0f { flags.insert(.halfCarry) }
         register &+= carry
-        if register == 0 { flags.formUnion(.zero) }
+        if register == 0 { flags.insert(.zero) }
     }
 
     func addWithCarry(address: Address, to register: inout Byte, context: CPUContext) {
@@ -244,9 +244,9 @@ extension CPU {
 
     func subtract(value: Byte, from register: inout Byte) {
         flags = .subtract
-        if register < value { flags.formUnion(.fullCarry) }
-        if register & 0x0f < value & 0x0f { flags.formUnion(.halfCarry) }
-        if register == value { flags.formUnion(.zero) }
+        if register < value { flags.insert(.fullCarry) }
+        if register & 0x0f < value & 0x0f { flags.insert(.halfCarry) }
+        if register == value { flags.insert(.zero) }
         register &-= value
     }
 
@@ -258,13 +258,13 @@ extension CPU {
     func subtractWithCarry(value: Byte, from register: inout Byte) {
         let carry: Byte = flags.contains(.fullCarry) ? 1 : 0
         flags = .subtract
-        if register < value { flags.formUnion(.fullCarry) }
-        if register & 0x0f < value & 0x0f { flags.formUnion(.halfCarry) }
+        if register < value { flags.insert(.fullCarry) }
+        if register & 0x0f < value & 0x0f { flags.insert(.halfCarry) }
         register &-= value
-        if register < carry { flags.formUnion(.fullCarry) }
-        if register & 0x0f < carry { flags.formUnion(.halfCarry) }
+        if register < carry { flags.insert(.fullCarry) }
+        if register & 0x0f < carry { flags.insert(.halfCarry) }
         register &-= carry
-        if register == 0 { flags.formUnion(.zero) }
+        if register == 0 { flags.insert(.zero) }
     }
 
     func subtractWithCarry(address: Address, from register: inout Byte, context: CPUContext) {
@@ -295,7 +295,7 @@ extension CPU {
     func andOperand(into register: inout Byte, context: CPUContext) {
         flags = .halfCarry
         register &= fetchByte(context: context)
-        if register == 0 { flags.formUnion(.zero) }
+        if register == 0 { flags.insert(.zero) }
     }
 
     func or(value: Byte, into register: inout Byte) {
@@ -337,9 +337,9 @@ extension CPU {
 
     func compare(value: Byte, with register: Byte) {
         flags = .subtract
-        if register < value { flags.formUnion(.fullCarry) }
-        if register & 0x0f < value & 0x0f { flags.formUnion(.halfCarry) }
-        if register == value { flags.formUnion(.zero) }
+        if register < value { flags.insert(.fullCarry) }
+        if register & 0x0f < value & 0x0f { flags.insert(.halfCarry) }
+        if register == value { flags.insert(.zero) }
     }
 
     func compareOperand(with register: Byte, context: CPUContext) {
@@ -361,8 +361,8 @@ extension CPU {
 
     func add(value: Word, to pair: inout Word, context: CPUContext) {
         flags.formIntersection(.zero) // preserve old zero flag
-        if pair & 0x0fff + value & 0x0fff > 0x0fff { flags.formUnion(.halfCarry) }
-        if pair > pair &+ value { flags.formUnion(.fullCarry) }
+        if pair & 0x0fff + value & 0x0fff > 0x0fff { flags.insert(.halfCarry) }
+        if pair > pair &+ value { flags.insert(.fullCarry) }
         pair &+= value
         context.tickCycle()
     }
@@ -376,10 +376,10 @@ extension CPU {
         let sp32 = Int32(sp)
 
         if sp32 & 0xff + toAdd32 & 0xff > 0xff {
-            flags.formUnion(.fullCarry)
+            flags.insert(.fullCarry)
         }
         if sp32 & 0x0f + toAdd32 & 0x0f > 0x0f {
-            flags.formUnion(.halfCarry)
+            flags.insert(.halfCarry)
         }
         sp = newSP
         context.tickCycle()
@@ -479,7 +479,7 @@ extension CPU {
     func rotateLeftA() {
         let carry: Byte = flags.contains(.fullCarry) ? 1 : 0
         flags = []
-        if a & 0x80 != 0 { flags.formUnion(.fullCarry) }
+        if a & 0x80 != 0 { flags.insert(.fullCarry) }
         a = a << 1 | carry
     }
 
@@ -488,7 +488,7 @@ extension CPU {
     func rotateRightA() {
         let carry: Byte = flags.contains(.fullCarry) ? 0x80 : 0
         flags = []
-        if a & 0x01 != 0 { flags.formUnion(.fullCarry) }
+        if a & 0x01 != 0 { flags.insert(.fullCarry) }
         a = a >> 1 | carry
     }
 

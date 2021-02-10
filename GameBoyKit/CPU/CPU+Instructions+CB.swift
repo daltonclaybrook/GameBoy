@@ -10,9 +10,9 @@ extension CPU {
     func rotateLeftCarry(value: inout Byte) {
         flags = []
         let carry = value >> 7
-        if carry != 0 { flags.formUnion(.fullCarry) }
+        if carry != 0 { flags.insert(.fullCarry) }
         value = value << 1 | carry
-        if value == 0 { flags.formUnion(.zero) }
+        if value == 0 { flags.insert(.zero) }
     }
 
     func rotateLeftCarry(address: Address, context: CPUContext) {
@@ -24,9 +24,9 @@ extension CPU {
     func rotateRightCarry(value: inout Byte) {
         flags = []
         let carry = (value & 0x01) << 7
-        if carry != 0 { flags.formUnion(.fullCarry) }
+        if carry != 0 { flags.insert(.fullCarry) }
         value = value >> 1 | carry
-        if value == 0 { flags.formUnion(.zero) }
+        if value == 0 { flags.insert(.zero) }
     }
 
     func rotateRightCarry(address: Address, context: CPUContext) {
@@ -38,9 +38,9 @@ extension CPU {
     func rotateLeft(value: inout Byte) {
         let carry: Byte = flags.contains(.fullCarry) ? 1 : 0
         flags = []
-        if value & 0x80 != 0 { flags.formUnion(.fullCarry) }
+        if value & 0x80 != 0 { flags.insert(.fullCarry) }
         value = value << 1 | carry
-        if value == 0 { flags.formUnion(.zero) }
+        if value == 0 { flags.insert(.zero) }
     }
 
     func rotateLeft(address: Address, context: CPUContext) {
@@ -52,9 +52,9 @@ extension CPU {
     func rotateRight(value: inout Byte) {
         let carry: Byte = flags.contains(.fullCarry) ? 0x80 : 0
         flags = []
-        if value & 0x01 != 0 { flags.formUnion(.fullCarry) }
+        if value & 0x01 != 0 { flags.insert(.fullCarry) }
         value = value >> 1 | carry
-        if value == 0 { flags.formUnion(.zero) }
+        if value == 0 { flags.insert(.zero) }
     }
 
     func rotateRight(address: Address, context: CPUContext) {
@@ -66,7 +66,7 @@ extension CPU {
     func shiftLeftArithmetic(value: inout Byte) {
         flags = value & 0x80 != 0 ? .fullCarry : []
         value <<= 1
-        if value == 0 { flags.formUnion(.zero) }
+        if value == 0 { flags.insert(.zero) }
     }
 
     func shiftLeftArithmetic(address: Address, context: CPUContext) {
@@ -78,7 +78,7 @@ extension CPU {
     func shiftRightArithmetic(value: inout Byte) {
         flags = value & 0x01 != 0 ? .fullCarry : []
         value = (value & 0x80) | (value >> 1)
-        if value == 0 { flags.formUnion(.zero) }
+        if value == 0 { flags.insert(.zero) }
     }
 
     func shiftRightArithmetic(address: Address, context: CPUContext) {
@@ -101,7 +101,7 @@ extension CPU {
     func shiftRightLogical(value: inout Byte) {
         flags = value & 0x01 != 0 ? .fullCarry : []
         value >>= 1
-        if value == 0 { flags.formUnion(.zero) }
+        if value == 0 { flags.insert(.zero) }
     }
 
     func shiftRightLogical(address: Address, context: CPUContext) {
@@ -112,8 +112,8 @@ extension CPU {
 
     func checkBit(index: BitIndex, of byte: Byte) {
         flags.formIntersection(.fullCarry) // preserve old carry flag
-        flags.formUnion(.halfCarry)
-        if (1 << index) & byte == 0 { flags.formUnion(.zero) }
+        flags.insert(.halfCarry)
+        if (1 << index) & byte == 0 { flags.insert(.zero) }
     }
 
     func checkBit(index: BitIndex, of address: Address, context: CPUContext) {

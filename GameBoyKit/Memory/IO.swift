@@ -70,7 +70,7 @@ public final class IO: MemoryAddressable {
         case Registers.interruptFlags:
             interruptFlags = Interrupts(rawValue: byte)
         case APU.Registers.lowerRange, APU.Registers.upperRange:
-            return apu.write(byte: byte, to: address)
+            apu.write(byte: byte, to: address)
         case Registers.lcdControl:
             lcdControl = LCDControl(rawValue: byte)
         case Registers.lcdStatus:
@@ -122,6 +122,6 @@ extension IO: TimerDelegate {
 
 extension IO: JoypadDelegate {
     public func joypadDidRequestInterrupt(_ joypad: Joypad) {
-        interruptFlags.formUnion(.joypad)
+        interruptFlags.insert(.joypad)
     }
 }

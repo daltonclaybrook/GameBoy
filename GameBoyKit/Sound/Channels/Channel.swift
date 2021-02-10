@@ -253,7 +253,7 @@ public extension FrequencyChannel {
 public extension FrequencyChannel where Self: LengthChannel {
     func writeTriggerLengthEnableAndHighFrequency(byte: Byte) {
         combinedFrequencyRegister = (UInt16(byte & 0x07) << 8) | (combinedFrequencyRegister & 0x00ff)
-        isSoundLengthEnabled = (byte >> 6) & 0x01 == 1
+        isSoundLengthEnabled = (byte >> 6) & 1 != 0
         if (byte >> 7) & 0x01 == 1 {
             delegate?.channelShouldRestart(self)
         }

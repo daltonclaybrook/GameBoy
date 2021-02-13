@@ -21,15 +21,8 @@ public final class WavePattern: MemoryAddressable {
         return firstSample | secondSample
     }
 
-    public func getInterpolatedSample(atNormalizedPhase phase: Float) -> Float {
-        let index = phase * Float(samplesCount)
-        let firstIndex = Int(index) % samplesCount
-        let secondIndex = (firstIndex + 1) % samplesCount
-        let midSamplePercent = index - index.rounded(.down)
-
-        let firstSample = Float(samples[firstIndex])
-        let secondSample = Float(samples[secondIndex])
-        let midSample = firstSample - (firstSample - secondSample) * midSamplePercent
-        return midSample
+    public func getSample(atNormalizedPhase phase: Float64) -> Float64 {
+        let index = Int(phase * Float64(samplesCount)) % samplesCount
+        return Float64(samples[index])
     }
 }

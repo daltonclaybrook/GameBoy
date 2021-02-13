@@ -27,7 +27,7 @@ public final class SquareSourceNode: AudioSourceNode, AudioDataProvider {
     }
 
     fileprivate var amplitude: Float {
-        guard control.isSoundEnabled && lengthCounterUnit.isEnabled
+        guard control.isSoundEnabled && lengthCounterUnit.isAllowingSound
         else { return 0 }
         return volumeEnvelopeUnit.normalizedVolume * 0.1
     }

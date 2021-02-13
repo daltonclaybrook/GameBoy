@@ -24,7 +24,7 @@ public final class WaveChannel:
         return 0xff1a
     }
 
-    public var controlFlag: SoundControl.ChannelEnabled {
+    public var controlFlag: SoundControl.ChannelFlags {
         return .channel3
     }
 

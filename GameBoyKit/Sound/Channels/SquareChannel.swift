@@ -20,7 +20,7 @@ public class SquareChannel:
     public var firstRegisterAddress: Address {
         fatalError("This property must be implemented in a subclass")
     }
-    public var controlFlag: SoundControl.ChannelEnabled {
+    public var controlFlag: SoundControl.ChannelFlags {
         fatalError("This property must be implemented in a subclass")
     }
 
@@ -52,7 +52,7 @@ public final class SquareChannel1: SquareChannel, SweepChannel {
     public override var firstRegisterAddress: Address {
         return 0xff10
     }
-    public override var controlFlag: SoundControl.ChannelEnabled {
+    public override var controlFlag: SoundControl.ChannelFlags {
         return .channel1
     }
 
@@ -78,7 +78,7 @@ public final class SquareChannel2: SquareChannel {
     public override var firstRegisterAddress: Address {
         return 0xff15
     }
-    public override var controlFlag: SoundControl.ChannelEnabled {
+    public override var controlFlag: SoundControl.ChannelFlags {
         return .channel2
     }
 }

@@ -7,7 +7,7 @@ public protocol ChannelDelegate: AnyObject {
 
 public protocol Channel: AnyObject, MemoryAddressable {
     var firstRegisterAddress: Address { get }
-    var controlFlag: SoundControl.ChannelEnabled { get }
+    var controlFlag: SoundControl.ChannelFlags { get }
     var delegate: ChannelDelegate? { get set }
 
     func reset()

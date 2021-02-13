@@ -1,9 +1,12 @@
+import AVFoundation
+
 /// Objects of this type manage a channel and its associated audio units.
 public final class ChannelDriver {
     public let channel: Channel
-    public let sourceNode: AudioSourceNode
+    public let engineSourceNode: AVAudioSourceNode
 
     private let control: SoundControl
+    private let sourceNode: AudioSourceNode
 
     // Units
     var sweepUnit: SweepUnit?
@@ -14,7 +17,9 @@ public final class ChannelDriver {
         self.channel = channel
         self.control = control
         self.sourceNode = sourceNode
+        self.engineSourceNode = sourceNode.makeSourceNode()
         channel.delegate = self
+        soundControlDidUpdateRouting() // determine initial pan
     }
 
     public func reset() {
@@ -22,6 +27,12 @@ public final class ChannelDriver {
         sweepUnit?.reset()
         lengthCounterUnit?.reset()
         volumeEnvelopeUnit?.reset()
+    }
+
+    public func soundControlDidUpdateRouting() {
+        let stereoVolume = control.getStereoVolume(for: channel.controlFlag)
+        engineSourceNode.pan = stereoVolume.pan
+        engineSourceNode.volume = stereoVolume.volume
     }
 }
 

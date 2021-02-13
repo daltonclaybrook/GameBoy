@@ -1,16 +1,25 @@
+public struct MasterStereoVolume {
+    /// The master volume of the main mixer
+    let volume: Float
+    /// The stereo "pan" value to apply to the main mixer
+    let pan: Float
+}
+
 public protocol SoundControlDelegate: AnyObject {
     func soundControlDidStopAllSound(_ control: SoundControl)
+    func soundControl(_ control: SoundControl, didUpdate masterStereoVolume: MasterStereoVolume)
+    func soundControlDidUpdateChannelRouting(_ control: SoundControl)
 }
 
 /// This type represents the three sound control registers in the Game Boy
 public final class SoundControl: MemoryAddressable {
-    public struct ChannelEnabled: OptionSet {
+    public struct ChannelFlags: OptionSet {
         public private(set) var rawValue: Byte
 
-        public static let channel1 = ChannelEnabled(rawValue: 1 << 0)
-        public static let channel2 = ChannelEnabled(rawValue: 1 << 1)
-        public static let channel3 = ChannelEnabled(rawValue: 1 << 2)
-        public static let channel4 = ChannelEnabled(rawValue: 1 << 3)
+        public static let channel1 = ChannelFlags(rawValue: 1 << 0)
+        public static let channel2 = ChannelFlags(rawValue: 1 << 1)
+        public static let channel3 = ChannelFlags(rawValue: 1 << 2)
+        public static let channel4 = ChannelFlags(rawValue: 1 << 3)
 
         public init(rawValue: Byte) {
             self.rawValue = rawValue
@@ -25,7 +34,7 @@ public final class SoundControl: MemoryAddressable {
     public private(set) var isSoundEnabled = false
     /// The APU sets the flags the sound channels are triggered and resets
     /// them when the sound length expires for a channel.
-    internal var enabledChannels: ChannelEnabled = []
+    internal var enabledChannels: ChannelFlags = []
 
     private var volumeRegister: Byte = 0x00
     private var routingRegister: Byte = 0x00
@@ -34,8 +43,10 @@ public final class SoundControl: MemoryAddressable {
         switch address {
         case 0xff24: // Volume control for left/right + Vin
             volumeRegister = byte
+            delegate?.soundControl(self, didUpdate: masterStereoVolume)
         case 0xff25: // Channel routing to terminals
             routingRegister = byte
+            delegate?.soundControlDidUpdateChannelRouting(self)
         case 0xff26: // Turn all sound on/off
             isSoundEnabled = (byte >> 7) & 1 == 1
             if !isSoundEnabled {
@@ -58,5 +69,34 @@ public final class SoundControl: MemoryAddressable {
         default:
             fatalError("Invalid address: \(address)")
         }
+    }
+}
+
+public extension SoundControl {
+    var masterStereoVolume: MasterStereoVolume {
+        let leftVolume = Float((volumeRegister >> 4) & 0x07)
+        let rightVolume = Float(volumeRegister & 0x07)
+        let masterVolume = (leftVolume + rightVolume) / 14.0
+
+        let minVolume = min(leftVolume, rightVolume)
+        let maxVolume = max(leftVolume, rightVolume)
+        let absolutePan = 1.0 - (minVolume / maxVolume)
+        let pan = leftVolume > rightVolume ? -absolutePan : absolutePan
+
+        return MasterStereoVolume(volume: masterVolume, pan: pan)
+    }
+
+    func getStereoVolume(for channelFlag: ChannelFlags) -> MasterStereoVolume {
+        let leftOn = routingRegister & (channelFlag.rawValue << 4) != 0
+        let rightOn = routingRegister & channelFlag.rawValue != 0
+
+        typealias PanAndVolume = (pan: Float, volume: Float)
+        let leftPanAndVolume: PanAndVolume = leftOn ? (-1.0, 0.5) : (0.0, 0.0)
+        let rightPanAndVolume: PanAndVolume = rightOn ? (1.0, 0.5) : (0.0, 0.0)
+
+        return MasterStereoVolume(
+            volume: leftPanAndVolume.volume + rightPanAndVolume.volume,
+            pan: leftPanAndVolume.pan + rightPanAndVolume.pan
+        )
     }
 }

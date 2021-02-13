@@ -126,18 +126,34 @@ public final class APU: MemoryAddressable {
         )
 
         allDrivers.forEach { driver in
-            let sourceNode = driver.sourceNode.makeSourceNode()
+            let sourceNode = driver.engineSourceNode
             audioEngine.attach(sourceNode)
             audioEngine.connect(sourceNode, to: mainMixer, format: inputFormat)
         }
 
         audioEngine.connect(mainMixer, to: output, format: outputFormat)
-        mainMixer.outputVolume = 0.5
+        update(mainMixer: mainMixer, with: control.masterStereoVolume)
+    }
+
+    private func update(mainMixer: AVAudioMixerNode, with masterStereoVolume: MasterStereoVolume) {
+        // 0.5 seems to be a good multiplier at the moment
+        mainMixer.outputVolume = masterStereoVolume.volume * 0.5
+        mainMixer.pan = masterStereoVolume.pan
     }
 }
 
 extension APU: SoundControlDelegate {
     public func soundControlDidStopAllSound(_ control: SoundControl) {
         allDrivers.forEach { $0.reset() }
+    }
+
+    public func soundControl(_ control: SoundControl, didUpdate masterStereoVolume: MasterStereoVolume) {
+        update(mainMixer: audioEngine.mainMixerNode, with: masterStereoVolume)
+    }
+
+    public func soundControlDidUpdateChannelRouting(_ control: SoundControl) {
+        allDrivers.forEach { driver in
+            driver.soundControlDidUpdateRouting()
+        }
     }
 }

@@ -26,8 +26,8 @@ public final class WavePattern: MemoryAddressable {
         return firstSample | secondSample
     }
 
-    public func getSample(atNormalizedPhase phase: Float64) -> Float64 {
-        let index = Int(phase * Float64(samplesCount)) % samplesCount
-        return Float64(samples[index])
+    public func getSample(atNormalizedPhase phase: Float) -> UInt8 {
+        let index = Int(phase * Float(samplesCount)) % samplesCount
+        return samples[index]
     }
 }

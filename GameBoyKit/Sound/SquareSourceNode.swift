@@ -3,7 +3,8 @@ import AVFoundation
 public protocol AudioSourceNode {
     func makeSourceNode() -> AVAudioSourceNode
     func restart()
-    func pushNewSample()
+    func generateSample()
+    func soundControlDidUpdateRouting()
 }
 
 private protocol AudioDataProvider {
@@ -55,7 +56,11 @@ public final class SquareSourceNode: AudioSourceNode, AudioDataProvider {
         // no-op
     }
 
-    public func pushNewSample() {
+    public func generateSample() {
+        // to-do: implement
+    }
+
+    public func soundControlDidUpdateRouting() {
         // to-do: implement
     }
 

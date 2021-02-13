@@ -30,13 +30,14 @@ public final class ChannelDriver {
     }
 
     public func soundControlDidUpdateRouting() {
-        let stereoVolume = control.getStereoVolume(for: channel.controlFlag)
-        engineSourceNode.pan = stereoVolume.pan
-        engineSourceNode.volume = stereoVolume.volume
+        sourceNode.soundControlDidUpdateRouting()
+//        let stereoVolume = control.getStereoVolume(for: channel.controlFlag)
+//        engineSourceNode.pan = stereoVolume.pan
+//        engineSourceNode.volume = stereoVolume.volume
     }
 
-    public func createSample() {
-        sourceNode.pushNewSample()
+    public func generateSample() {
+        sourceNode.generateSample()
     }
 }
 

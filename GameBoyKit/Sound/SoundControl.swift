@@ -1,8 +1,10 @@
 public struct MasterStereoVolume {
     /// The master volume of the main mixer
-    let volume: Float
+    let masterVolume: Float
     /// The stereo "pan" value to apply to the main mixer
     let pan: Float
+    let leftVolume: Float
+    let rightVolume: Float
 }
 
 public protocol SoundControlDelegate: AnyObject {
@@ -83,7 +85,12 @@ public extension SoundControl {
         let absolutePan = 1.0 - (minVolume / maxVolume)
         let pan = leftVolume > rightVolume ? -absolutePan : absolutePan
 
-        return MasterStereoVolume(volume: masterVolume, pan: pan)
+        return MasterStereoVolume(
+            masterVolume: masterVolume,
+            pan: pan,
+            leftVolume: leftVolume / 7.0,
+            rightVolume: rightVolume / 7.0
+        )
     }
 
     func getStereoVolume(for channelFlag: ChannelFlags) -> MasterStereoVolume {
@@ -95,8 +102,10 @@ public extension SoundControl {
         let rightPanAndVolume: PanAndVolume = rightOn ? (1.0, 0.5) : (0.0, 0.0)
 
         return MasterStereoVolume(
-            volume: leftPanAndVolume.volume + rightPanAndVolume.volume,
-            pan: leftPanAndVolume.pan + rightPanAndVolume.pan
+            masterVolume: leftPanAndVolume.volume + rightPanAndVolume.volume,
+            pan: leftPanAndVolume.pan + rightPanAndVolume.pan,
+            leftVolume: leftOn ? 1.0 : 0.0,
+            rightVolume: rightOn ? 1.0 : 0.0
         )
     }
 }

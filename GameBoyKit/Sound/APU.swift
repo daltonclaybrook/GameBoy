@@ -22,7 +22,6 @@ public final class APU: MemoryAddressable {
     private let sampleRate: UInt64
     /// We push n samples at 441 Hz for a sample rate of `n * 441`. This is usually 44.1 KHz.
     private let samplePeriod: UInt64 = 441
-//    private let samplePeriod: UInt64 = 1000
     /// If the sample rate is 44.1 KHz, this value is 100.
     private let samplesPerPeriod: UInt64
 
@@ -111,18 +110,9 @@ public final class APU: MemoryAddressable {
         audioEngine.stop()
     }
 
-    var lastDate = Date()
-
     /// Called once per m-cycle
     func emulate() {
         mCycles += 1
-        if mCycles % Clock.effectiveMachineSpeed == 0 {
-            let currentDate = Date()
-            let timeSince = currentDate.timeIntervalSince(lastDate)
-            lastDate = currentDate
-//            print("time since: \(timeSince)")
-        }
-
         emulateAudioUnitsIfNecessary()
         createNewSamplesIfNecessary()
     }
@@ -133,7 +123,7 @@ public final class APU: MemoryAddressable {
         let inputFormat = AVAudioFormat(
             commonFormat: outputFormat.commonFormat,
             sampleRate: outputFormat.sampleRate,
-            channels: 1, // should eventually support two channels
+            channels: 2, // left and right
             interleaved: outputFormat.isInterleaved
         )
 
@@ -149,7 +139,7 @@ public final class APU: MemoryAddressable {
 
     private func update(mainMixer: AVAudioMixerNode, with masterStereoVolume: MasterStereoVolume) {
         // 0.5 seems to be a good multiplier at the moment
-        mainMixer.outputVolume = masterStereoVolume.volume * 0.5
+        mainMixer.outputVolume = masterStereoVolume.masterVolume * 0.5
         mainMixer.pan = masterStereoVolume.pan
     }
 
@@ -180,7 +170,7 @@ public final class APU: MemoryAddressable {
 
         if samplesPushedThisPeriod < samplesPerPeriod && mCycles % cyclesPerSample == 0 {
             samplesPushedThisPeriod += 1
-            allDrivers.forEach { $0.createSample() }
+            allDrivers.forEach { $0.generateSample() }
         }
     }
 }

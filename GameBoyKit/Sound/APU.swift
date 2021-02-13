@@ -25,8 +25,11 @@ public final class APU: MemoryAddressable {
     private let channelDriver2: ChannelDriver
     private let channelDriver3: ChannelDriver
 
+//    private var allDrivers: [ChannelDriver] {
+//        [channelDriver1, channelDriver2, channelDriver3]
+//    }
     private var allDrivers: [ChannelDriver] {
-        [channelDriver1, channelDriver2, channelDriver3]
+        [channelDriver3]
     }
 
     private let audioEngine = AVAudioEngine()

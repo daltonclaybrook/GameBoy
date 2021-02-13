@@ -26,7 +26,7 @@ public final class WaveSourceNode: AudioSourceNode, AudioDataProvider {
 
     fileprivate var amplitude: Float {
         guard control.isSoundEnabled &&
-                lengthCounterUnit.isEnabled &&
+                lengthCounterUnit.isAllowingSound &&
                 channel.isWaveEnabled
         else { return 0 }
         return channel.volume.percent * 0.1
@@ -64,11 +64,11 @@ public final class WaveSourceNode: AudioSourceNode, AudioDataProvider {
 
         // phase range 0..<1
         let normalizedPhase = currentPhase / twoPi
-        let sample = wavePattern.getInterpolatedSample(atNormalizedPhase: normalizedPhase)
+        let sample = wavePattern.getSample(atNormalizedPhase: Float64(normalizedPhase))
 
         // value in the range -1.0 - 1.0
         let normalizedSignal = (sample / 0x0f) * 2 - 1
-        return normalizedSignal
+        return Float(normalizedSignal)
     }
 
     private func setQueuedResetCurrentPhase(_ reset: Bool) {

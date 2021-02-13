@@ -18,6 +18,15 @@ public final class APU: MemoryAddressable {
     }
 
     private var mCycles: Cycles = 0
+    /// Measured in Hz
+    private let sampleRate: UInt64
+    /// We push n samples at 441 Hz for a sample rate of `n * 441`. This is usually 44.1 KHz.
+    private let samplePeriod: UInt64 = 441
+//    private let samplePeriod: UInt64 = 1000
+    /// If the sample rate is 44.1 KHz, this value is 100.
+    private let samplesPerPeriod: UInt64
+
+    private let cyclesPerSample: Cycles
     private let control = SoundControl()
     private let wavePattern = WavePattern()
 
@@ -25,8 +34,11 @@ public final class APU: MemoryAddressable {
     private let channelDriver2: ChannelDriver
     private let channelDriver3: ChannelDriver
 
+//    private var allDrivers: [ChannelDriver] {
+//        [channelDriver1, channelDriver2, channelDriver3]
+//    }
     private var allDrivers: [ChannelDriver] {
-        [channelDriver1, channelDriver2, channelDriver3]
+        [channelDriver3]
     }
 
     private let audioEngine = AVAudioEngine()
@@ -39,6 +51,10 @@ public final class APU: MemoryAddressable {
             control: control,
             sampleRate: Float(outputFormat.sampleRate)
         )
+
+        sampleRate = UInt64(outputFormat.sampleRate)
+        samplesPerPeriod = sampleRate / samplePeriod
+        cyclesPerSample = Clock.effectiveMachineSpeed / sampleRate
 
         channelDriver1 = factory.makeChannel1()
         channelDriver2 = factory.makeChannel2()
@@ -95,24 +111,20 @@ public final class APU: MemoryAddressable {
         audioEngine.stop()
     }
 
+    var lastDate = Date()
+
     /// Called once per m-cycle
     func emulate() {
         mCycles += 1
-        let tickLengthCounter = mCycles % (Clock.effectiveMachineSpeed / 256) == 0
-        let tickSweep = mCycles % (Clock.effectiveMachineSpeed / 128) == 0
-        let tickVolumeEnvelope = mCycles % (Clock.effectiveMachineSpeed / 64) == 0
-
-        allDrivers.forEach { driver in
-            if tickLengthCounter {
-                driver.lengthCounterUnit?.clockTick()
-            }
-            if tickVolumeEnvelope {
-                driver.volumeEnvelopeUnit?.clockTick()
-            }
-            if tickSweep {
-                driver.sweepUnit?.clockTick()
-            }
+        if mCycles % Clock.effectiveMachineSpeed == 0 {
+            let currentDate = Date()
+            let timeSince = currentDate.timeIntervalSince(lastDate)
+            lastDate = currentDate
+//            print("time since: \(timeSince)")
         }
+
+        emulateAudioUnitsIfNecessary()
+        createNewSamplesIfNecessary()
     }
 
     // MARK: - Helpers
@@ -139,6 +151,37 @@ public final class APU: MemoryAddressable {
         // 0.5 seems to be a good multiplier at the moment
         mainMixer.outputVolume = masterStereoVolume.volume * 0.5
         mainMixer.pan = masterStereoVolume.pan
+    }
+
+    private func emulateAudioUnitsIfNecessary() {
+        let tickLengthCounter = mCycles % (Clock.effectiveMachineSpeed / 256) == 0
+        let tickSweep = mCycles % (Clock.effectiveMachineSpeed / 128) == 0
+        let tickVolumeEnvelope = mCycles % (Clock.effectiveMachineSpeed / 64) == 0
+
+        allDrivers.forEach { driver in
+            if tickLengthCounter {
+                driver.lengthCounterUnit?.clockTick()
+            }
+            if tickVolumeEnvelope {
+                driver.volumeEnvelopeUnit?.clockTick()
+            }
+            if tickSweep {
+                driver.sweepUnit?.clockTick()
+            }
+        }
+    }
+
+    private var samplesPushedThisPeriod: UInt64 = 0
+    private func createNewSamplesIfNecessary() {
+        let cyclesPerSamplePeriod = UInt64((Double(Clock.effectiveMachineSpeed) / Double(samplePeriod)).rounded(.up))
+        if mCycles % cyclesPerSamplePeriod == 0 {
+            samplesPushedThisPeriod = 0
+        }
+
+        if samplesPushedThisPeriod < samplesPerPeriod && mCycles % cyclesPerSample == 0 {
+            samplesPushedThisPeriod += 1
+            allDrivers.forEach { $0.createSample() }
+        }
     }
 }
 

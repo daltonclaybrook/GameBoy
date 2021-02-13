@@ -34,6 +34,10 @@ public final class ChannelDriver {
         engineSourceNode.pan = stereoVolume.pan
         engineSourceNode.volume = stereoVolume.volume
     }
+
+    public func createSample() {
+        sourceNode.pushNewSample()
+    }
 }
 
 extension ChannelDriver: ChannelDelegate {

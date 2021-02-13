@@ -21,11 +21,10 @@ public final class Clock {
     public static let effectiveMachineSpeed: CyclesPerSecond = processorSpeed / 4
 
     /// The speed of the timer used to drive emulation. Rather that set a timer to run
-    /// at ~1 MHz (which is impractical), we use a fairly arbitrary value of 256 Hz.
-    private let timerSpeed: CyclesPerSecond = 256
+    /// at ~1 MHz (which is impractical), we use a fairly arbitrary value.
+    private let timerSpeed: CyclesPerSecond = 512
 
     private let queue: DispatchQueue
-    private var emulateBlock: (() -> Void)?
     private var lastCycleOverflow: Cycles = 0
     private var timer: DispatchSourceTimer?
 
@@ -41,13 +40,12 @@ public final class Clock {
     /// The Game Boy should read/evaluate a CPU instruction each time this block is
     /// called, and should advance the other components of the system accordingly.
     func start(emulateBlock: @escaping () -> Void) {
-        self.emulateBlock = emulateBlock
         isRunning = true
 
         let timer = DispatchSource.makeTimerSource(flags: .strict, queue: queue)
         self.timer = timer
-        timer.setEventHandler {
-            self.timerDidFire(speed: self.timerSpeed)
+        timer.setEventHandler { [emulateBlock] in
+            self.timerDidFire(speed: self.timerSpeed, emulateBlock: emulateBlock)
         }
         let timeInterval = 1.0 / TimeInterval(timerSpeed)
         timer.schedule(deadline: .now(), repeating: timeInterval)
@@ -56,7 +54,6 @@ public final class Clock {
 
     func stop() {
         isRunning = false
-        emulateBlock = nil
         timer?.setEventHandler(handler: nil)
         timer?.cancel()
         timer = nil
@@ -68,8 +65,7 @@ public final class Clock {
 
     // MARK: - Helpers
 
-    private func timerDidFire(speed: CyclesPerSecond) {
-        guard let emulateBlock = emulateBlock else { return }
+    private func timerDidFire(speed: CyclesPerSecond, emulateBlock: () -> Void) {
         let currentFrameCycles = Self.effectiveMachineSpeed / speed
         let targetCycles = currentFrameCycles - lastCycleOverflow
 

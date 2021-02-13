@@ -3,12 +3,17 @@ public final class WavePattern: MemoryAddressable {
 
     private let samplesCount = 32
     private let lowerMemoryBound: Address = 0xff30
+    var shouldPrint = false
 
     public init() {
         samples = [Byte](repeating: 0, count: samplesCount)
     }
 
     public func write(byte: Byte, to address: Address) {
+        if shouldPrint {
+            print("writing wave pattern byte: \(byte), address: \(address.hexString)")
+        }
+
         let firstSampleIndex = (address - lowerMemoryBound) * 2
         samples.write(byte: byte >> 4, to: firstSampleIndex)
         samples.write(byte: byte & 0x0f, to: firstSampleIndex + 1)

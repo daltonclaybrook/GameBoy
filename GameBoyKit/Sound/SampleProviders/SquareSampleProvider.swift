@@ -6,7 +6,7 @@ public final class SquareSampleProvider: SampleProviding {
     private let volumeEnvelopeUnit: VolumeEnvelopeUnit
 
     private var currentPhase: Float = 0
-    private var currentVolume: MasterStereoVolume
+    private var currentVolume: StereoVolume
 
     private var amplitude: Float {
         guard control.isSoundEnabled && lengthCounterUnit.isAllowingSound

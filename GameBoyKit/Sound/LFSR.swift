@@ -7,7 +7,7 @@ public final class LFSR {
     }
 
     public var widthMode: WidthMode = .long
-    private var register: UInt16
+    private var register: UInt16 = 0
 
     /// Returns bit 0 of the shift register, inverted
     public var output: UInt8 {
@@ -15,8 +15,12 @@ public final class LFSR {
     }
 
     public init() {
-        // mask off top bit since the register is only 15-bits
-        register = UInt16.random(in: 0...UInt16.max) & 0x7fff
+        reset()
+    }
+
+    public func reset() {
+        // high bit is 0 since it's a 15-bit register
+        register = 0x7fff
     }
 
     public func shift() {

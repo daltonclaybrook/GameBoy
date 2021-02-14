@@ -1,15 +1,11 @@
-public struct MasterStereoVolume {
-    /// The master volume of the main mixer
-    let masterVolume: Float
-    /// The stereo "pan" value to apply to the main mixer
-    let pan: Float
+public struct StereoVolume {
     let leftVolume: Float
     let rightVolume: Float
 }
 
 public protocol SoundControlDelegate: AnyObject {
     func soundControlDidStopAllSound(_ control: SoundControl)
-    func soundControl(_ control: SoundControl, didUpdate masterStereoVolume: MasterStereoVolume)
+    func soundControl(_ control: SoundControl, didUpdate stereoVolume: StereoVolume)
     func soundControlDidUpdateChannelRouting(_ control: SoundControl)
 }
 
@@ -45,7 +41,7 @@ public final class SoundControl: MemoryAddressable {
         switch address {
         case 0xff24: // Volume control for left/right + Vin
             volumeRegister = byte
-            delegate?.soundControl(self, didUpdate: masterStereoVolume)
+            delegate?.soundControl(self, didUpdate: stereoVolume)
         case 0xff25: // Channel routing to terminals
             routingRegister = byte
             delegate?.soundControlDidUpdateChannelRouting(self)
@@ -75,37 +71,34 @@ public final class SoundControl: MemoryAddressable {
 }
 
 public extension SoundControl {
-    var masterStereoVolume: MasterStereoVolume {
+    var stereoVolume: StereoVolume {
         let leftVolume = Float((volumeRegister >> 4) & 0x07)
         let rightVolume = Float(volumeRegister & 0x07)
-        let masterVolume = (leftVolume + rightVolume) / 14.0
-
-        let minVolume = min(leftVolume, rightVolume)
-        let maxVolume = max(leftVolume, rightVolume)
-        let absolutePan = 1.0 - (minVolume / maxVolume)
-        let pan = leftVolume > rightVolume ? -absolutePan : absolutePan
-
-        return MasterStereoVolume(
-            masterVolume: masterVolume,
-            pan: pan,
+        return StereoVolume(
             leftVolume: leftVolume / 7.0,
             rightVolume: rightVolume / 7.0
         )
     }
 
-    func getStereoVolume(for channelFlag: ChannelFlags) -> MasterStereoVolume {
+    func getStereoVolume(for channelFlag: ChannelFlags) -> StereoVolume {
         let leftOn = routingRegister & (channelFlag.rawValue << 4) != 0
         let rightOn = routingRegister & channelFlag.rawValue != 0
-
-        typealias PanAndVolume = (pan: Float, volume: Float)
-        let leftPanAndVolume: PanAndVolume = leftOn ? (-1.0, 0.5) : (0.0, 0.0)
-        let rightPanAndVolume: PanAndVolume = rightOn ? (1.0, 0.5) : (0.0, 0.0)
-
-        return MasterStereoVolume(
-            masterVolume: leftPanAndVolume.volume + rightPanAndVolume.volume,
-            pan: leftPanAndVolume.pan + rightPanAndVolume.pan,
+        return StereoVolume(
             leftVolume: leftOn ? 1.0 : 0.0,
             rightVolume: rightOn ? 1.0 : 0.0
         )
+    }
+}
+
+extension StereoVolume {
+    var masterVolume: Float {
+        (leftVolume + rightVolume) / 2.0
+    }
+
+    var pan: Float {
+        let minVolume = min(leftVolume, rightVolume)
+        let maxVolume = max(leftVolume, rightVolume)
+        let absolutePan = 1.0 - (minVolume / maxVolume)
+        return leftVolume > rightVolume ? -absolutePan : absolutePan
     }
 }

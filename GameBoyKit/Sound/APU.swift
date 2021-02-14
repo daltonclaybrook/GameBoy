@@ -33,12 +33,13 @@ public final class APU: MemoryAddressable {
     private let channelDriver1: ChannelDriver
     private let channelDriver2: ChannelDriver
     private let channelDriver3: ChannelDriver
+    private let channelDriver4: ChannelDriver
 
     private var allDrivers: [ChannelDriver] {
         [channelDriver1, channelDriver2, channelDriver3]
     }
 //    private var allDrivers: [ChannelDriver] {
-//        [channelDriver1]
+//        [channelDriver4]
 //    }
 
     private let audioEngine = AVAudioEngine()
@@ -59,6 +60,7 @@ public final class APU: MemoryAddressable {
         channelDriver1 = factory.makeChannel1()
         channelDriver2 = factory.makeChannel2()
         channelDriver3 = factory.makeChannel3(wavePattern: wavePattern)
+        channelDriver4 = factory.makeChannel4()
         control.delegate = self
         setupAudioEngine(mainMixer: mainMixer, output: output, outputFormat: outputFormat)
     }
@@ -71,6 +73,8 @@ public final class APU: MemoryAddressable {
             channelDriver2.channel.write(byte: byte, to: address)
         case Registers.channel3Range:
             channelDriver3.channel.write(byte: byte, to: address)
+        case Registers.channel4Range:
+            channelDriver4.channel.write(byte: byte, to: address)
         case Registers.controlRange:
             control.write(byte: byte, to: address)
         case Registers.wavePatternRange:
@@ -88,6 +92,8 @@ public final class APU: MemoryAddressable {
             return channelDriver2.channel.read(address: address)
         case Registers.channel3Range:
             return channelDriver3.channel.read(address: address)
+        case Registers.channel4Range:
+            return channelDriver4.channel.read(address: address)
         case Registers.controlRange:
             return control.read(address: address)
         case Registers.wavePatternRange:
@@ -133,13 +139,13 @@ public final class APU: MemoryAddressable {
         audioEngine.connect(sourceNode, to: mainMixer, format: inputFormat)
 
         audioEngine.connect(mainMixer, to: output, format: outputFormat)
-        update(mainMixer: mainMixer, with: control.masterStereoVolume)
+        update(mainMixer: mainMixer, with: control.stereoVolume)
     }
 
-    private func update(mainMixer: AVAudioMixerNode, with masterStereoVolume: MasterStereoVolume) {
+    private func update(mainMixer: AVAudioMixerNode, with stereoVolume: StereoVolume) {
         // 0.5 seems to be a good multiplier at the moment
-        mainMixer.outputVolume = masterStereoVolume.masterVolume * 0.5
-        mainMixer.pan = masterStereoVolume.pan
+        mainMixer.outputVolume = stereoVolume.masterVolume * 0.5
+        mainMixer.pan = stereoVolume.pan
     }
 
     private func emulateAudioUnitsIfNecessary() {
@@ -160,33 +166,36 @@ public final class APU: MemoryAddressable {
         }
     }
 
+    private var samplesPushedThisPeriod: UInt64 = 0
+    private func createNewSamplesIfNecessary() {
+        let cyclesPerSamplePeriod = UInt64((Double(Clock.effectiveMachineSpeed) / Double(samplePeriod)).rounded(.up))
+        if mCycles % cyclesPerSamplePeriod == 0 {
+            samplesPushedThisPeriod = 0
+        }
+
+        if samplesPushedThisPeriod < samplesPerPeriod && mCycles % cyclesPerSample == 0 {
+            samplesPushedThisPeriod += 1
+            renderSample()
+        }
+    }
+
 //    private var samplesPushedThisPeriod: UInt64 = 0
 //    private func createNewSamplesIfNecessary() {
-//        let cyclesPerSamplePeriod = UInt64((Double(Clock.effectiveMachineSpeed) / Double(samplePeriod)).rounded(.up))
-//        if mCycles % cyclesPerSamplePeriod == 0 {
+//        if mCycles % Clock.effectiveMachineSpeed == 0 {
 //            samplesPushedThisPeriod = 0
 //        }
-//
-//        if samplesPushedThisPeriod < samplesPerPeriod && mCycles % cyclesPerSample == 0 {
+//        if samplesPushedThisPeriod < sampleRate && mCycles % cyclesPerSample == 0 {
 //            samplesPushedThisPeriod += 1
-//            allDrivers.forEach { $0.generateSample() }
+//            renderSample()
 //        }
 //    }
 
-    private var samplesPushedThisPeriod: UInt64 = 0
-    private func createNewSamplesIfNecessary() {
-        if mCycles % Clock.effectiveMachineSpeed == 0 {
-            samplesPushedThisPeriod = 0
-        }
-        if samplesPushedThisPeriod < sampleRate && mCycles % cyclesPerSample == 0 {
-            samplesPushedThisPeriod += 1
-
-            let samples = allDrivers.map { $0.generateSample() }
-            let leftAverage = samples.reduce(0.0 as Float) { $0 + $1.left } / Float(samples.count)
-            let rightAverage = samples.reduce(0.0 as Float) { $0 + $1.right } / Float(samples.count)
-            let sample = StereoSample(left: leftAverage, right: rightAverage)
-            sourceNodeProvider.renderSample(sample)
-        }
+    private func renderSample() {
+        let samples = allDrivers.map { $0.generateSample() }
+        let leftAverage = samples.reduce(0.0 as Float) { $0 + $1.left } / Float(samples.count)
+        let rightAverage = samples.reduce(0.0 as Float) { $0 + $1.right } / Float(samples.count)
+        let sample = StereoSample(left: leftAverage, right: rightAverage)
+        sourceNodeProvider.renderSample(sample)
     }
 }
 
@@ -195,8 +204,8 @@ extension APU: SoundControlDelegate {
         allDrivers.forEach { $0.reset() }
     }
 
-    public func soundControl(_ control: SoundControl, didUpdate masterStereoVolume: MasterStereoVolume) {
-        update(mainMixer: audioEngine.mainMixerNode, with: masterStereoVolume)
+    public func soundControl(_ control: SoundControl, didUpdate stereoVolume: StereoVolume) {
+        update(mainMixer: audioEngine.mainMixerNode, with: stereoVolume)
     }
 
     public func soundControlDidUpdateChannelRouting(_ control: SoundControl) {

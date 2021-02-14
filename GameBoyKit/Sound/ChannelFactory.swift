@@ -66,4 +66,26 @@ public struct ChannelFactory {
         driver.lengthCounterUnit = lengthCounterUnit
         return driver
     }
+
+    func makeChannel4() -> ChannelDriver {
+        let channel = NoiseChannel()
+        let lengthCounterUnit = LengthCounterUnit(channel: channel, control: control)
+        let volumeEnvelopeUnit = VolumeEnvelopeUnit(channel: channel)
+
+        let driver = ChannelDriver(
+            channel: channel,
+            control: control,
+            sampleProvider: NoiseSampleProvider(
+                sampleRate: sampleRate,
+                channel: channel,
+                control: control,
+                lengthCounterUnit: lengthCounterUnit,
+                volumeEnvelopeUnit: volumeEnvelopeUnit
+            )
+        )
+
+        driver.lengthCounterUnit = lengthCounterUnit
+        driver.volumeEnvelopeUnit = volumeEnvelopeUnit
+        return driver
+    }
 }

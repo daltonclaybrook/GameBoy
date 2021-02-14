@@ -1,10 +1,13 @@
 public final class NoiseSampleProvider: SampleProviding {
+    private let sampleRate: Float
     private let channel: NoiseChannel
     private let control: SoundControl
     private let lengthCounterUnit: LengthCounterUnit
     private let volumeEnvelopeUnit: VolumeEnvelopeUnit
 
-    private var currentVolume: MasterStereoVolume
+    private var currentPhase: Float = 0
+    private var phaseAtLastSignalChange: Float = 0
+    private var currentVolume: StereoVolume
 
     private var amplitude: Float {
         guard control.isSoundEnabled && lengthCounterUnit.isAllowingSound
@@ -13,11 +16,13 @@ public final class NoiseSampleProvider: SampleProviding {
     }
 
     public init(
+        sampleRate: Float,
         channel: NoiseChannel,
         control: SoundControl,
         lengthCounterUnit: LengthCounterUnit,
         volumeEnvelopeUnit: VolumeEnvelopeUnit
     ) {
+        self.sampleRate = sampleRate
         self.channel = channel
         self.control = control
         self.lengthCounterUnit = lengthCounterUnit
@@ -26,6 +31,14 @@ public final class NoiseSampleProvider: SampleProviding {
     }
 
     public func generateSample() -> StereoSample {
+        let shift = channel.frequency * twoPi / sampleRate
+        currentPhase += shift
+
+        if currentPhase - phaseAtLastSignalChange > twoPi {
+            phaseAtLastSignalChange = currentPhase
+            channel.shift()
+        }
+
         let signal = channel.currentSignal * amplitude
         return StereoSample(
             left: signal * currentVolume.leftVolume,
@@ -38,6 +51,6 @@ public final class NoiseSampleProvider: SampleProviding {
     }
 
     public func restart() {
-        // no-op
+        currentPhase = 0
     }
 }

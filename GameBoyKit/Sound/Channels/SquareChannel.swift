@@ -3,7 +3,6 @@ import Foundation
 /// Square channel is an abstract base class that should not be
 /// instantiated. It is the superclass of the two square channels.
 public class SquareChannel:
-    LockableChannel,
     WaveDutyChannel,
     LengthChannel,
     VolumeEnvelopeChannel,
@@ -15,7 +14,6 @@ public class SquareChannel:
     public var isSoundLengthEnabled = false
     public var combinedFrequencyRegister: UInt16 = 0x00
     public var volumeEnvelopeRegister: Byte = 0x00
-    public let lock = NSRecursiveLock()
 
     public var firstRegisterAddress: Address {
         fatalError("This property must be implemented in a subclass")
@@ -25,8 +23,6 @@ public class SquareChannel:
     }
 
     public func reset() {
-        lock.lock()
-        defer { lock.unlock() }
         waveDuty = .fiftyPercent
         soundLength = 0
         isSoundLengthEnabled = false
@@ -58,8 +54,6 @@ public final class SquareChannel1: SquareChannel, SweepChannel {
 
     public override func reset() {
         super.reset()
-        lock.lock()
-        defer { lock.unlock() }
         sweepRegister = 0
     }
 

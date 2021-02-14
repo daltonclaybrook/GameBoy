@@ -1,10 +1,6 @@
 import Foundation
 
-public final class WaveChannel:
-    LockableChannel,
-    LengthChannel,
-    FrequencyChannel
-{
+public final class WaveChannel: LengthChannel, FrequencyChannel {
     public enum Volume: UInt8 {
         case muted
         case fullVolume
@@ -13,7 +9,6 @@ public final class WaveChannel:
     }
 
     public weak var delegate: ChannelDelegate?
-    public let lock = NSRecursiveLock()
     public var soundLength: UInt8 = 0
     public private(set) var isWaveEnabled = false
     public var isSoundLengthEnabled: Bool = false
@@ -33,8 +28,6 @@ public final class WaveChannel:
     }
 
     public func reset() {
-        lock.lock()
-        defer { lock.unlock() }
         soundLength = 0
         isSoundLengthEnabled = false
         combinedFrequencyRegister = 0

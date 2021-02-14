@@ -12,11 +12,6 @@ public protocol Channel: AnyObject, MemoryAddressable {
 
     func reset()
 
-    // MARK: - Optional locking
-
-    func lockIfNecessary()
-    func unlockIfNecessary()
-
     // MARK: - Writes
 
     func writeSweepInfoOrWaveEnabled(byte: Byte)
@@ -36,9 +31,6 @@ public protocol Channel: AnyObject, MemoryAddressable {
 
 public extension Channel {
     func write(byte: Byte, to address: Address) {
-        lockIfNecessary()
-        defer { unlockIfNecessary() }
-
         switch address {
         case firstRegisterAddress:
             writeSweepInfoOrWaveEnabled(byte: byte)
@@ -70,22 +62,6 @@ public extension Channel {
         default:
             fatalError("Invalid address: \(address.hexString)")
         }
-    }
-}
-
-// MARK: - LockableChannel
-
-public protocol LockableChannel: Channel {
-    var lock: NSRecursiveLock { get }
-}
-
-public extension LockableChannel {
-    func lockIfNecessary() {
-        lock.lock()
-    }
-
-    func unlockIfNecessary() {
-        lock.unlock()
     }
 }
 
@@ -244,8 +220,6 @@ public extension FrequencyChannel {
     }
 
     func update(frequency: UInt16) {
-        lockIfNecessary()
-        defer { unlockIfNecessary() }
         combinedFrequencyRegister = frequency
     }
 }

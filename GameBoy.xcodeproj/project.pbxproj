@@ -15,8 +15,6 @@
 		754AA56325C75BDD00977142 /* LengthCounterUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 754AA56125C75BDD00977142 /* LengthCounterUnit.swift */; };
 		754AA56925C76BCF00977142 /* VolumeEnvelopeUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 754AA56825C76BCF00977142 /* VolumeEnvelopeUnit.swift */; };
 		754AA56A25C76BCF00977142 /* VolumeEnvelopeUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 754AA56825C76BCF00977142 /* VolumeEnvelopeUnit.swift */; };
-		754AA76925C8FC2B00977142 /* SquareSourceNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 754AA76825C8FC2B00977142 /* SquareSourceNode.swift */; };
-		754AA76A25C8FC2B00977142 /* SquareSourceNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 754AA76825C8FC2B00977142 /* SquareSourceNode.swift */; };
 		75524EB125CA32C5002D05F4 /* Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75524EB025CA32C5002D05F4 /* Cache.swift */; };
 		75524EB225CA32C5002D05F4 /* Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75524EB025CA32C5002D05F4 /* Cache.swift */; };
 		75524EBC25CA398A002D05F4 /* Channel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75524EBB25CA398A002D05F4 /* Channel.swift */; };
@@ -142,6 +140,14 @@
 		7596942225B0017C008BDF67 /* DisplayLinkType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7596942125B0017C008BDF67 /* DisplayLinkType.swift */; };
 		7596942325B0017C008BDF67 /* DisplayLinkType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7596942125B0017C008BDF67 /* DisplayLinkType.swift */; };
 		7596942B25B001C2008BDF67 /* DisplayLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7596942A25B001C2008BDF67 /* DisplayLink.swift */; };
+		75A1BD6925D896D300BC16F3 /* SourceNodeProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75A1BD6825D896D300BC16F3 /* SourceNodeProvider.swift */; };
+		75A1BD6A25D896D300BC16F3 /* SourceNodeProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75A1BD6825D896D300BC16F3 /* SourceNodeProvider.swift */; };
+		75A1BD7125D8987800BC16F3 /* SquareSampleProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75A1BD7025D8987800BC16F3 /* SquareSampleProvider.swift */; };
+		75A1BD7225D8987800BC16F3 /* SquareSampleProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75A1BD7025D8987800BC16F3 /* SquareSampleProvider.swift */; };
+		75A1BD7C25D8989D00BC16F3 /* SampleProviding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75A1BD7B25D8989D00BC16F3 /* SampleProviding.swift */; };
+		75A1BD7D25D8989D00BC16F3 /* SampleProviding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75A1BD7B25D8989D00BC16F3 /* SampleProviding.swift */; };
+		75A1BD8F25D89B2A00BC16F3 /* WaveSampleProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75A1BD8E25D89B2A00BC16F3 /* WaveSampleProvider.swift */; };
+		75A1BDA425D89D7200BC16F3 /* WaveSampleProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75A1BD8E25D89B2A00BC16F3 /* WaveSampleProvider.swift */; };
 		75A84F7225CA57F800C353FA /* ChannelDriver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75A84F7125CA57F800C353FA /* ChannelDriver.swift */; };
 		75A84F7325CA57F800C353FA /* ChannelDriver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75A84F7125CA57F800C353FA /* ChannelDriver.swift */; };
 		75A84F7E25CA59F900C353FA /* ChannelFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75A84F7D25CA59F900C353FA /* ChannelFactory.swift */; };
@@ -228,8 +234,6 @@
 		75ED9D0725C61B4600DBC61B /* SoundControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75ED9D0525C61B4600DBC61B /* SoundControl.swift */; };
 		75EE74AD25B14C070030D57D /* MockCPUContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75EE74AC25B14C070030D57D /* MockCPUContext.swift */; };
 		75EE74AE25B14C070030D57D /* MockCPUContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75EE74AC25B14C070030D57D /* MockCPUContext.swift */; };
-		75F14CAE25CB7119006ECE2B /* WaveSourceNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75F14CAD25CB7119006ECE2B /* WaveSourceNode.swift */; };
-		75F14CAF25CB7119006ECE2B /* WaveSourceNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75F14CAD25CB7119006ECE2B /* WaveSourceNode.swift */; };
 		75F14CB525CB74B6006ECE2B /* WavePattern.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75F14CB425CB74B6006ECE2B /* WavePattern.swift */; };
 		75F14CB625CB74B6006ECE2B /* WavePattern.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75F14CB425CB74B6006ECE2B /* WavePattern.swift */; };
 		75F61DA724FC269700FA095F /* call_timing.gb in Resources */ = {isa = PBXBuildFile; fileRef = 75F61DA624FC269700FA095F /* call_timing.gb */; };
@@ -323,7 +327,6 @@
 		754AA55A25C72AA900977142 /* SweepUnit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SweepUnit.swift; sourceTree = "<group>"; };
 		754AA56125C75BDD00977142 /* LengthCounterUnit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LengthCounterUnit.swift; sourceTree = "<group>"; };
 		754AA56825C76BCF00977142 /* VolumeEnvelopeUnit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VolumeEnvelopeUnit.swift; sourceTree = "<group>"; };
-		754AA76825C8FC2B00977142 /* SquareSourceNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SquareSourceNode.swift; sourceTree = "<group>"; };
 		75524EB025CA32C5002D05F4 /* Cache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cache.swift; sourceTree = "<group>"; };
 		75524EBB25CA398A002D05F4 /* Channel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Channel.swift; sourceTree = "<group>"; };
 		75524EC225CA3FFD002D05F4 /* WaveDuty.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaveDuty.swift; sourceTree = "<group>"; };
@@ -385,6 +388,10 @@
 		7590E81625AC0BF7005E1280 /* dmg-acid2.gb */ = {isa = PBXFileReference; lastKnownFileType = file; path = "dmg-acid2.gb"; sourceTree = "<group>"; };
 		7596942125B0017C008BDF67 /* DisplayLinkType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayLinkType.swift; sourceTree = "<group>"; };
 		7596942A25B001C2008BDF67 /* DisplayLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayLink.swift; sourceTree = "<group>"; };
+		75A1BD6825D896D300BC16F3 /* SourceNodeProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SourceNodeProvider.swift; sourceTree = "<group>"; };
+		75A1BD7025D8987800BC16F3 /* SquareSampleProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SquareSampleProvider.swift; sourceTree = "<group>"; };
+		75A1BD7B25D8989D00BC16F3 /* SampleProviding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleProviding.swift; sourceTree = "<group>"; };
+		75A1BD8E25D89B2A00BC16F3 /* WaveSampleProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaveSampleProvider.swift; sourceTree = "<group>"; };
 		75A84F7125CA57F800C353FA /* ChannelDriver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelDriver.swift; sourceTree = "<group>"; };
 		75A84F7D25CA59F900C353FA /* ChannelFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelFactory.swift; sourceTree = "<group>"; };
 		75AC8EDE25AFEFEF00C4A1DA /* DisplayLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayLink.swift; sourceTree = "<group>"; };
@@ -449,7 +456,6 @@
 		75E85C6E25AE8C9300DD9A9F /* CPUContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CPUContext.swift; sourceTree = "<group>"; };
 		75ED9D0525C61B4600DBC61B /* SoundControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundControl.swift; sourceTree = "<group>"; };
 		75EE74AC25B14C070030D57D /* MockCPUContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockCPUContext.swift; sourceTree = "<group>"; };
-		75F14CAD25CB7119006ECE2B /* WaveSourceNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaveSourceNode.swift; sourceTree = "<group>"; };
 		75F14CB425CB74B6006ECE2B /* WavePattern.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WavePattern.swift; sourceTree = "<group>"; };
 		75F61DA624FC269700FA095F /* call_timing.gb */ = {isa = PBXFileReference; lastKnownFileType = file; path = call_timing.gb; sourceTree = "<group>"; };
 		75F61DA824FC26A100FA095F /* call_timing2.gb */ = {isa = PBXFileReference; lastKnownFileType = file; path = call_timing2.gb; sourceTree = "<group>"; };
@@ -626,6 +632,16 @@
 				7596942A25B001C2008BDF67 /* DisplayLink.swift */,
 			);
 			path = iOS;
+			sourceTree = "<group>";
+		};
+		75A1BD6F25D8986800BC16F3 /* SampleProviders */ = {
+			isa = PBXGroup;
+			children = (
+				75A1BD7B25D8989D00BC16F3 /* SampleProviding.swift */,
+				75A1BD8E25D89B2A00BC16F3 /* WaveSampleProvider.swift */,
+				75A1BD7025D8987800BC16F3 /* SquareSampleProvider.swift */,
+			);
+			path = SampleProviders;
 			sourceTree = "<group>";
 		};
 		75A84F7825CA58BD00C353FA /* Units */ = {
@@ -859,11 +875,11 @@
 		75E0E3FA25C2653000AFE57E /* Sound */ = {
 			isa = PBXGroup;
 			children = (
+				75A1BD6F25D8986800BC16F3 /* SampleProviders */,
 				75CF895125CAE9BF00C206DC /* Channels */,
 				75A84F7825CA58BD00C353FA /* Units */,
 				75E0E3FB25C2653D00AFE57E /* APU.swift */,
-				754AA76825C8FC2B00977142 /* SquareSourceNode.swift */,
-				75F14CAD25CB7119006ECE2B /* WaveSourceNode.swift */,
+				75A1BD6825D896D300BC16F3 /* SourceNodeProvider.swift */,
 				75524EC225CA3FFD002D05F4 /* WaveDuty.swift */,
 				75524ED425CA4DAC002D05F4 /* SweepVolumeDirection.swift */,
 				75ED9D0525C61B4600DBC61B /* SoundControl.swift */,
@@ -1032,7 +1048,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 1220;
-				LastUpgradeCheck = 1020;
+				LastUpgradeCheck = 1240;
 				ORGANIZATIONNAME = "Dalton Claybrook";
 				TargetAttributes = {
 					757F38D722B1BBA500BBB570 = {
@@ -1220,9 +1236,7 @@
 				75D0E54C22B32DFE0049BF6D /* VRAM+Debug.swift in Sources */,
 				757F38FD22B1C69F00BBB570 /* CPU.swift in Sources */,
 				754AA56A25C76BCF00977142 /* VolumeEnvelopeUnit.swift in Sources */,
-				754AA76A25C8FC2B00977142 /* SquareSourceNode.swift in Sources */,
 				757F390622B1C69F00BBB570 /* MMU.swift in Sources */,
-				75F14CAF25CB7119006ECE2B /* WaveSourceNode.swift in Sources */,
 				757F390E22B1C69F00BBB570 /* GameBoy.swift in Sources */,
 				75524ECB25CA4A3E002D05F4 /* SquareChannel.swift in Sources */,
 				7590E7FB25ABE242005E1280 /* Numbers+Debug.swift in Sources */,
@@ -1249,6 +1263,7 @@
 				754013D325B7225C005951E0 /* SpriteAttributes.swift in Sources */,
 				75F14CB625CB74B6006ECE2B /* WavePattern.swift in Sources */,
 				75B1F65525BE6F0F001BEA37 /* Array+Additions.swift in Sources */,
+				75A1BD6A25D896D300BC16F3 /* SourceNodeProvider.swift in Sources */,
 				75B0E21B25B87F8E0021B3C9 /* Range+Additions.swift in Sources */,
 				757F390522B1C69F00BBB570 /* Opcode.swift in Sources */,
 				7590E7B725AA5703005E1280 /* MBC1.swift in Sources */,
@@ -1270,12 +1285,15 @@
 				75B6D62A22BA6D67009E6E82 /* Timer.swift in Sources */,
 				75524EB225CA32C5002D05F4 /* Cache.swift in Sources */,
 				757F38FF22B1C69F00BBB570 /* CPU+Opcodes+CB.swift in Sources */,
+				75A1BD7225D8987800BC16F3 /* SquareSampleProvider.swift in Sources */,
+				75A1BD7D25D8989D00BC16F3 /* SampleProviding.swift in Sources */,
 				75862E7525AD387E004AACA4 /* Numbers+Additions.swift in Sources */,
 				75FDE27025B62B9F00C2A5FB /* GameBoy+Bootstrap.swift in Sources */,
 				7596942325B0017C008BDF67 /* DisplayLinkType.swift in Sources */,
 				757F390722B1C69F00BBB570 /* VRAM.swift in Sources */,
 				757F390D22B1C69F00BBB570 /* Renderer.swift in Sources */,
 				75E85C7025AE8C9300DD9A9F /* CPUContext.swift in Sources */,
+				75A1BDA425D89D7200BC16F3 /* WaveSampleProvider.swift in Sources */,
 				75B0E22D25B918A60021B3C9 /* Tile.swift in Sources */,
 				75B1F63C25BE6262001BEA37 /* ROMSize.swift in Sources */,
 				75FDE26225B625DB00C2A5FB /* Joypad.swift in Sources */,
@@ -1319,11 +1337,10 @@
 				75D0E54B22B30C7A0049BF6D /* VRAM+Debug.swift in Sources */,
 				75BD98BE22A4135900CFFB68 /* LCDStatus.swift in Sources */,
 				754AA56925C76BCF00977142 /* VolumeEnvelopeUnit.swift in Sources */,
-				754AA76925C8FC2B00977142 /* SquareSourceNode.swift in Sources */,
 				75BD98B422A0AD9600CFFB68 /* CPU+Instructions.swift in Sources */,
-				75F14CAE25CB7119006ECE2B /* WaveSourceNode.swift in Sources */,
 				75BD98C422A49C0C00CFFB68 /* OAM.swift in Sources */,
 				75524ECA25CA4A3E002D05F4 /* SquareChannel.swift in Sources */,
+				75A1BD8F25D89B2A00BC16F3 /* WaveSampleProvider.swift in Sources */,
 				7590E7FA25ABE242005E1280 /* Numbers+Debug.swift in Sources */,
 				7596942B25B001C2008BDF67 /* DisplayLink.swift in Sources */,
 				75BD98B022A0A93B00CFFB68 /* CPU+Opcodes.swift in Sources */,
@@ -1348,6 +1365,7 @@
 				754013D225B7225C005951E0 /* SpriteAttributes.swift in Sources */,
 				75F14CB525CB74B6006ECE2B /* WavePattern.swift in Sources */,
 				75B1F65425BE6F0F001BEA37 /* Array+Additions.swift in Sources */,
+				75A1BD6925D896D300BC16F3 /* SourceNodeProvider.swift in Sources */,
 				75B0E21A25B87F8E0021B3C9 /* Range+Additions.swift in Sources */,
 				75BD98B222A0AA8600CFFB68 /* Opcode.swift in Sources */,
 				7590E7EC25ABA935005E1280 /* MemoryMasking.swift in Sources */,
@@ -1369,6 +1387,8 @@
 				75D0E53C22B1C7BC0049BF6D /* WRAM.swift in Sources */,
 				75524EB125CA32C5002D05F4 /* Cache.swift in Sources */,
 				758D868022B86B8900C28791 /* Timer.swift in Sources */,
+				75A1BD7125D8987800BC16F3 /* SquareSampleProvider.swift in Sources */,
+				75A1BD7C25D8989D00BC16F3 /* SampleProviding.swift in Sources */,
 				75B3AD4C229DEEFF00A03C5A /* CPU.swift in Sources */,
 				75FDE26F25B62B9F00C2A5FB /* GameBoy+Bootstrap.swift in Sources */,
 				75862E7425AD387E004AACA4 /* Numbers+Additions.swift in Sources */,
@@ -1508,7 +1528,7 @@
 		757F38F722B1C66200BBB570 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
@@ -1538,7 +1558,7 @@
 		757F38F822B1C66200BBB570 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
@@ -1635,6 +1655,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -1697,6 +1718,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;

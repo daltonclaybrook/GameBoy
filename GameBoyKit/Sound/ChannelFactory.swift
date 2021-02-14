@@ -10,7 +10,7 @@ public struct ChannelFactory {
         let driver = ChannelDriver(
             channel: channel,
             control: control,
-            sourceNode: SquareSourceNode(
+            sampleProvider: SquareSampleProvider(
                 sampleRate: sampleRate,
                 channel: channel,
                 control: control,
@@ -33,7 +33,7 @@ public struct ChannelFactory {
         let driver = ChannelDriver(
             channel: channel,
             control: control,
-            sourceNode: SquareSourceNode(
+            sampleProvider: SquareSampleProvider(
                 sampleRate: sampleRate,
                 channel: channel,
                 control: control,
@@ -54,11 +54,11 @@ public struct ChannelFactory {
         let driver = ChannelDriver(
             channel: channel,
             control: control,
-            sourceNode: WaveSourceNode(
+            sampleProvider: WaveSampleProvider(
                 sampleRate: sampleRate,
                 channel: channel,
-                wavePattern: wavePattern,
                 control: control,
+                wavePattern: wavePattern,
                 lengthCounterUnit: lengthCounterUnit
             )
         )

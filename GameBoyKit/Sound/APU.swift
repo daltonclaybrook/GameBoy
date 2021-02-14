@@ -28,17 +28,18 @@ public final class APU: MemoryAddressable {
     private let cyclesPerSample: Cycles
     private let control = SoundControl()
     private let wavePattern = WavePattern()
+    private let sourceNodeProvider = SourceNodeProvider()
 
     private let channelDriver1: ChannelDriver
     private let channelDriver2: ChannelDriver
     private let channelDriver3: ChannelDriver
 
-//    private var allDrivers: [ChannelDriver] {
-//        [channelDriver1, channelDriver2, channelDriver3]
-//    }
     private var allDrivers: [ChannelDriver] {
-        [channelDriver3]
+        [channelDriver1, channelDriver2, channelDriver3]
     }
+//    private var allDrivers: [ChannelDriver] {
+//        [channelDriver1]
+//    }
 
     private let audioEngine = AVAudioEngine()
 
@@ -127,11 +128,9 @@ public final class APU: MemoryAddressable {
             interleaved: outputFormat.isInterleaved
         )
 
-        allDrivers.forEach { driver in
-            let sourceNode = driver.engineSourceNode
-            audioEngine.attach(sourceNode)
-            audioEngine.connect(sourceNode, to: mainMixer, format: inputFormat)
-        }
+        let sourceNode = sourceNodeProvider.makeSourceNode()
+        audioEngine.attach(sourceNode)
+        audioEngine.connect(sourceNode, to: mainMixer, format: inputFormat)
 
         audioEngine.connect(mainMixer, to: output, format: outputFormat)
         update(mainMixer: mainMixer, with: control.masterStereoVolume)
@@ -161,16 +160,32 @@ public final class APU: MemoryAddressable {
         }
     }
 
+//    private var samplesPushedThisPeriod: UInt64 = 0
+//    private func createNewSamplesIfNecessary() {
+//        let cyclesPerSamplePeriod = UInt64((Double(Clock.effectiveMachineSpeed) / Double(samplePeriod)).rounded(.up))
+//        if mCycles % cyclesPerSamplePeriod == 0 {
+//            samplesPushedThisPeriod = 0
+//        }
+//
+//        if samplesPushedThisPeriod < samplesPerPeriod && mCycles % cyclesPerSample == 0 {
+//            samplesPushedThisPeriod += 1
+//            allDrivers.forEach { $0.generateSample() }
+//        }
+//    }
+
     private var samplesPushedThisPeriod: UInt64 = 0
     private func createNewSamplesIfNecessary() {
-        let cyclesPerSamplePeriod = UInt64((Double(Clock.effectiveMachineSpeed) / Double(samplePeriod)).rounded(.up))
-        if mCycles % cyclesPerSamplePeriod == 0 {
+        if mCycles % Clock.effectiveMachineSpeed == 0 {
             samplesPushedThisPeriod = 0
         }
-
-        if samplesPushedThisPeriod < samplesPerPeriod && mCycles % cyclesPerSample == 0 {
+        if samplesPushedThisPeriod < sampleRate && mCycles % cyclesPerSample == 0 {
             samplesPushedThisPeriod += 1
-            allDrivers.forEach { $0.generateSample() }
+
+            let samples = allDrivers.map { $0.generateSample() }
+            let leftAverage = samples.reduce(0.0 as Float) { $0 + $1.left } / Float(samples.count)
+            let rightAverage = samples.reduce(0.0 as Float) { $0 + $1.right } / Float(samples.count)
+            let sample = StereoSample(left: leftAverage, right: rightAverage)
+            sourceNodeProvider.renderSample(sample)
         }
     }
 }

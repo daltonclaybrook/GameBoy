@@ -1,25 +1,19 @@
-import AVFoundation
-
 /// Objects of this type manage a channel and its associated audio units.
 public final class ChannelDriver {
     public let channel: Channel
-    public let engineSourceNode: AVAudioSourceNode
-
     private let control: SoundControl
-    private let sourceNode: AudioSourceNode
+    private let sampleProvider: SampleProviding
 
     // Units
     var sweepUnit: SweepUnit?
     var lengthCounterUnit: LengthCounterUnit?
     var volumeEnvelopeUnit: VolumeEnvelopeUnit?
 
-    public init(channel: Channel, control: SoundControl, sourceNode: AudioSourceNode) {
+    public init(channel: Channel, control: SoundControl, sampleProvider: SampleProviding) {
         self.channel = channel
         self.control = control
-        self.sourceNode = sourceNode
-        self.engineSourceNode = sourceNode.makeSourceNode()
+        self.sampleProvider = sampleProvider
         channel.delegate = self
-        soundControlDidUpdateRouting() // determine initial pan
     }
 
     public func reset() {
@@ -30,14 +24,11 @@ public final class ChannelDriver {
     }
 
     public func soundControlDidUpdateRouting() {
-        sourceNode.soundControlDidUpdateRouting()
-//        let stereoVolume = control.getStereoVolume(for: channel.controlFlag)
-//        engineSourceNode.pan = stereoVolume.pan
-//        engineSourceNode.volume = stereoVolume.volume
+        sampleProvider.soundControlDidUpdateRouting()
     }
 
-    public func generateSample() {
-        sourceNode.generateSample()
+    public func generateSample() -> StereoSample {
+        sampleProvider.generateSample()
     }
 }
 
@@ -47,7 +38,7 @@ extension ChannelDriver: ChannelDelegate {
         sweepUnit?.restart()
         lengthCounterUnit?.restart()
         volumeEnvelopeUnit?.restart()
-        sourceNode.restart()
+        sampleProvider.restart()
     }
 
     public func channel(_ channel: Channel, loadedSoundLength soundLength: UInt8) {

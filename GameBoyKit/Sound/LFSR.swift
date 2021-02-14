@@ -10,7 +10,7 @@ public final class LFSR {
     private var register: UInt16
 
     /// Returns bit 0 of the shift register, inverted
-    var signal: UInt8 {
+    public var output: UInt8 {
         ~UInt8(register & 1)
     }
 

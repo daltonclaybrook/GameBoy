@@ -7,6 +7,11 @@ public final class NoiseChannel: LengthChannel, VolumeEnvelopeChannel {
         return .channel4
     }
 
+    public var currentSignal: Float {
+        // Range -1.0 - 1.0
+        Float(shiftRegister.output) * 2.0 - 1.0
+    }
+
     public weak var delegate: ChannelDelegate?
     public var soundLength: UInt8 = 0
     public var isSoundLengthEnabled = false

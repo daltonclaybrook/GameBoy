@@ -31,13 +31,14 @@ public final class GameBoy {
     private let wram = WRAM()
     private let hram = HRAM()
     private let palettes = ColorPalettes()
+    private let apu = APU()
     private var cartridge: CartridgeType?
 
-    public init(renderer: Renderer, displayLink: DisplayLinkType, delegateQueue: DispatchQueue = .main) {
-        clock = Clock(queue: queue, displayLink: displayLink)
+    public init(renderer: Renderer, delegateQueue: DispatchQueue = .main) {
+        clock = Clock(queue: queue)
         timer = Timer()
         oam = OAM()
-        io = IO(palettes: palettes, oam: oam, timer: timer)
+        io = IO(palettes: palettes, oam: oam, apu: apu, timer: timer)
         ppu = PPU(renderer: renderer, io: io, vram: vram, oam: oam)
         mmu = MMU(vram: vram, wram: wram, oam: oam, io: io, hram: hram)
         oam.mmu = mmu
@@ -60,6 +61,7 @@ public final class GameBoy {
             self.clock.start { [weak self] in
                 self?.fetchAndExecuteNextInstruction()
             }
+            self.apu.start()
         }
     }
 
@@ -69,6 +71,7 @@ public final class GameBoy {
         // that happens.
         queue.sync {
             self.clock.stop()
+            self.apu.stop()
         }
     }
 
@@ -80,7 +83,6 @@ public final class GameBoy {
             // we are effectively unloading the boot ROM and making 0x00...0xff
             // accessible on the cartridge ROM.
             mmu.mask = nil
-            bootstrap()
         }
 
         let previousQueuedEnableInterrupts = cpu.queuedEnableInterrupts
@@ -115,6 +117,7 @@ public final class GameBoy {
         // emulate components
         oam.emulate()
         ppu.emulate()
+        apu.emulate()
         // emulate timer
         timer.emulate()
     }

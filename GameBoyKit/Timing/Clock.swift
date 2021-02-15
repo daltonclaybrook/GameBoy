@@ -8,30 +8,31 @@ public final class Clock {
     private(set) public var isRunning = false
     private(set) public var cycles: Cycles = 0
 
-    let timeSpeed: UInt64 = 4_194_304 // 4.194 MHz
-    /// Machine Speed is Time Speed divided by 4
+    /// The real speed of the processor. This value is rarely used in practice.
+    public static let processorSpeed: CyclesPerSecond = 4_194_304 // 4.194 MHz
+
+    /// This value is the `processorSpeed` divided by four.
     ///
-    /// Each CPU instruction takes a certain number of T (time) states to
-    /// execute, and it just so happens that all instructions @ 4 MHz have
-    /// a duration in T that is divisible by 4, so, for example, it's more intuitive to
-    /// talk about 2 M (machine) cycles @ 1 MHz vs 8 T states @ 4 MHz.
-    let machineSpeed: CyclesPerSecond
+    /// Each instruction takes a certain number of clocks of the CPU, and this number
+    /// is always divisible by four. Because of this, the available documentation tends
+    /// to describe durations in "machine cycles" rather than the actual number of CPU
+    /// cycles, and many emulators prefer to use this number because it is easier to
+    /// work with.
+    public static let effectiveMachineSpeed: CyclesPerSecond = processorSpeed / 4
+
+    /// The speed of the timer used to drive emulation. Rather that set a timer to run
+    /// at ~1 MHz (which is impractical), we use a fairly arbitrary value.
+    private let timerSpeed: CyclesPerSecond = 512
 
     private let queue: DispatchQueue
-    private let displayLink: DisplayLinkType
-    private var emulateBlock: (() -> Void)?
     private var lastCycleOverflow: Cycles = 0
+    private var timer: DispatchSourceTimer?
 
     /// - Parameters:
     ///   - queue: The dispatch queue where the clock will be advanced and the
     ///   block will be executed
-    init(queue: DispatchQueue, displayLink: DisplayLinkType) {
+    init(queue: DispatchQueue) {
         self.queue = queue
-        self.displayLink = displayLink
-        self.machineSpeed = timeSpeed / 4
-        displayLink.setRenderCallback { [weak self] framesPerSecond in
-            self?.displayLinkDidFire(framesPerSecond: framesPerSecond)
-        }
     }
 
     /// Begin emulation by starting the display link. The provided `emulateBlock`
@@ -39,15 +40,23 @@ public final class Clock {
     /// The Game Boy should read/evaluate a CPU instruction each time this block is
     /// called, and should advance the other components of the system accordingly.
     func start(emulateBlock: @escaping () -> Void) {
-        self.emulateBlock = emulateBlock
         isRunning = true
-        displayLink.start()
+
+        let timer = DispatchSource.makeTimerSource(flags: .strict, queue: queue)
+        self.timer = timer
+        timer.setEventHandler { [emulateBlock] in
+            self.timerDidFire(speed: self.timerSpeed, emulateBlock: emulateBlock)
+        }
+        let timeInterval = 1.0 / TimeInterval(timerSpeed)
+        timer.schedule(deadline: .now(), repeating: timeInterval)
+        timer.resume()
     }
 
     func stop() {
         isRunning = false
-        emulateBlock = nil
-        displayLink.stop()
+        timer?.setEventHandler(handler: nil)
+        timer?.cancel()
+        timer = nil
     }
 
     func tickCycle() {
@@ -56,18 +65,8 @@ public final class Clock {
 
     // MARK: - Helpers
 
-    private func displayLinkDidFire(framesPerSecond: FramesPerSecond) {
-        // By using `queue.sync` instead of `async`, we apply back-pressure on
-        // the display link thread rather than flooding the queue with work
-        // that it can't keep up with.
-        queue.sync {
-            self.queueDisplayLinkDidFire(framesPerSecond: framesPerSecond)
-        }
-    }
-
-    private func queueDisplayLinkDidFire(framesPerSecond: FramesPerSecond) {
-        guard let emulateBlock = emulateBlock else { return }
-        let currentFrameCycles = Cycles(Double(machineSpeed) / framesPerSecond)
+    private func timerDidFire(speed: CyclesPerSecond, emulateBlock: () -> Void) {
+        let currentFrameCycles = Self.effectiveMachineSpeed / speed
         let targetCycles = currentFrameCycles - lastCycleOverflow
 
         let startCycles = cycles

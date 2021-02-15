@@ -30,3 +30,9 @@ extension Word {
         }
     }
 }
+
+extension Comparable {
+    func clamped(to range: ClosedRange<Self>) -> Self {
+        max(min(self, range.upperBound), range.lowerBound)
+    }
+}

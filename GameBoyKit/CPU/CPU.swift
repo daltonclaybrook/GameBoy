@@ -15,20 +15,20 @@ public struct Flags: OptionSet {
 }
 
 public final class CPU {
-    internal(set) public var a: UInt8 = 0
-    internal(set) public var b: UInt8 = 0
-    internal(set) public var c: UInt8 = 0
-    internal(set) public var d: UInt8 = 0
-    internal(set) public var e: UInt8 = 0
-    internal(set) public var h: UInt8 = 0
-    internal(set) public var l: UInt8 = 0
-    internal(set) public var sp: UInt16 = 0
-    internal(set) public var pc: UInt16 = 0
-    internal(set) public var flags: Flags = []
+    public internal(set) var a: UInt8 = 0
+    public internal(set) var b: UInt8 = 0
+    public internal(set) var c: UInt8 = 0
+    public internal(set) var d: UInt8 = 0
+    public internal(set) var e: UInt8 = 0
+    public internal(set) var h: UInt8 = 0
+    public internal(set) var l: UInt8 = 0
+    public internal(set) var sp: UInt16 = 0
+    public internal(set) var pc: UInt16 = 0
+    public internal(set) var flags: Flags = []
 
     internal var queuedEnableInterrupts = false
-    internal(set) public var interruptsEnabled = false
-    internal(set) public var isHalted = false
+    public internal(set) var interruptsEnabled = false
+    public internal(set) var isHalted = false
 
     public init() {}
 }

@@ -88,10 +88,8 @@ public final class GameBoy {
         let previousQueuedEnableInterrupts = cpu.queuedEnableInterrupts
 
         if !cpu.isHalted {
-//            let pc = cpu.pc
             let opcodeByte = cpu.fetchByte(context: self)
             let opcode = CPU.allOpcodes[Int(opcodeByte)]
-//            print("PC: \(pc.hexString), \(opcode.mnemonic)")
             opcode.executeBlock(cpu, self)
         } else {
             tickCycle()

@@ -17,7 +17,6 @@ extension CPU {
         rangeEnOpcodes +
         rangeFnOpcodes
 
-
     // 0x0n
     public static let range0nOpcodes: [Opcode] = [
         Opcode(mnemonic: "NOP") { cpu, _ in cpu.nop() },

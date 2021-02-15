@@ -26,6 +26,7 @@ public final class APU: MemoryAddressable {
     private let samplesPerPeriod: UInt64
 
     private let cyclesPerSample: Cycles
+    private let cyclesPerSamplePeriod: Cycles
     private let control = SoundControl()
     private let wavePattern = WavePattern()
     private let sourceNodeProvider = SourceNodeProvider()
@@ -53,6 +54,7 @@ public final class APU: MemoryAddressable {
         sampleRate = UInt64(outputFormat.sampleRate)
         samplesPerPeriod = sampleRate / samplePeriod
         cyclesPerSample = Clock.effectiveMachineSpeed / sampleRate
+        cyclesPerSamplePeriod = UInt64((Double(Clock.effectiveMachineSpeed) / Double(samplePeriod)).rounded(.up))
 
         channel1Driver = factory.makeChannel1()
         channel2Driver = factory.makeChannel2()
@@ -165,7 +167,6 @@ public final class APU: MemoryAddressable {
 
     private var samplesPushedThisPeriod: UInt64 = 0
     private func createNewSamplesIfNecessary() {
-        let cyclesPerSamplePeriod = UInt64((Double(Clock.effectiveMachineSpeed) / Double(samplePeriod)).rounded(.up))
         if mCycles % cyclesPerSamplePeriod == 0 {
             samplesPushedThisPeriod = 0
         }

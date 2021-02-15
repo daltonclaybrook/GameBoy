@@ -13,7 +13,7 @@ public final class WaveSampleProvider: SampleProviding {
                 lengthCounterUnit.isAllowingSound &&
                 channel.isWaveEnabled
         else { return 0 }
-        return channel.volume.percent * 0.1
+        return channel.volume.percent * amplitudeMultiplier
     }
 
     public init(

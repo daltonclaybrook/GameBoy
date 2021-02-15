@@ -1,5 +1,5 @@
 /// Implementation of the Linear-feedback shift register used to generate pseudo-random
-/// numbers for
+/// numbers for use by the noise channel
 public final class LFSR {
     public enum WidthMode: UInt8 {
         case long // 15-bits

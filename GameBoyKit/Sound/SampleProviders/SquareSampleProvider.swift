@@ -11,7 +11,7 @@ public final class SquareSampleProvider: SampleProviding {
     private var amplitude: Float {
         guard control.isSoundEnabled && lengthCounterUnit.isAllowingSound
         else { return 0 }
-        return volumeEnvelopeUnit.normalizedVolume * 0.1
+        return volumeEnvelopeUnit.normalizedVolume * amplitudeMultiplier
     }
 
     init(

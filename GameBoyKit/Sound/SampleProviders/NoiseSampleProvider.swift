@@ -11,7 +11,7 @@ public final class NoiseSampleProvider: SampleProviding {
     private var amplitude: Float {
         guard control.isSoundEnabled && lengthCounterUnit.isAllowingSound
         else { return 0 }
-        return volumeEnvelopeUnit.normalizedVolume * 0.1
+        return volumeEnvelopeUnit.normalizedVolume * amplitudeMultiplier
     }
 
     public init(

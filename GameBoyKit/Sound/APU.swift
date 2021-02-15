@@ -30,6 +30,7 @@ public final class APU: MemoryAddressable {
     private let control = SoundControl()
     private let wavePattern = WavePattern()
     private let sourceNodeProvider = SourceNodeProvider()
+    private let audioEngine = AVAudioEngine()
 
     private let channel1Driver: ChannelDriver
     private let channel2Driver: ChannelDriver
@@ -39,8 +40,6 @@ public final class APU: MemoryAddressable {
     private var allDrivers: [ChannelDriver] {
         [channel1Driver, channel2Driver, channel3Driver, channel4Driver]
     }
-
-    private let audioEngine = AVAudioEngine()
 
     init() {
         let mainMixer = audioEngine.mainMixerNode
@@ -79,7 +78,7 @@ public final class APU: MemoryAddressable {
         case Registers.wavePatternRange:
             wavePattern.write(byte: byte, to: address)
         default:
-            break // todo: implement
+            fatalError("Invalid address")
         }
     }
 
@@ -98,7 +97,7 @@ public final class APU: MemoryAddressable {
         case Registers.wavePatternRange:
             return wavePattern.read(address: address)
         default:
-            return 0xff // todo: implement
+            fatalError("Invalid address")
         }
     }
 
@@ -107,7 +106,7 @@ public final class APU: MemoryAddressable {
         do {
             try audioEngine.start()
         } catch let error {
-            print("error starting audio engine: \(error.localizedDescription)")
+            assertionFailure("error starting audio engine: \(error.localizedDescription)")
             stop()
         }
     }

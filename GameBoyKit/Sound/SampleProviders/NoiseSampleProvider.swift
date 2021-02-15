@@ -6,7 +6,6 @@ public final class NoiseSampleProvider: SampleProviding {
     private let volumeEnvelopeUnit: VolumeEnvelopeUnit
 
     private var currentPhase: Float = 0
-    private var phaseAtLastSignalChange: Float = 0
     private var currentVolume: StereoVolume
 
     private var amplitude: Float {
@@ -33,9 +32,8 @@ public final class NoiseSampleProvider: SampleProviding {
     public func generateSample() -> StereoSample {
         let shift = channel.frequency * twoPi / sampleRate
         currentPhase += shift
-
-        if currentPhase - phaseAtLastSignalChange > twoPi {
-            phaseAtLastSignalChange = currentPhase
+        if currentPhase >= twoPi {
+            currentPhase.formTruncatingRemainder(dividingBy: twoPi)
             channel.shift()
         }
 

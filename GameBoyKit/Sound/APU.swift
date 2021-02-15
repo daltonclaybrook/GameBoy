@@ -30,17 +30,14 @@ public final class APU: MemoryAddressable {
     private let wavePattern = WavePattern()
     private let sourceNodeProvider = SourceNodeProvider()
 
-    private let channelDriver1: ChannelDriver
-    private let channelDriver2: ChannelDriver
-    private let channelDriver3: ChannelDriver
-    private let channelDriver4: ChannelDriver
+    private let channel1Driver: ChannelDriver
+    private let channel2Driver: ChannelDriver
+    private let channel3Driver: ChannelDriver
+    private let channel4Driver: ChannelDriver
 
     private var allDrivers: [ChannelDriver] {
-        [channelDriver1, channelDriver2, channelDriver3]
+        [channel1Driver, channel2Driver, channel3Driver, channel4Driver]
     }
-//    private var allDrivers: [ChannelDriver] {
-//        [channelDriver4]
-//    }
 
     private let audioEngine = AVAudioEngine()
 
@@ -57,10 +54,10 @@ public final class APU: MemoryAddressable {
         samplesPerPeriod = sampleRate / samplePeriod
         cyclesPerSample = Clock.effectiveMachineSpeed / sampleRate
 
-        channelDriver1 = factory.makeChannel1()
-        channelDriver2 = factory.makeChannel2()
-        channelDriver3 = factory.makeChannel3(wavePattern: wavePattern)
-        channelDriver4 = factory.makeChannel4()
+        channel1Driver = factory.makeChannel1()
+        channel2Driver = factory.makeChannel2()
+        channel3Driver = factory.makeChannel3(wavePattern: wavePattern)
+        channel4Driver = factory.makeChannel4()
         control.delegate = self
         setupAudioEngine(mainMixer: mainMixer, output: output, outputFormat: outputFormat)
     }
@@ -68,13 +65,13 @@ public final class APU: MemoryAddressable {
     public func write(byte: Byte, to address: Address) {
         switch address {
         case Registers.channel1Range:
-            channelDriver1.channel.write(byte: byte, to: address)
+            channel1Driver.channel.write(byte: byte, to: address)
         case Registers.channel2Range:
-            channelDriver2.channel.write(byte: byte, to: address)
+            channel2Driver.channel.write(byte: byte, to: address)
         case Registers.channel3Range:
-            channelDriver3.channel.write(byte: byte, to: address)
+            channel3Driver.channel.write(byte: byte, to: address)
         case Registers.channel4Range:
-            channelDriver4.channel.write(byte: byte, to: address)
+            channel4Driver.channel.write(byte: byte, to: address)
         case Registers.controlRange:
             control.write(byte: byte, to: address)
         case Registers.wavePatternRange:
@@ -87,13 +84,13 @@ public final class APU: MemoryAddressable {
     public func read(address: Address) -> Byte {
         switch address {
         case Registers.channel1Range:
-            return channelDriver1.channel.read(address: address)
+            return channel1Driver.channel.read(address: address)
         case Registers.channel2Range:
-            return channelDriver2.channel.read(address: address)
+            return channel2Driver.channel.read(address: address)
         case Registers.channel3Range:
-            return channelDriver3.channel.read(address: address)
+            return channel3Driver.channel.read(address: address)
         case Registers.channel4Range:
-            return channelDriver4.channel.read(address: address)
+            return channel4Driver.channel.read(address: address)
         case Registers.controlRange:
             return control.read(address: address)
         case Registers.wavePatternRange:
@@ -179,22 +176,14 @@ public final class APU: MemoryAddressable {
         }
     }
 
-//    private var samplesPushedThisPeriod: UInt64 = 0
-//    private func createNewSamplesIfNecessary() {
-//        if mCycles % Clock.effectiveMachineSpeed == 0 {
-//            samplesPushedThisPeriod = 0
-//        }
-//        if samplesPushedThisPeriod < sampleRate && mCycles % cyclesPerSample == 0 {
-//            samplesPushedThisPeriod += 1
-//            renderSample()
-//        }
-//    }
-
     private func renderSample() {
-        let samples = allDrivers.map { $0.generateSample() }
-        let leftAverage = samples.reduce(0.0 as Float) { $0 + $1.left } / Float(samples.count)
-        let rightAverage = samples.reduce(0.0 as Float) { $0 + $1.right } / Float(samples.count)
-        let sample = StereoSample(left: leftAverage, right: rightAverage)
+        typealias Sums = (left: Float, right: Float)
+        let sums = allDrivers.reduce((0, 0) as Sums) { sums, driver in
+            let sample = driver.generateSample()
+            return (sums.left + sample.left, sums.right + sample.right)
+        }
+        let count = Float(allDrivers.count)
+        let sample = StereoSample(left: sums.left / count, right: sums.right / count)
         sourceNodeProvider.renderSample(sample)
     }
 }

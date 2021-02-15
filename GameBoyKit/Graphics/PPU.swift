@@ -12,6 +12,7 @@ private struct LineDrawingContext {
     let windowY: UInt8
 }
 
+/// The pixel processing unit
 public final class PPU {
     /// Represents information about a pixel that might be rendered to the
     /// screen or might be overridden by another pixel based on priority.

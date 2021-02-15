@@ -50,8 +50,8 @@ public final class GameBoy {
         queue.async {
             self.cartridge = cartridge
             self.mmu.load(cartridge: cartridge)
-//            self.mmu.mask = try! BootROM.dmgBootRom()
-            self.bootstrap()
+            self.mmu.mask = try! BootROM.dmgBootRom()
+//            self.bootstrap()
         }
     }
 

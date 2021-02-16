@@ -62,6 +62,7 @@ public final class PPU {
         clearPixelBuffer()
     }
 
+    /// Called once per machine cycle
     func emulate() {
         guard io.lcdControl.displayEnabled else {
             disableDisplayIfNecessary()

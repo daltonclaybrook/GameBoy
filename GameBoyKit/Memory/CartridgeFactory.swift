@@ -1,3 +1,8 @@
+public struct CartridgeInfo {
+    public let header: CartridgeHeader
+    public let cartridge: CartridgeType
+}
+
 public struct CartridgeFactory {
     private struct Registers {
         static let titleRange: ClosedRange<Address> = 0x0134...0x0143
@@ -16,7 +21,7 @@ public struct CartridgeFactory {
         case unsupportedCartridgeType(name: String)
     }
 
-    public static func makeCartridge(romBytes: [Byte], externalRAMBytes: [Byte]?) throws -> (CartridgeType, CartridgeHeader) {
+    public static func makeCartridge(romBytes: [Byte], externalRAMBytes: [Byte]?) throws -> CartridgeInfo {
         guard romBytes.count >= Registers.fullHeaderRange.upperBound else {
             throw Error.romIncorrectSize
         }
@@ -72,7 +77,7 @@ public struct CartridgeFactory {
         default:
             throw Error.unsupportedCartridgeType(name: "Unknown \(cartridgeTypeByte.hexString)")
         }
-        return (cartridgeType, header)
+        return CartridgeInfo(header: header, cartridge: cartridgeType)
     }
 
     // MARK: - Helpers

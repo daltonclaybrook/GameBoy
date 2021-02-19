@@ -30,12 +30,12 @@ public final class GameBoy {
     public let ppu: PPU
     let cpu: CPU
     let mmu: MMU
+    let system: System
+
     private let clock: Clock
     private let timer: Timer
     private let oam: OAM
     private let io: IO
-    private let system: System
-
     private let vram = VRAM()
     private let wram = WRAM()
     private let hram = HRAM()
@@ -56,10 +56,10 @@ public final class GameBoy {
         self.delegateQueue = delegateQueue
     }
 
-    public func load(cartridge: CartridgeType) {
+    public func load(cartridgeInfo: CartridgeInfo) {
         queue.async {
-            self.cartridge = cartridge
-            self.mmu.load(cartridge: cartridge)
+            self.cartridge = cartridgeInfo.cartridge
+            self.mmu.load(cartridge: cartridgeInfo.cartridge)
             self.mmu.mask = try! BootROM.dmgBootRom()
 //            self.bootstrap()
         }
@@ -88,12 +88,7 @@ public final class GameBoy {
     // MARK: - Helpers
 
     private func fetchAndExecuteNextInstruction() {
-        if mmu.mask != nil && cpu.pc == 0x100 {
-            // Boot ROM execution has finished. By setting the MMU mask to nil,
-            // we are effectively unloading the boot ROM and making 0x00...0xff
-            // accessible on the cartridge ROM.
-            mmu.mask = nil
-        }
+        finishBootRomIfNecessary()
 
         let previousQueuedEnableInterrupts = cpu.queuedEnableInterrupts
 
@@ -115,6 +110,21 @@ public final class GameBoy {
         // todo: evaluate when it's appropriate to do this. This should probably
         // occur on a step of its own, not after a step has occurred.
         processInterruptIfNecessary()
+    }
+
+    private func finishBootRomIfNecessary() {
+        guard mmu.mask != nil && cpu.pc == 0x100 else { return }
+
+        // Boot ROM execution has finished. By setting the MMU mask to nil,
+        // we are effectively unloading the boot ROM and making 0x00...0xff
+        // accessible on the cartridge ROM.
+        mmu.mask = nil
+        switch system {
+        case .dmg:
+            cpu.a = 0x01
+        case .cgb:
+            cpu.a = 0x11
+        }
     }
 
     /// This function is called each time the system should advance by 1 M-cycle.

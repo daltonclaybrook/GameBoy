@@ -9,8 +9,7 @@ final class CartridgeDocument: NSDocument {
     )
 
     private var viewController: GameViewController?
-    private var cartridge: CartridgeType? = nil
-    private var header: CartridgeHeader?
+    private var cartridgeInfo: CartridgeInfo? = nil
     private var queuedSaveExternalRAMBytes: [Byte]? = nil
     private var latestSavedExternalRAMBytes: [Byte]? = nil
     private var timer: Foundation.Timer?
@@ -18,13 +17,12 @@ final class CartridgeDocument: NSDocument {
     override func read(from data: Data, ofType typeName: String) throws {
         self.latestSavedExternalRAMBytes = loadSaveFileBytes()
         let romBytes = [Byte](data)
-        let (cartridge, header) = try CartridgeFactory.makeCartridge(
+        let cartridgeInfo = try CartridgeFactory.makeCartridge(
             romBytes: romBytes,
             externalRAMBytes: latestSavedExternalRAMBytes
         )
-        self.cartridge = cartridge
-        self.cartridge?.delegate = self
-        self.header = header
+        self.cartridgeInfo = cartridgeInfo
+        self.cartridgeInfo?.cartridge.delegate = self
 
         timer?.invalidate()
         timer = .scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
@@ -35,7 +33,7 @@ final class CartridgeDocument: NSDocument {
     }
 
     override func makeWindowControllers() {
-        guard let cartridge = cartridge else {
+        guard let cartridgeInfo = cartridgeInfo else {
             // I don't think this should happen in prod
             return assertionFailure("No cartridge is available.")
         }
@@ -50,7 +48,7 @@ final class CartridgeDocument: NSDocument {
         addWindowController(windowController)
         self.viewController = viewController
         windowController.delegate = viewController
-        viewController.loadCartridge(cartridge)
+        viewController.loadCartridge(cartridgeInfo)
     }
 
     // MARK: - Helpers

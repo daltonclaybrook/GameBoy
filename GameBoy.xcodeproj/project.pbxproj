@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		751D79B825DEAEE70093E2B7 /* SystemSelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 751D79B725DEAEE70093E2B7 /* SystemSelection.swift */; };
+		751D870A25DF62BB0093E2B7 /* Flags.swift in Sources */ = {isa = PBXBuildFile; fileRef = 751D870925DF62BB0093E2B7 /* Flags.swift */; };
+		751D870F25DF62CD0093E2B7 /* Flags.swift in Sources */ = {isa = PBXBuildFile; fileRef = 751D870925DF62BB0093E2B7 /* Flags.swift */; };
 		754013D225B7225C005951E0 /* SpriteAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 754013D125B7225C005951E0 /* SpriteAttributes.swift */; };
 		754013D325B7225C005951E0 /* SpriteAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 754013D125B7225C005951E0 /* SpriteAttributes.swift */; };
 		754AA55B25C72AA900977142 /* SweepUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 754AA55A25C72AA900977142 /* SweepUnit.swift */; };
@@ -335,6 +337,7 @@
 
 /* Begin PBXFileReference section */
 		751D79B725DEAEE70093E2B7 /* SystemSelection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemSelection.swift; sourceTree = "<group>"; };
+		751D870925DF62BB0093E2B7 /* Flags.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Flags.swift; sourceTree = "<group>"; };
 		754013D125B7225C005951E0 /* SpriteAttributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpriteAttributes.swift; sourceTree = "<group>"; };
 		754AA55A25C72AA900977142 /* SweepUnit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SweepUnit.swift; sourceTree = "<group>"; };
 		754AA56125C75BDD00977142 /* LengthCounterUnit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LengthCounterUnit.swift; sourceTree = "<group>"; };
@@ -814,6 +817,7 @@
 			children = (
 				758D864822B53A0200C28791 /* Interrupts.swift */,
 				75B3AD4B229DEEFF00A03C5A /* CPU.swift */,
+				751D870925DF62BB0093E2B7 /* Flags.swift */,
 				75BD98AF22A0A93B00CFFB68 /* CPU+Opcodes.swift */,
 				75BD98B522A2F37C00CFFB68 /* CPU+Opcodes+CB.swift */,
 				75BD98B322A0AD9600CFFB68 /* CPU+Instructions.swift */,
@@ -1307,6 +1311,7 @@
 				75B1F5CD25BCC9D9001BEA37 /* RTC.swift in Sources */,
 				75A84F7F25CA59F900C353FA /* ChannelFactory.swift in Sources */,
 				75B1F64725BE64E4001BEA37 /* RAMSize.swift in Sources */,
+				751D870F25DF62CD0093E2B7 /* Flags.swift in Sources */,
 				757F390F22B1C69F00BBB570 /* Clock.swift in Sources */,
 				754AA56325C75BDD00977142 /* LengthCounterUnit.swift in Sources */,
 				757F390222B1C69F00BBB570 /* IO.swift in Sources */,
@@ -1411,6 +1416,7 @@
 				7590E7C425AACEC6005E1280 /* CartridgeFactory.swift in Sources */,
 				75B1F5CC25BCC9D9001BEA37 /* RTC.swift in Sources */,
 				75A84F7E25CA59F900C353FA /* ChannelFactory.swift in Sources */,
+				751D870A25DF62BB0093E2B7 /* Flags.swift in Sources */,
 				75B1F64625BE64E4001BEA37 /* RAMSize.swift in Sources */,
 				758834DA22BB12DF00B80FD0 /* TimerControl.swift in Sources */,
 				754AA56225C75BDD00977142 /* LengthCounterUnit.swift in Sources */,

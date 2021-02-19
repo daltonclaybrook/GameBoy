@@ -41,13 +41,13 @@ class GameViewController: NSViewController {
         gameBoy?.stop()
     }
 
-    func loadCartridge(_ cartridge: CartridgeType) {
-        gameBoy?.load(cartridge: cartridge)
+    func loadCartridge(_ cartridgeInfo: CartridgeInfo) {
+        gameBoy?.load(cartridgeInfo: cartridgeInfo)
     }
 
     // MARK: - Private
 
-    private func makeCartridge() throws -> CartridgeType {
+    private func makeCartridge() throws -> CartridgeInfo {
         // Passing tests
 //        let fileURL = Bundle.main.url(forResource: "cpu_instrs", withExtension: "gb")!
 //        let fileURL = Bundle.main.url(forResource: "intr_timing", withExtension: "gb")!
@@ -67,8 +67,7 @@ class GameViewController: NSViewController {
 //        let fileURL = Bundle.main.url(forResource: "pokemon-yellow", withExtension: "gbc")!
 
         let fileData = try Data(contentsOf: fileURL)
-        let (cartridge, _) = try CartridgeFactory.makeCartridge(romBytes: [Byte](fileData), externalRAMBytes: nil)
-        return cartridge
+        return try CartridgeFactory.makeCartridge(romBytes: [Byte](fileData), externalRAMBytes: nil)
     }
 
     private func generateAndSaveOAMImage() {

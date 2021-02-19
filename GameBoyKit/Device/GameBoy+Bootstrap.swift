@@ -4,11 +4,18 @@ extension GameBoy {
     /// the boot rom. Notably, the PC register is set to 0x100, which is
     /// where the cartridge ROM takes over and begins execution.
     func bootstrap() {
-        cpu.af = 0x01b0
+        cpu.flags = 0xb0
         cpu.bc = 0x0013
         cpu.de = 0x00d8
         cpu.sp = 0xfffe
         cpu.pc = 0x100
+
+        switch system {
+        case .dmg:
+            cpu.a = 0x01
+        case .cgb:
+            cpu.a = 0x11
+        }
 
         mmu.write(byte: 0x00, to: 0xff05, privileged: true)
         mmu.write(byte: 0x00, to: 0xff06, privileged: true)

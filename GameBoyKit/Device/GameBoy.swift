@@ -9,6 +9,14 @@ public struct InterruptVectors {
 }
 
 public final class GameBoy {
+    /// The type of system to emulate
+    public enum System: Int {
+        /// The original monochrome Game Boy
+        case dmg
+        /// The Game Boy Color
+        case cgb
+    }
+
     private let delegateQueue: DispatchQueue
     private let queue = DispatchQueue(
         label: "com.daltonclaybrook.GameBoy.GameBoy",
@@ -26,6 +34,7 @@ public final class GameBoy {
     private let timer: Timer
     private let oam: OAM
     private let io: IO
+    private let system: System
 
     private let vram = VRAM()
     private let wram = WRAM()
@@ -34,7 +43,8 @@ public final class GameBoy {
     private let apu = APU()
     private var cartridge: CartridgeType?
 
-    public init(renderer: Renderer, delegateQueue: DispatchQueue = .main) {
+    public init(system: System, renderer: Renderer, delegateQueue: DispatchQueue = .main) {
+        self.system = system
         clock = Clock(queue: queue)
         timer = Timer()
         oam = OAM()

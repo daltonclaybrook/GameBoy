@@ -14,7 +14,7 @@ class GameViewController: NSViewController {
         }
         do {
             let renderer = try MetalRenderer(view: mtkView, device: device)
-            let gameBoy = GameBoy(renderer: renderer)
+            let gameBoy = GameBoy(system: SystemSelection.shared.system, renderer: renderer)
             return gameBoy
         } catch let error {
             assertionFailure("error creating game boy: \(error)")

@@ -3,7 +3,7 @@ public struct LCDStatus: RawRepresentable {
         case horizontalBlank
         case verticalBlank
         case searchingOAMRAM
-        case transferingToLCD
+        case transferringToLCD
     }
 
     private(set) public var rawValue: Byte
@@ -48,7 +48,7 @@ extension LCDStatus {
         switch mode {
         case .horizontalBlank, .verticalBlank, .searchingOAMRAM:
             return true
-        case .transferingToLCD:
+        case .transferringToLCD:
             return false
         }
     }

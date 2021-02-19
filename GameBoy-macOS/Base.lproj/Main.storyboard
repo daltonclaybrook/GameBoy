@@ -311,6 +311,25 @@
                                     </items>
                                 </menu>
                             </menuItem>
+                            <menuItem title="Emulation" id="F4n-qY-8Se">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <menu key="submenu" title="Emulation" id="mCc-VZ-pcb">
+                                    <items>
+                                        <menuItem title="Game Boy" id="D3V-7G-MwS">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="gameBoyItemClicked:" target="Voe-Tx-rLC" id="dVA-ez-p9V"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Game Boy Color" id="hg6-Mg-VuE">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="gameBoyColorItemClicked:" target="Voe-Tx-rLC" id="3BQ-R8-VQR"/>
+                                            </connections>
+                                        </menuItem>
+                                    </items>
+                                </menu>
+                            </menuItem>
                             <menuItem title="Format" id="jxT-CU-nIS">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <menu key="submenu" title="Format" id="GEO-Iw-cKr">
@@ -648,7 +667,12 @@
                         <outlet property="delegate" destination="Voe-Tx-rLC" id="PrD-fu-P6m"/>
                     </connections>
                 </application>
-                <customObject id="Voe-Tx-rLC" customClass="AppDelegate" customModule="GameBoy_macOS" customModuleProvider="target"/>
+                <customObject id="Voe-Tx-rLC" customClass="AppDelegate" customModule="GameBoy_macOS" customModuleProvider="target">
+                    <connections>
+                        <outlet property="gameBoyColorItem" destination="hg6-Mg-VuE" id="8r4-Qi-MQU"/>
+                        <outlet property="gameBoyItem" destination="D3V-7G-MwS" id="iYx-pg-GBE"/>
+                    </connections>
+                </customObject>
                 <customObject id="YLy-65-1bz" customClass="NSFontManager"/>
                 <customObject id="Ady-hI-5gd" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>

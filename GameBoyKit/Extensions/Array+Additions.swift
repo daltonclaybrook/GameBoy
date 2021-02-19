@@ -4,3 +4,9 @@ public extension Array {
         return Array(self[0..<count])
     }
 }
+
+public extension Array where Element == Byte {
+    subscript(addressRange: ClosedRange<Address>) -> ArraySlice<Byte> {
+        self[Int(addressRange.lowerBound)...Int(addressRange.upperBound)]
+    }
+}

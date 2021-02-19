@@ -70,7 +70,7 @@ public final class PPU {
         }
 
         cyclesRemaining -= 1
-        if cyclesRemaining == 1 && io.lcdStatus.mode == .transferingToLCD && io.lcdStatus.hBlankInterruptEnabled {
+        if cyclesRemaining == 1 && io.lcdStatus.mode == .transferringToLCD && io.lcdStatus.hBlankInterruptEnabled {
             // Interrupt occurs 1 cycle before mode switch
             io.interruptFlags.insert(.lcdStat)
         }
@@ -78,8 +78,8 @@ public final class PPU {
         guard cyclesRemaining == 0 else { return }
         switch io.lcdStatus.mode {
         case .searchingOAMRAM:
-            changeMode(next: .transferingToLCD)
-        case .transferingToLCD:
+            changeMode(next: .transferringToLCD)
+        case .transferringToLCD:
             drawLine()
             changeMode(next: .horizontalBlank)
         case .horizontalBlank:
@@ -136,7 +136,7 @@ public final class PPU {
             if io.lcdStatus.oamInterruptEnabled {
                 io.interruptFlags.insert(.lcdStat)
             }
-        case .transferingToLCD:
+        case .transferringToLCD:
             vram.isBeingReadByPPU = true
         case .horizontalBlank:
             oam.isBeingReadByPPU = false
@@ -165,7 +165,7 @@ public final class PPU {
         switch mode {
         case .searchingOAMRAM:
             return oamSearchDuration
-        case .transferingToLCD:
+        case .transferringToLCD:
             return lcdTransferDuration
         case .horizontalBlank:
             return hBlankDuration

@@ -1,4 +1,14 @@
 public struct CartridgeFactory {
+    private struct Registers {
+        static let titleRange: ClosedRange<Address> = 0x0134...0x0143
+        static let cartridgeType: Address = 0x0147
+        static let romSize: Address = 0x0148
+        static let ramSize: Address = 0x0149
+        /// Game Boy Color flag
+        static let cgbFlag: Address = 0x0143
+        static let fullHeaderRange: ClosedRange<Address> = 0x0100...0x014f
+    }
+
     public enum Error: Swift.Error {
         case romIncorrectSize
         case ramIncorrectSize
@@ -7,13 +17,13 @@ public struct CartridgeFactory {
     }
 
     public static func makeCartridge(romBytes: [Byte], externalRAMBytes: [Byte]?) throws -> (CartridgeType, CartridgeHeader) {
-        guard romBytes.count >= 0x014f else {
+        guard romBytes.count >= Registers.fullHeaderRange.upperBound else {
             throw Error.romIncorrectSize
         }
 
         let title = getCartridgeTitle(from: romBytes)
-        guard let romSize = ROMSize(headerByte: romBytes[0x0148]),
-              let ramSize = RAMSize(headerByte: romBytes[0x0149])
+        guard let romSize = ROMSize(headerByte: romBytes.read(address: Registers.romSize)),
+              let ramSize = RAMSize(headerByte: romBytes.read(address: Registers.ramSize))
         else { throw Error.invalidCartridgeHeader }
 
         if romBytes.count != romSize.size {
@@ -23,22 +33,30 @@ public struct CartridgeFactory {
             throw Error.ramIncorrectSize
         }
 
-        let header = CartridgeHeader(title: title, romSize: romSize, ramSize: ramSize)
-        let cartridgeType = romBytes[0x0147]
-        let cartridge: CartridgeType
-        switch cartridgeType {
+        let cgbFlag = CartridgeHeader.CGBFlag(byte: romBytes.read(address: Registers.cgbFlag))
+
+        let header = CartridgeHeader(
+            title: title,
+            romSize: romSize,
+            ramSize: ramSize,
+            cgbFlag: cgbFlag
+        )
+
+        let cartridgeTypeByte = romBytes.read(address: Registers.cartridgeType)
+        let cartridgeType: CartridgeType
+        switch cartridgeTypeByte {
         case 0x00, 0x08, 0x09:
-            cartridge = ROM(romBytes: romBytes)
+            cartridgeType = ROM(romBytes: romBytes)
         case 0x01...0x03:
-            cartridge = MBC1(romBytes: romBytes, ramBytes: externalRAMBytes, romSize: romSize, ramSize: ramSize)
+            cartridgeType = MBC1(romBytes: romBytes, ramBytes: externalRAMBytes, romSize: romSize, ramSize: ramSize)
         case 0x05, 0x06:
             throw Error.unsupportedCartridgeType(name: "MBC2")
         case 0x0b...0x0d:
             throw Error.unsupportedCartridgeType(name: "MMM01")
         case 0x0f...0x13:
-            cartridge = MBC3(romBytes: romBytes, ramBytes: externalRAMBytes, romSize: romSize, ramSize: ramSize)
+            cartridgeType = MBC3(romBytes: romBytes, ramBytes: externalRAMBytes, romSize: romSize, ramSize: ramSize)
         case 0x19...0x1e:
-            cartridge = MBC5(romBytes: romBytes, ramBytes: externalRAMBytes, romSize: romSize, ramSize: ramSize)
+            cartridgeType = MBC5(romBytes: romBytes, ramBytes: externalRAMBytes, romSize: romSize, ramSize: ramSize)
         case 0x20:
             throw Error.unsupportedCartridgeType(name: "MBC6")
         case 0x22:
@@ -52,15 +70,15 @@ public struct CartridgeFactory {
         case 0xff:
             throw Error.unsupportedCartridgeType(name: "HuC1")
         default:
-            throw Error.unsupportedCartridgeType(name: "Unknown \(cartridgeType.hexString)")
+            throw Error.unsupportedCartridgeType(name: "Unknown \(cartridgeTypeByte.hexString)")
         }
-        return (cartridge, header)
+        return (cartridgeType, header)
     }
 
     // MARK: - Helpers
 
     private static func getCartridgeTitle(from romBytes: [Byte]) -> String {
-        var titleByteRegion = romBytes[0x0134...0x0143]
+        var titleByteRegion = romBytes[Registers.titleRange]
         var titleBytes: [Byte] = []
         while !titleByteRegion.isEmpty && titleByteRegion.first != 0x00 { // null terminator
             titleBytes.append(titleByteRegion.removeFirst())

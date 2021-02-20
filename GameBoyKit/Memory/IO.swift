@@ -23,16 +23,17 @@ public final class IO: MemoryAddressable {
     public var lcdStatus = LCDStatus(rawValue: 0)
     public var lcdYCoordinate: UInt8 = 0
 
-    private var bytes = [Byte](repeating: 0, count: MemoryMap.IO.count)
     private let oam: OAM
     private let apu: APU
     private let timer: Timer
+    private let wram: WRAM
 
-    public init(palettes: ColorPalettes, oam: OAM, apu: APU, timer: Timer) {
+    public init(palettes: ColorPalettes, oam: OAM, apu: APU, timer: Timer, wram: WRAM) {
         self.palettes = palettes
         self.oam = oam
         self.apu = apu
         self.timer = timer
+        self.wram = wram
         timer.delegate = self
         joypad.delegate = self
     }
@@ -56,8 +57,11 @@ public final class IO: MemoryAddressable {
 //        case palette.monochromeAddressRange, palette.colorAddressRange:
         case palettes.monochromeAddressRange:
             return palettes.read(address: address)
+        case WRAM.Constants.bankSelectAddress:
+            return wram.read(address: address)
         default:
-            return bytes.read(address: address, in: .IO)
+            print("Attempting to read from unsupported I/O address: \(address.hexString)")
+            return 0xff
         }
     }
 
@@ -82,35 +86,38 @@ public final class IO: MemoryAddressable {
             palettes.write(byte: byte, to: address)
         case Registers.dmaTransfer:
             oam.startDMATransfer(source: byte)
+        case WRAM.Constants.bankSelectAddress:
+            wram.write(byte: byte, to: address)
         default:
-            bytes.write(byte: byte, to: address, in: .IO)
+            print("Attempting to write to unsupported I/O address: \(address.hexString)")
+            break
         }
     }
 }
 
 extension IO {
     var scrollY: UInt8 {
-        return read(address: Registers.scrollY)
+        read(address: Registers.scrollY)
     }
 
     var scrollX: UInt8 {
-        return read(address: Registers.scrollX)
+        read(address: Registers.scrollX)
     }
 
     var lcdYCoordinateCompare: UInt8 {
-        return read(address: Registers.lcdYCoordinateCompare)
+        read(address: Registers.lcdYCoordinateCompare)
     }
 
     var windowY: UInt8 {
-        return read(address: Registers.windowY)
+        read(address: Registers.windowY)
     }
 
     var windowX: UInt8 {
-        return read(address: Registers.windowX)
+        read(address: Registers.windowX)
     }
 
     var vramBank: UInt8 {
-        return read(address: Registers.vramBank) & 0x01
+        read(address: Registers.vramBank) & 0x01
     }
 }
 

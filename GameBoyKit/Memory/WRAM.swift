@@ -28,12 +28,13 @@ public final class WRAM: MemoryAddressable {
         case Constants.lowerRange:
             return bytes.read(address: address, in: Constants.lowerRange)
         case Constants.upperRange:
-            let byteOffset = UInt32(currentBankNumber) * Constants.bankSize
+            let adjustedAddress = UInt32(address - Constants.lowerRange.lowerBound)
+            let byteOffset = UInt32(currentBankNumber) * Constants.bankSize + adjustedAddress
             return bytes.read(address: byteOffset)
         case Constants.bankSelectAddress:
             return currentBankNumber
         default:
-            fatalError("Invalid address")
+            fatalError("Invalid address: \(address.hexString)")
         }
     }
 
@@ -42,7 +43,8 @@ public final class WRAM: MemoryAddressable {
         case Constants.lowerRange:
             bytes.write(byte: byte, to: address, in: Constants.lowerRange)
         case Constants.upperRange:
-            let byteOffset = UInt32(currentBankNumber) * Constants.bankSize
+            let adjustedAddress = UInt32(address - Constants.lowerRange.lowerBound)
+            let byteOffset = UInt32(currentBankNumber) * Constants.bankSize + adjustedAddress
             bytes.write(byte: byte, to: byteOffset)
         case Constants.bankSelectAddress:
             switch system {
@@ -53,7 +55,7 @@ public final class WRAM: MemoryAddressable {
                 currentBankNumber = max(byte & 0x07, 1)
             }
         default:
-            fatalError("Invalid address")
+            fatalError("Invalid address: \(address.hexString)")
         }
     }
 

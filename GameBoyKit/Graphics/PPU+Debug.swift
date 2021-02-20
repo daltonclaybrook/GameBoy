@@ -59,9 +59,17 @@ extension PPU {
         var colorBytes: [Byte] = []
         let vramView = vram.currentView
         let paletteView = io.palettes.currentView
+        let spriteFlags = sprite.flags
+
         (UInt8(0)..<8).forEach { yOffset in
             (UInt8(0)..<8).forEach { xOffset in
-                let colorNumber = tile.getColorNumber(vramView: vramView, xOffset: xOffset, xFlipped: sprite.isXFlipped, yOffset: yOffset, yFlipped: sprite.isYFlipped)
+                let colorNumber = tile.getColorNumber(
+                    vramView: vramView,
+                    xOffset: xOffset,
+                    xFlipped: spriteFlags.isXFlipped,
+                    yOffset: yOffset,
+                    yFlipped: spriteFlags.isYFlipped
+                )
                 if colorNumber == 0 {
                     // Color number 0 is transparent in sprites
                     colorBytes.append(contentsOf: Color.white.rgbaBytes)

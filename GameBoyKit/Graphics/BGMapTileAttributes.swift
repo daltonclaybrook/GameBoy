@@ -16,6 +16,10 @@ public extension BGMapTileAttributes {
         case hasPriority
     }
 
+    /// The DMG does not use tile attributes, so we can make a static one with the effective attributes
+    /// for all map tiles on DMG.
+    static let effectiveAttributesForDMG = BGMapTileAttributes(rawValue: 0x00)
+
     /// BG palette number 0-7 to use for the tile
     var backgroundPaletteNumber: UInt8 {
         rawValue & 0x07

@@ -279,6 +279,7 @@ public final class PPU {
                 continue
             }
 
+            let spriteFlags = sprite.flags
             for xOffsetInSprite in 0..<objectSize.width {
                 let xPositionInScreen = xRange.lowerBound + Int16(xOffsetInSprite)
                 guard screenXRange.contains(xPositionInScreen) else { continue }
@@ -287,14 +288,20 @@ public final class PPU {
                 let yOffsetInTile = yOffsetInSprite % 8
                 let tileNumber = sprite.getTileNumber(yOffsetInSprite: yOffsetInSprite, objectSize: objectSize)
                 let tile = context.lcdControl.tileDataRangeForObjects.getTile(for: tileNumber)
-                let pixelColorNumber = tile.getColorNumber(vramView: context.vramView, xOffset: xOffsetInSprite, xFlipped: sprite.isXFlipped, yOffset: yOffsetInTile, yFlipped: sprite.isYFlipped)
+                let pixelColorNumber = tile.getColorNumber(
+                    vramView: context.vramView,
+                    xOffset: xOffsetInSprite,
+                    xFlipped: spriteFlags.isXFlipped,
+                    yOffset: yOffsetInTile,
+                    yFlipped: spriteFlags.isYFlipped
+                )
                 guard pixelColorNumber != 0 else {
                     // Sprite color number 0 is always transparent
                     continue
                 }
 
                 let pixelColor = context.paletteView.getColor(for: pixelColorNumber, in: sprite.monochromePalette)
-                mergeSpritePixel(color: pixelColor, priority: sprite.backgroundPriority, atIndex: Int(xPositionInScreen), with: &pixels)
+                mergeSpritePixel(color: pixelColor, priority: spriteFlags.backgroundPriority, atIndex: Int(xPositionInScreen), with: &pixels)
             }
         }
     }

@@ -14,7 +14,7 @@ public final class VRAM: MemoryAddressable {
 
     /// A thread-safe window into the current VRAM data
     var currentView: VRAMView {
-        VRAMView(bytes: bytes)
+        VRAMView(system: system, bytes: bytes)
     }
 
     /// The VRAM becomes locked when the PPU is drawing to the screen.
@@ -80,6 +80,9 @@ public final class VRAM: MemoryAddressable {
 }
 
 public struct VRAMView {
+    static let tileMapRange: ClosedRange<Address> = 0x9800...0x9fff
+
+    let system: GameBoy.System
     let bytes: [Byte]
 
     public func read(address: Address) -> Byte {
@@ -90,6 +93,18 @@ public struct VRAMView {
         let little = read(address: address)
         let big = read(address: address + 1)
         return (UInt16(big) << 8) | UInt16(little)
+    }
+
+    public func getAttributesForTileAddressInMap(_ address: Address) -> BGMapTileAttributes {
+        precondition(Self.tileMapRange.contains(address))
+        switch system {
+        case .dmg:
+            return .effectiveAttributesForDMG
+        case .cgb:
+            let tileOffset = UInt32(address - MemoryMap.VRAM.lowerBound)
+            let attributesOffset = VRAM.Constants.bankSize + tileOffset
+            return BGMapTileAttributes(rawValue: bytes.read(address: attributesOffset))
+        }
     }
 }
 

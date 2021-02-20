@@ -23,12 +23,20 @@ public extension SpriteAttributes {
         public let x: UInt8
     }
 
+    struct Flags: RawRepresentable {
+        public let rawValue: Byte
+
+        public init(rawValue: Byte) {
+            self.rawValue = rawValue
+        }
+    }
+
     enum BackgroundPriority: UInt8 {
         /// The sprite/object appears in front of the background and window
-        case aboveBackground = 0
+        case aboveBackground
         /// The sprite/object appears behind the background and window, though,
         /// BG color 0 is always behind the object.
-        case beneathBackground = 1
+        case beneathBackground
     }
 
     var position: Position {
@@ -42,26 +50,8 @@ public extension SpriteAttributes {
         getByteAtIndex(Attributes.tileNumber)
     }
 
-    /// Only lower 1 bit is used
-    var monochromePaletteNumber: Byte {
-        let flags = getByteAtIndex(Attributes.flags)
-        return (flags >> 4) & 0x01
-    }
-
-    var isXFlipped: Bool {
-        let flags = getByteAtIndex(Attributes.flags)
-        return (flags >> 5) & 0x01 == 1
-    }
-
-    var isYFlipped: Bool {
-        let flags = getByteAtIndex(Attributes.flags)
-        return (flags >> 6) & 0x01 == 1
-    }
-
-    var backgroundPriority: BackgroundPriority {
-        let flags = getByteAtIndex(Attributes.flags)
-        let rawPriority = (flags >> 7) & 0x01
-        return BackgroundPriority(rawValue: rawPriority)!
+    var flags: Flags {
+        Flags(rawValue: getByteAtIndex(Attributes.flags))
     }
 
     // MARK: - Helpers
@@ -71,9 +61,41 @@ public extension SpriteAttributes {
     }
 }
 
+public extension SpriteAttributes.Flags {
+    /// CGB color palette index 0-7
+    var cgbPaletteNumber: UInt8 {
+        rawValue & 0x07
+    }
+
+    /// The VRAM bank used to get the tile data for this sprite. Only available in CGB.
+    var tileVRAMBankNumber: VRAM.BankNumber {
+        VRAM.BankNumber(rawValue: (rawValue >> 3) & 0x01)!
+    }
+
+    /// DMG has only two color palettes for sprites, so this value is either 0 or 1
+    var monochromePaletteNumber: UInt8 {
+        (rawValue >> 4) & 0x01
+    }
+
+    /// Whether the sprite is flipped horizontally
+    var isXFlipped: Bool {
+        (rawValue >> 5) & 0x01 == 1
+    }
+
+    /// Whether the sprite is flipped vertically
+    var isYFlipped: Bool {
+        (rawValue >> 6) & 0x01 == 1
+    }
+
+    /// Whether this sprite is displayed above or below the background
+    var backgroundPriority: SpriteAttributes.BackgroundPriority {
+        SpriteAttributes.BackgroundPriority(rawValue: (rawValue >> 7) & 0x01)!
+    }
+}
+
 extension SpriteAttributes {
     var monochromePalette: ColorPalettes.Palette {
-        switch monochromePaletteNumber {
+        switch flags.monochromePaletteNumber {
         case 0:
             return .monochromeObject0
         case 1:
@@ -88,7 +110,7 @@ extension SpriteAttributes {
             tileNumber & 0xfe,
             tileNumber | 0x01
         ]
-        return isYFlipped ? tileNumbers.reversed() : tileNumbers
+        return flags.isYFlipped ? tileNumbers.reversed() : tileNumbers
     }
 
     func getIsOnScreen(objectSize: LCDControl.ObjectSize) -> Bool {

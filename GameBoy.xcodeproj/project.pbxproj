@@ -245,6 +245,8 @@
 		75E85C7025AE8C9300DD9A9F /* CPUContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75E85C6E25AE8C9300DD9A9F /* CPUContext.swift */; };
 		75E8E17E25E19D120015DBDC /* BGMapTileAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75E8E17D25E19D120015DBDC /* BGMapTileAttributes.swift */; };
 		75E8E17F25E19D120015DBDC /* BGMapTileAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75E8E17D25E19D120015DBDC /* BGMapTileAttributes.swift */; };
+		75E8E18525E1C4AE0015DBDC /* CGBPalette.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75E8E18425E1C4AE0015DBDC /* CGBPalette.swift */; };
+		75E8E18625E1C4AE0015DBDC /* CGBPalette.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75E8E18425E1C4AE0015DBDC /* CGBPalette.swift */; };
 		75ED9D0625C61B4600DBC61B /* SoundControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75ED9D0525C61B4600DBC61B /* SoundControl.swift */; };
 		75ED9D0725C61B4600DBC61B /* SoundControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75ED9D0525C61B4600DBC61B /* SoundControl.swift */; };
 		75EE74AD25B14C070030D57D /* MockCPUContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75EE74AC25B14C070030D57D /* MockCPUContext.swift */; };
@@ -477,6 +479,7 @@
 		75E0E3FB25C2653D00AFE57E /* APU.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APU.swift; sourceTree = "<group>"; };
 		75E85C6E25AE8C9300DD9A9F /* CPUContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CPUContext.swift; sourceTree = "<group>"; };
 		75E8E17D25E19D120015DBDC /* BGMapTileAttributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BGMapTileAttributes.swift; sourceTree = "<group>"; };
+		75E8E18425E1C4AE0015DBDC /* CGBPalette.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CGBPalette.swift; sourceTree = "<group>"; };
 		75ED9D0525C61B4600DBC61B /* SoundControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundControl.swift; sourceTree = "<group>"; };
 		75EE74AC25B14C070030D57D /* MockCPUContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockCPUContext.swift; sourceTree = "<group>"; };
 		75F14CB425CB74B6006ECE2B /* WavePattern.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WavePattern.swift; sourceTree = "<group>"; };
@@ -794,6 +797,7 @@
 				75BD98BD22A4135900CFFB68 /* LCDStatus.swift */,
 				75BD98BF22A413AA00CFFB68 /* LCDControl.swift */,
 				75BD98C122A41DDC00CFFB68 /* ColorPalettes.swift */,
+				75E8E18425E1C4AE0015DBDC /* CGBPalette.swift */,
 				75B3AD55229E13B700A03C5A /* PPU.swift */,
 				75B0E22425B915AC0021B3C9 /* PPU+Debug.swift */,
 				757F38C322B0731E00BBB570 /* Renderer.swift */,
@@ -1324,6 +1328,7 @@
 				75D0E53D22B1C8430049BF6D /* WRAM.swift in Sources */,
 				75AC8EE025AFEFEF00C4A1DA /* DisplayLink.swift in Sources */,
 				75B6D62A22BA6D67009E6E82 /* Timer.swift in Sources */,
+				75E8E18625E1C4AE0015DBDC /* CGBPalette.swift in Sources */,
 				75524EB225CA32C5002D05F4 /* Cache.swift in Sources */,
 				757F38FF22B1C69F00BBB570 /* CPU+Opcodes+CB.swift in Sources */,
 				75A1BD7225D8987800BC16F3 /* SquareSampleProvider.swift in Sources */,
@@ -1430,6 +1435,7 @@
 				75524EC325CA3FFD002D05F4 /* WaveDuty.swift in Sources */,
 				757F38CA22B08A5500BBB570 /* AAPLShaders.metal in Sources */,
 				75B3AD58229EA1DD00A03C5A /* GameBoy.swift in Sources */,
+				75E8E18525E1C4AE0015DBDC /* CGBPalette.swift in Sources */,
 				75D0E53C22B1C7BC0049BF6D /* WRAM.swift in Sources */,
 				75524EB125CA32C5002D05F4 /* Cache.swift in Sources */,
 				758D868022B86B8900C28791 /* Timer.swift in Sources */,

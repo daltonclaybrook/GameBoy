@@ -2,6 +2,7 @@
 /// color in a color palette. Only first 2 bits are used.
 public typealias ColorNumber = Byte
 
+/// A single color of a pixel in a tile. Values range between 0-255.
 public struct Color {
     let red: Byte
     let green: Byte

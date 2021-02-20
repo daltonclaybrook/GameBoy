@@ -1,5 +1,5 @@
 public final class VRAM: MemoryAddressable {
-    fileprivate enum BankNumber: UInt8, CaseIterable {
+    public enum BankNumber: UInt8, CaseIterable {
         /// Contains tile data and tile map data
         case zero
         /// Contains tile data and tile map attribute data. Only available on CGB.

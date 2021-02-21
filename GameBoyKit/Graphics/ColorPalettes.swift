@@ -34,31 +34,31 @@ public final class ColorPalettes {
     /// the `PaletteView` type is thread safe.
     public var currentView: PaletteView {
         PaletteView(
-            monochromeBGAndWindowData: monochromeBGAndWindowData,
-            monochromeObject0Data: monochromeObject0Data,
-            monochromeObject1Data: monochromeObject1Data
+            monochromeBGAndWindowPalette: monochromeBGAndWindowPalette,
+            monochromeObject0Palette: monochromeObject0Palette,
+            monochromeObject1Palette: monochromeObject1Palette
         )
     }
 
-    private var monochromeBGAndWindowData: Byte = 0
-    private var monochromeObject0Data: Byte = 0
-    private var monochromeObject1Data: Byte = 0
+    private var monochromeBGAndWindowPalette = MonochromePalette()
+    private var monochromeObject0Palette = MonochromePalette()
+    private var monochromeObject1Palette = MonochromePalette()
 
     private var backgroundColorPaletteIndex = PaletteIndexAndIncrement(rawValue: 0x00)
     private var objectColorPaletteIndex = PaletteIndexAndIncrement(rawValue: 0x00)
-    private var colorBGAndWindowData = [CGBPalette](repeating: .init(), count: 8)
-    private var colorObjectData = [CGBPalette](repeating: .init(), count: 8)
+    private var colorBGAndWindowData = [ColorPalette](repeating: .init(), count: 8)
+    private var colorObjectData = [ColorPalette](repeating: .init(), count: 8)
 
     public init() {}
 
     public func read(address: Address) -> Byte {
         switch address {
         case Registers.monochromeBGAndWindowData:
-            return monochromeBGAndWindowData
+            return monochromeBGAndWindowPalette.rawValue
         case Registers.monochromeObject0Data:
-            return monochromeObject0Data
+            return monochromeObject0Palette.rawValue
         case Registers.monochromeObject1Data:
-            return monochromeObject1Data
+            return monochromeObject1Palette.rawValue
         case Registers.backgroundColorPaletteIndex:
             return backgroundColorPaletteIndex.rawValue
         case Registers.backgroundColorPaletteData where colorPaletteMemoryIsAccessible:
@@ -78,11 +78,11 @@ public final class ColorPalettes {
     public func write(byte: Byte, to address: Address) {
         switch address {
         case Registers.monochromeBGAndWindowData:
-            monochromeBGAndWindowData = byte
+            monochromeBGAndWindowPalette.rawValue = byte
         case Registers.monochromeObject0Data:
-            monochromeObject0Data = byte
+            monochromeObject0Palette.rawValue = byte
         case Registers.monochromeObject1Data:
-            monochromeObject1Data = byte
+            monochromeObject1Palette.rawValue = byte
         case Registers.backgroundColorPaletteIndex:
             backgroundColorPaletteIndex.rawValue = byte
         case Registers.backgroundColorPaletteData where colorPaletteMemoryIsAccessible:
@@ -101,18 +101,18 @@ public final class ColorPalettes {
 
     // MARK: - Helpers
 
-    private func readColorPaletteData(_ data: [CGBPalette], index: PaletteIndexAndIncrement) -> Byte {
+    private func readColorPaletteData(_ data: [ColorPalette], index: PaletteIndexAndIncrement) -> Byte {
         let index = index.index
         let paletteIndex = Int(index) / 8
         let offsetInPalette = Int(index) % 8
-        return data[paletteIndex].getByte(atByteOffset: offsetInPalette)
+        return data[paletteIndex].getByte(atOffset: offsetInPalette)
     }
 
-    private func writeColorPaletteData(_ data: inout [CGBPalette], byte: Byte, indexAndIncrement: inout PaletteIndexAndIncrement) {
+    private func writeColorPaletteData(_ data: inout [ColorPalette], byte: Byte, indexAndIncrement: inout PaletteIndexAndIncrement) {
         let index = indexAndIncrement.index
         let paletteIndex = Int(index) / 8
         let offsetInPalette = Int(index) % 8
-        data[paletteIndex].setByte(byte, atByteOffset: offsetInPalette)
+        data[paletteIndex].setByte(byte, atOffset: offsetInPalette)
         if indexAndIncrement.autoIncrementOnWrite {
             indexAndIncrement.incrementIndex()
         }
@@ -121,37 +121,25 @@ public final class ColorPalettes {
 
 /// A view into the current state of palette data. This type is thread safe.
 public struct PaletteView {
-    let monochromeBGAndWindowData: Byte
-    let monochromeObject0Data: Byte
-    let monochromeObject1Data: Byte
+    let monochromeBGAndWindowPalette: MonochromePalette
+    let monochromeObject0Palette: MonochromePalette
+    let monochromeObject1Palette: MonochromePalette
 
     public func getColor(for number: ColorNumber, in palette: ColorPalettes.Palette) -> Color {
-        let paletteData = getData(for: palette)
-        return getMonochromeColor(for: number, data: paletteData)
+        let paletteType = getPalette(for: palette)
+        return paletteType.getColor(for: number)
     }
 
     // MARK: - Helpers
 
-    private func getData(for palette: ColorPalettes.Palette) -> Byte {
+    private func getPalette(for palette: ColorPalettes.Palette) -> PaletteType {
         switch palette {
         case .monochromeBackgroundAndWindow:
-            return monochromeBGAndWindowData
+            return monochromeBGAndWindowPalette
         case .monochromeObject0:
-            return monochromeObject0Data
+            return monochromeObject0Palette
         case .monochromeObject1:
-            return monochromeObject1Data
+            return monochromeObject1Palette
         }
-    }
-
-    private func getMonochromeColor(for colorNumber: ColorNumber, data: Byte) -> Color {
-        let shift = (colorNumber & 0x03) * 2
-        let colorShadeIndex = (data >> shift) & 0x03
-        // Possible values are:
-        // 0 => 255 (white)
-        // 1 => 170 (light gray)
-        // 2 => 85 (dark gray)
-        // 3 => 0 (black)
-        let grayValue = 255 - colorShadeIndex * 85
-        return Color(red: grayValue, green: grayValue, blue: grayValue)
     }
 }

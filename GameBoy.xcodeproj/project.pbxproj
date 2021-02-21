@@ -249,6 +249,8 @@
 		75E8E18625E1C4AE0015DBDC /* CGBPalette.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75E8E18425E1C4AE0015DBDC /* CGBPalette.swift */; };
 		75E8E18C25E1DD6E0015DBDC /* PaletteIndexAndIncrement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75E8E18B25E1DD6E0015DBDC /* PaletteIndexAndIncrement.swift */; };
 		75E8E18D25E1DD6E0015DBDC /* PaletteIndexAndIncrement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75E8E18B25E1DD6E0015DBDC /* PaletteIndexAndIncrement.swift */; };
+		75E8E19325E2C8780015DBDC /* bootrom.gbc in Resources */ = {isa = PBXBuildFile; fileRef = 75E8E19225E2C8780015DBDC /* bootrom.gbc */; };
+		75E8E19425E2C8780015DBDC /* bootrom.gbc in Resources */ = {isa = PBXBuildFile; fileRef = 75E8E19225E2C8780015DBDC /* bootrom.gbc */; };
 		75ED9D0625C61B4600DBC61B /* SoundControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75ED9D0525C61B4600DBC61B /* SoundControl.swift */; };
 		75ED9D0725C61B4600DBC61B /* SoundControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75ED9D0525C61B4600DBC61B /* SoundControl.swift */; };
 		75EE74AD25B14C070030D57D /* MockCPUContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75EE74AC25B14C070030D57D /* MockCPUContext.swift */; };
@@ -483,6 +485,7 @@
 		75E8E17D25E19D120015DBDC /* BGMapTileAttributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BGMapTileAttributes.swift; sourceTree = "<group>"; };
 		75E8E18425E1C4AE0015DBDC /* CGBPalette.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CGBPalette.swift; sourceTree = "<group>"; };
 		75E8E18B25E1DD6E0015DBDC /* PaletteIndexAndIncrement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaletteIndexAndIncrement.swift; sourceTree = "<group>"; };
+		75E8E19225E2C8780015DBDC /* bootrom.gbc */ = {isa = PBXFileReference; lastKnownFileType = file; path = bootrom.gbc; sourceTree = "<group>"; };
 		75ED9D0525C61B4600DBC61B /* SoundControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundControl.swift; sourceTree = "<group>"; };
 		75EE74AC25B14C070030D57D /* MockCPUContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockCPUContext.swift; sourceTree = "<group>"; };
 		75F14CB425CB74B6006ECE2B /* WavePattern.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WavePattern.swift; sourceTree = "<group>"; };
@@ -643,6 +646,7 @@
 		7590E7DC25ABA529005E1280 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				75E8E19225E2C8780015DBDC /* bootrom.gbc */,
 				7590E7D525ABA514005E1280 /* bootrom.gb */,
 			);
 			path = Resources;
@@ -1186,6 +1190,7 @@
 			files = (
 				757F38FA22B1C68D00BBB570 /* AAPL_LICENSE.txt in Resources */,
 				7590E7E225ABA531005E1280 /* bootrom.gb in Resources */,
+				75E8E19425E2C8780015DBDC /* bootrom.gbc in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1244,6 +1249,7 @@
 			files = (
 				757F38CD22B08A6A00BBB570 /* AAPL_LICENSE.txt in Resources */,
 				7590E7DD25ABA530005E1280 /* bootrom.gb in Resources */,
+				75E8E19325E2C8780015DBDC /* bootrom.gbc in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

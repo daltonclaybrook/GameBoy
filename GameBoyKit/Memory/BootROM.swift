@@ -22,11 +22,20 @@ public final class BootROM: MemoryMasking {
     }
 }
 
-extension BootROM {
-    /// Used to make the boot ROM from the original Game Boy, code-named DMG.
-    public static func dmgBootRom() throws -> BootROM {
-        let fileURL = Bundle(for: BootROM.self).url(forResource: "bootrom", withExtension: "gb")!
+public extension BootROM {
+    /// Used to make the boot ROM for the appropriate system
+    convenience init(system: GameBoy.System) throws {
+        switch system {
+        case .dmg:
+            try self.init(fileName: "bootrom", fileExtension: "gb")
+        case .cgb:
+            try self.init(fileName: "bootrom", fileExtension: "gbc")
+        }
+    }
+
+    private convenience init(fileName: String, fileExtension: String) throws {
+        let fileURL = Bundle(for: BootROM.self).url(forResource: fileName, withExtension: fileExtension)!
         let fileData = try Data(contentsOf: fileURL)
-        return self.init(bytes: [Byte](fileData))
+        self.init(bytes: [Byte](fileData))
     }
 }

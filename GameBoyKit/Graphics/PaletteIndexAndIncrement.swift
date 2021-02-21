@@ -1,7 +1,7 @@
 /// Registers `0xff68` and `0xff6a` contain values of this type used to indicate which CGB color
 /// byte can currently be read/written, and whether that index should increment on write.
 public struct PaletteIndexAndIncrement: RawRepresentable {
-    public private(set) var rawValue: Byte
+    public var rawValue: Byte
 
     public init(rawValue: Byte) {
         self.rawValue = rawValue

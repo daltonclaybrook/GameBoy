@@ -7,11 +7,18 @@ public struct CGBPalette {
         CGBPaletteColor(rawValue: 0x00)
     ]
 
-    public mutating func update(byte: Byte, atByteOffset byteOffset: Int) {
+    public func getByte(atByteOffset byteOffset: Int) -> Byte {
         precondition(byteOffset >= 0 && byteOffset < allColors.count * 2)
         let colorOffset = byteOffset / 2
         let offsetInColor = byteOffset % 2
-        allColors[colorOffset].update(byte: byte, atOffset: offsetInColor)
+        return allColors[colorOffset].getByte(atOffset: offsetInColor)
+    }
+
+    public mutating func setByte(_ byte: Byte, atByteOffset byteOffset: Int) {
+        precondition(byteOffset >= 0 && byteOffset < allColors.count * 2)
+        let colorOffset = byteOffset / 2
+        let offsetInColor = byteOffset % 2
+        allColors[colorOffset].setByte(byte, atOffset: offsetInColor)
     }
 }
 
@@ -23,7 +30,18 @@ public struct CGBPaletteColor: RawRepresentable {
         self.rawValue = rawValue
     }
 
-    public mutating func update(byte: Byte, atOffset offset: Int) {
+    public func getByte(atOffset offset: Int) -> Byte {
+        switch offset {
+        case 0:
+            return Byte(rawValue & 0xff)
+        case 1:
+            return Byte(rawValue >> 8)
+        default:
+            fatalError("Offset \(offset) outside of acceptable range")
+        }
+    }
+
+    public mutating func setByte(_ byte: Byte, atOffset offset: Int) {
         switch offset {
         case 0:
             rawValue = (rawValue & 0xff00) | UInt16(byte)

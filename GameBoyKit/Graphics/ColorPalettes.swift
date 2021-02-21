@@ -20,6 +20,10 @@ public final class ColorPalettes {
         public static let monochromeBGAndWindowData: Address = 0xff47
         public static let monochromeObject0Data: Address = 0xff48
         public static let monochromeObject1Data: Address = 0xff49
+        public static let backgroundColorPaletteIndex: Address = 0xff68
+        public static let backgroundColorPaletteData: Address = 0xff69
+        public static let objectColorPaletteIndex: Address = 0xff6a
+        public static let objectColorPaletteData: Address = 0xff6b
     }
 
     public let monochromeAddressRange: ClosedRange<Address> = (0xff47...0xff49)
@@ -39,6 +43,11 @@ public final class ColorPalettes {
     private var monochromeObject0Data: Byte = 0
     private var monochromeObject1Data: Byte = 0
 
+    private var backgroundColorPaletteIndex = PaletteIndexAndIncrement(rawValue: 0x00)
+    private var objectColorPaletteIndex = PaletteIndexAndIncrement(rawValue: 0x00)
+    private var colorBGAndWindowData = [CGBPalette](repeating: .init(), count: 8)
+    private var colorObjectData = [CGBPalette](repeating: .init(), count: 8)
+
     public init() {}
 
     public func read(address: Address) -> Byte {
@@ -49,6 +58,14 @@ public final class ColorPalettes {
             return monochromeObject0Data
         case Registers.monochromeObject1Data:
             return monochromeObject1Data
+        case Registers.backgroundColorPaletteIndex:
+            return backgroundColorPaletteIndex.rawValue
+        case Registers.backgroundColorPaletteData:
+            return readColorPaletteData(colorBGAndWindowData, index: backgroundColorPaletteIndex)
+        case Registers.objectColorPaletteIndex:
+            return objectColorPaletteIndex.rawValue
+        case Registers.objectColorPaletteData:
+            return readColorPaletteData(colorObjectData, index: objectColorPaletteIndex)
         default:
             fatalError("Attempting to read from invalid address")
         }
@@ -62,8 +79,35 @@ public final class ColorPalettes {
             monochromeObject0Data = byte
         case Registers.monochromeObject1Data:
             monochromeObject1Data = byte
+        case Registers.backgroundColorPaletteIndex:
+            backgroundColorPaletteIndex.rawValue = byte
+        case Registers.backgroundColorPaletteData:
+            return writeColorPaletteData(&colorBGAndWindowData, byte: byte, indexAndIncrement: &backgroundColorPaletteIndex)
+        case Registers.objectColorPaletteIndex:
+            objectColorPaletteIndex.rawValue = byte
+        case Registers.objectColorPaletteData:
+            return writeColorPaletteData(&colorObjectData, byte: byte, indexAndIncrement: &objectColorPaletteIndex)
         default:
             fatalError("Attempting to read from invalid address")
+        }
+    }
+
+    // MARK: - Helpers
+
+    private func readColorPaletteData(_ data: [CGBPalette], index: PaletteIndexAndIncrement) -> Byte {
+        let index = index.index
+        let paletteIndex = Int(index) / 8
+        let offsetInPalette = Int(index) % 8
+        return data[paletteIndex].getByte(atByteOffset: offsetInPalette)
+    }
+
+    private func writeColorPaletteData(_ data: inout [CGBPalette], byte: Byte, indexAndIncrement: inout PaletteIndexAndIncrement) {
+        let index = indexAndIncrement.index
+        let paletteIndex = Int(index) / 8
+        let offsetInPalette = Int(index) % 8
+        data[paletteIndex].setByte(byte, atByteOffset: offsetInPalette)
+        if indexAndIncrement.autoIncrementOnWrite {
+            indexAndIncrement.incrementIndex()
         }
     }
 }

@@ -138,9 +138,11 @@ public final class PPU {
             }
         case .transferringToLCD:
             vram.isBeingReadByPPU = true
+            io.palettes.colorPaletteMemoryIsAccessible = false
         case .horizontalBlank:
             oam.isBeingReadByPPU = false
             vram.isBeingReadByPPU = false
+            io.palettes.colorPaletteMemoryIsAccessible = true
         case .verticalBlank:
             renderPixelBuffer()
             io.interruptFlags.insert(.vBlank)

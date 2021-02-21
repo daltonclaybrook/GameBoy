@@ -26,7 +26,8 @@ public final class ColorPalettes {
         public static let objectColorPaletteData: Address = 0xff6b
     }
 
-    public let monochromeAddressRange: ClosedRange<Address> = (0xff47...0xff49)
+    public let monochromeAddressRange: ClosedRange<Address> = 0xff47...0xff49
+    public var colorPaletteMemoryIsAccessible = true
 
     /// Clients use this view to access colors from palette memory
     /// at a discrete point in time. Unlike the `ColorPalettes` object,
@@ -60,12 +61,15 @@ public final class ColorPalettes {
             return monochromeObject1Data
         case Registers.backgroundColorPaletteIndex:
             return backgroundColorPaletteIndex.rawValue
-        case Registers.backgroundColorPaletteData:
+        case Registers.backgroundColorPaletteData where colorPaletteMemoryIsAccessible:
             return readColorPaletteData(colorBGAndWindowData, index: backgroundColorPaletteIndex)
         case Registers.objectColorPaletteIndex:
             return objectColorPaletteIndex.rawValue
-        case Registers.objectColorPaletteData:
+        case Registers.objectColorPaletteData where colorPaletteMemoryIsAccessible:
             return readColorPaletteData(colorObjectData, index: objectColorPaletteIndex)
+        case Registers.backgroundColorPaletteData, Registers.objectColorPaletteData:
+            // color palette memory is not current accessible
+            return 0xff
         default:
             fatalError("Attempting to read from invalid address")
         }
@@ -81,12 +85,15 @@ public final class ColorPalettes {
             monochromeObject1Data = byte
         case Registers.backgroundColorPaletteIndex:
             backgroundColorPaletteIndex.rawValue = byte
-        case Registers.backgroundColorPaletteData:
+        case Registers.backgroundColorPaletteData where colorPaletteMemoryIsAccessible:
             return writeColorPaletteData(&colorBGAndWindowData, byte: byte, indexAndIncrement: &backgroundColorPaletteIndex)
         case Registers.objectColorPaletteIndex:
             objectColorPaletteIndex.rawValue = byte
-        case Registers.objectColorPaletteData:
+        case Registers.objectColorPaletteData where colorPaletteMemoryIsAccessible:
             return writeColorPaletteData(&colorObjectData, byte: byte, indexAndIncrement: &objectColorPaletteIndex)
+        case Registers.backgroundColorPaletteData, Registers.objectColorPaletteData:
+            // color palette memory is not current accessible
+            break
         default:
             fatalError("Attempting to read from invalid address")
         }

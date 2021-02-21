@@ -114,10 +114,10 @@ extension SpriteAttributes {
     }
 
     func getIsOnScreen(objectSize: LCDControl.ObjectSize) -> Bool {
-        let xRange = (1..<UInt8(Constants.screenWidth) + objectSize.width)
+        let xRange = (1..<UInt8(ScreenConstants.width) + objectSize.width)
         guard xRange.contains(position.x) else { return false }
         let minY = objectSize.maxHeight - objectSize.height + 1
-        let yRange = (minY..<UInt8(Constants.screenHeight) + objectSize.maxHeight)
+        let yRange = (minY..<UInt8(ScreenConstants.height) + objectSize.maxHeight)
         guard yRange.contains(position.y) else { return false }
         return true
     }

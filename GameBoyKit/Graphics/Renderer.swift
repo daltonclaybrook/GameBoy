@@ -36,8 +36,8 @@ public final class MetalRenderer: NSObject, Renderer {
 
         let textureDescriptor = MTLTextureDescriptor()
         textureDescriptor.pixelFormat = .rgba8Unorm
-        textureDescriptor.width = Constants.screenWidth
-        textureDescriptor.height = Constants.screenHeight
+        textureDescriptor.width = ScreenConstants.width
+        textureDescriptor.height = ScreenConstants.height
 
         guard let texture = device.makeTexture(descriptor: textureDescriptor) else {
             throw RendererError.failedToMakeTexture
@@ -91,12 +91,12 @@ public final class MetalRenderer: NSObject, Renderer {
             region: region.mtlRegion,
             mipmapLevel: 0,
             withBytes: bytes,
-            bytesPerRow: 4 * Constants.screenWidth
+            bytesPerRow: 4 * ScreenConstants.width
         )
     }
 
     private func updateForDrawableSizeChange(_ size: CGSize) {
-        let targetRatio = CGFloat(Constants.screenWidth) / CGFloat(Constants.screenHeight)
+        let targetRatio = CGFloat(ScreenConstants.width) / CGFloat(ScreenConstants.height)
         let drawableRatio = size.width / size.height
 
         let vertexWidth: Float

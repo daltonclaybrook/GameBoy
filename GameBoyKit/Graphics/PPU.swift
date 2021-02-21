@@ -23,22 +23,25 @@ public final class PPU {
         case sprite(Color)
     }
 
+    private struct Constants {
+        static let oamSearchDuration: Cycles = 20
+        static let lcdTransferDuration: Cycles = 43
+        static let hBlankDuration: Cycles = 51
+        static let vBlankLineCount = 10
+        static let mapWidthInTiles: UInt16 = 32 // map is 32x32 tiles
+    }
+
     private let queue = DispatchQueue(
         label: "com.daltonclaybrook.GameBoy.PPU",
         qos: .userInteractive
     )
 
-    private let renderer: Renderer
     let io: IO
     let vram: VRAM
     let oam: OAM
 
-    private let oamSearchDuration: Cycles = 20
-    private let lcdTransferDuration: Cycles = 43
-    private let hBlankDuration: Cycles = 51
-    private let vBlankLineCount = 10
-    private let mapWidthInTiles: UInt16 = 32 // map is 32x32 tiles
-
+    private let renderer: Renderer
+    private let system: GameBoy.System
     private let vBlankDuration: Cycles
     private let cyclesPerLine: Cycles
     private var isDisplayEnabled = false
@@ -47,18 +50,19 @@ public final class PPU {
     /// calculate the next window line to draw. If window display is disabled, this
     /// will not be incremented.
     private var windowLineCounter: UInt8 = 0
-    private var pixelBuffer = [Byte](repeating: .max, count: Constants.screenWidth * Constants.screenHeight * 4)
+    private var pixelBuffer = [Byte](repeating: .max, count: ScreenConstants.width * ScreenConstants.height * 4)
 
-    init(renderer: Renderer, io: IO, vram: VRAM, oam: OAM) {
+    init(renderer: Renderer, system: GameBoy.System, io: IO, vram: VRAM, oam: OAM) {
         self.renderer = renderer
+        self.system = system
         self.io = io
         self.vram = vram
         self.oam = oam
-        self.cyclesRemaining = oamSearchDuration
+        self.cyclesRemaining = Constants.oamSearchDuration
         io.lcdStatus.mode = .searchingOAMRAM
 
-        cyclesPerLine = oamSearchDuration + lcdTransferDuration + hBlankDuration
-        vBlankDuration = cyclesPerLine * UInt64(vBlankLineCount)
+        cyclesPerLine = Constants.oamSearchDuration + Constants.lcdTransferDuration + Constants.hBlankDuration
+        vBlankDuration = cyclesPerLine * UInt64(Constants.vBlankLineCount)
         clearPixelBuffer()
     }
 
@@ -84,7 +88,7 @@ public final class PPU {
             changeMode(next: .horizontalBlank)
         case .horizontalBlank:
             io.lcdYCoordinate += 1
-            if io.lcdYCoordinate < Constants.screenHeight {
+            if io.lcdYCoordinate < ScreenConstants.height {
                 changeMode(next: .searchingOAMRAM)
             } else {
                 changeMode(next: .verticalBlank)
@@ -92,7 +96,7 @@ public final class PPU {
             checkAndHandleYCompare()
         case .verticalBlank:
             io.lcdYCoordinate += 1
-            if io.lcdYCoordinate >= Constants.screenHeight + vBlankLineCount {
+            if io.lcdYCoordinate >= ScreenConstants.height + Constants.vBlankLineCount {
                 // Jump back to the top of the screen
                 io.lcdYCoordinate = 0
                 queue.async {
@@ -166,11 +170,11 @@ public final class PPU {
         // todo: account for variation in lcd-transfer durations
         switch mode {
         case .searchingOAMRAM:
-            return oamSearchDuration
+            return Constants.oamSearchDuration
         case .transferringToLCD:
-            return lcdTransferDuration
+            return Constants.lcdTransferDuration
         case .horizontalBlank:
-            return hBlankDuration
+            return Constants.hBlankDuration
         case .verticalBlank:
             // This returns the cycles for one line of v-blank, not the full v-blank duration
             return cyclesPerLine
@@ -195,7 +199,7 @@ public final class PPU {
     }
 
     private func queueDrawScreenLine(with context: LineDrawingContext) {
-        var linePixels = [PixelInfo](repeating: .blank, count: Constants.screenWidth)
+        var linePixels = [PixelInfo](repeating: .blank, count: ScreenConstants.width)
 
         if context.lcdControl.backgroundAndWindowDisplayPriority {
             updatePixelsWithBackground(with: context, pixels: &linePixels)
@@ -219,7 +223,7 @@ public final class PPU {
         let lineInMap = context.scrollY &+ context.line
         let pixelYInTile = lineInMap % 8 // tile height in pixels
 
-        for screenX in 0..<UInt8(Constants.screenWidth) {
+        for screenX in 0..<UInt8(ScreenConstants.width) {
             let mapX = screenX &+ context.scrollX
             let pixelXInTile = mapX % 8 // tile width in pixels
             let tile = getTile(in: map, tileRange: tiles, vramView: context.vramView, pixelX: UInt16(mapX), pixelY: UInt16(lineInMap))
@@ -240,7 +244,7 @@ public final class PPU {
         // less than 7 result in hardware glitches on the game boy, but those glitches are
         // not emulated here.
         let windowX = UInt8(max(Int(context.windowX) - 7, 0))
-        let screenWidth = UInt8(Constants.screenWidth)
+        let screenWidth = UInt8(ScreenConstants.width)
         guard windowX < screenWidth else {
             // Window is off the right edge of the screen
             return
@@ -267,7 +271,7 @@ public final class PPU {
     private func updatePixelsWithSprites(context: LineDrawingContext, pixels: inout [PixelInfo]) {
         let sprites = context.oamView.findSortedSpriteAttributes(forLine: context.line, objectSize: context.lcdControl.objectSize)
         let objectSize = context.lcdControl.objectSize
-        let screenXRange = 0..<Int16(Constants.screenWidth)
+        let screenXRange = 0..<Int16(ScreenConstants.width)
 
         // Since these sprites are ordered from highest to lowest priority, we reverse them so
         // that higher priority sprites will overwrite lower priority ones.
@@ -324,14 +328,14 @@ public final class PPU {
     private func getTile(in mapRange: LCDControl.TileMapDisplayRange, tileRange: LCDControl.TileDataRange, vramView: VRAMView, pixelX: UInt16, pixelY: UInt16) -> Tile {
         let tileX = pixelX / 8
         let tileY = pixelY / 8
-        let tileOffsetInMap = tileY * mapWidthInTiles + tileX
+        let tileOffsetInMap = tileY * Constants.mapWidthInTiles + tileX
         let tileAddressInMap = mapRange.mapDataRange.lowerBound + tileOffsetInMap
         let tileNumber = vramView.read(address: tileAddressInMap)
         return tileRange.getTile(for: tileNumber)
     }
 
     private func replaceDataInPixelBuffer(forLine line: Int, with pixels: [PixelInfo]) {
-        let lineOffset = line * Constants.screenWidth * 4 // 4 bytes per pixel
+        let lineOffset = line * ScreenConstants.width * 4 // 4 bytes per pixel
         for (xOffset, pixel) in pixels.enumerated() {
             let pixelOffset = lineOffset + xOffset * 4
             let rgbaBytes = pixel.color.rgbaBytes
@@ -351,7 +355,7 @@ public final class PPU {
     }
 
     private func queueRenderPixelBuffer() {
-        let region = PixelRegion(x: 0, y: 0, width: Constants.screenWidth, height: Constants.screenHeight)
+        let region = PixelRegion(x: 0, y: 0, width: ScreenConstants.width, height: ScreenConstants.height)
         renderer.render(pixelData: pixelBuffer, at: region)
     }
 }

@@ -52,7 +52,7 @@ public final class GameBoy {
         wram = WRAM(system: system)
         vram = VRAM(system: system)
         io = IO(palettes: palettes, oam: oam, apu: apu, timer: timer, wram: wram)
-        ppu = PPU(renderer: renderer, io: io, vram: vram, oam: oam)
+        ppu = PPU(renderer: renderer, system: system, io: io, vram: vram, oam: oam)
         mmu = MMU(vram: vram, wram: wram, oam: oam, io: io, hram: hram)
         oam.mmu = mmu
         cpu = CPU()

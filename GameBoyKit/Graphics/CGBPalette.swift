@@ -1,13 +1,37 @@
 /// An RGB color palette used by the Game Boy Color
 public struct CGBPalette {
+    public private(set) var allColors: [CGBPaletteColor] = [
+        CGBPaletteColor(rawValue: 0x00),
+        CGBPaletteColor(rawValue: 0x00),
+        CGBPaletteColor(rawValue: 0x00),
+        CGBPaletteColor(rawValue: 0x00)
+    ]
+
+    public mutating func update(byte: Byte, atByteOffset byteOffset: Int) {
+        precondition(byteOffset >= 0 && byteOffset < allColors.count * 2)
+        let colorOffset = byteOffset / 2
+        let offsetInColor = byteOffset % 2
+        allColors[colorOffset].update(byte: byte, atOffset: offsetInColor)
+    }
 }
 
 /// Represents one RGB color in a four-color palette on CGB
 public struct CGBPaletteColor: RawRepresentable {
-    public let rawValue: UInt16
+    public private(set) var rawValue: UInt16
 
     public init(rawValue: UInt16) {
         self.rawValue = rawValue
+    }
+
+    public mutating func update(byte: Byte, atOffset offset: Int) {
+        switch offset {
+        case 0:
+            rawValue = (rawValue & 0xff00) | UInt16(byte)
+        case 1:
+            rawValue = (rawValue & 0x00ff) | (UInt16(byte) << 8)
+        default:
+            fatalError("Offset \(offset) outside of acceptable range")
+        }
     }
 }
 

@@ -247,6 +247,8 @@
 		75E8E17F25E19D120015DBDC /* BGMapTileAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75E8E17D25E19D120015DBDC /* BGMapTileAttributes.swift */; };
 		75E8E18525E1C4AE0015DBDC /* CGBPalette.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75E8E18425E1C4AE0015DBDC /* CGBPalette.swift */; };
 		75E8E18625E1C4AE0015DBDC /* CGBPalette.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75E8E18425E1C4AE0015DBDC /* CGBPalette.swift */; };
+		75E8E18C25E1DD6E0015DBDC /* PaletteIndexAndIncrement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75E8E18B25E1DD6E0015DBDC /* PaletteIndexAndIncrement.swift */; };
+		75E8E18D25E1DD6E0015DBDC /* PaletteIndexAndIncrement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75E8E18B25E1DD6E0015DBDC /* PaletteIndexAndIncrement.swift */; };
 		75ED9D0625C61B4600DBC61B /* SoundControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75ED9D0525C61B4600DBC61B /* SoundControl.swift */; };
 		75ED9D0725C61B4600DBC61B /* SoundControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75ED9D0525C61B4600DBC61B /* SoundControl.swift */; };
 		75EE74AD25B14C070030D57D /* MockCPUContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75EE74AC25B14C070030D57D /* MockCPUContext.swift */; };
@@ -480,6 +482,7 @@
 		75E85C6E25AE8C9300DD9A9F /* CPUContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CPUContext.swift; sourceTree = "<group>"; };
 		75E8E17D25E19D120015DBDC /* BGMapTileAttributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BGMapTileAttributes.swift; sourceTree = "<group>"; };
 		75E8E18425E1C4AE0015DBDC /* CGBPalette.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CGBPalette.swift; sourceTree = "<group>"; };
+		75E8E18B25E1DD6E0015DBDC /* PaletteIndexAndIncrement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaletteIndexAndIncrement.swift; sourceTree = "<group>"; };
 		75ED9D0525C61B4600DBC61B /* SoundControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundControl.swift; sourceTree = "<group>"; };
 		75EE74AC25B14C070030D57D /* MockCPUContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockCPUContext.swift; sourceTree = "<group>"; };
 		75F14CB425CB74B6006ECE2B /* WavePattern.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WavePattern.swift; sourceTree = "<group>"; };
@@ -797,6 +800,7 @@
 				75BD98BD22A4135900CFFB68 /* LCDStatus.swift */,
 				75BD98BF22A413AA00CFFB68 /* LCDControl.swift */,
 				75BD98C122A41DDC00CFFB68 /* ColorPalettes.swift */,
+				75E8E18B25E1DD6E0015DBDC /* PaletteIndexAndIncrement.swift */,
 				75E8E18425E1C4AE0015DBDC /* CGBPalette.swift */,
 				75B3AD55229E13B700A03C5A /* PPU.swift */,
 				75B0E22425B915AC0021B3C9 /* PPU+Debug.swift */,
@@ -1338,6 +1342,7 @@
 				7596942325B0017C008BDF67 /* DisplayLinkType.swift in Sources */,
 				757F390722B1C69F00BBB570 /* VRAM.swift in Sources */,
 				757F390D22B1C69F00BBB570 /* Renderer.swift in Sources */,
+				75E8E18D25E1DD6E0015DBDC /* PaletteIndexAndIncrement.swift in Sources */,
 				75E85C7025AE8C9300DD9A9F /* CPUContext.swift in Sources */,
 				75A1BDA425D89D7200BC16F3 /* WaveSampleProvider.swift in Sources */,
 				75B0E22D25B918A60021B3C9 /* Tile.swift in Sources */,
@@ -1445,6 +1450,7 @@
 				75FDE26F25B62B9F00C2A5FB /* GameBoy+Bootstrap.swift in Sources */,
 				75862E7425AD387E004AACA4 /* Numbers+Additions.swift in Sources */,
 				75B3AD52229DFC1700A03C5A /* ROM.swift in Sources */,
+				75E8E18C25E1DD6E0015DBDC /* PaletteIndexAndIncrement.swift in Sources */,
 				75BD98B822A2F44300CFFB68 /* CPU+Instructions+CB.swift in Sources */,
 				75E85C6F25AE8C9300DD9A9F /* CPUContext.swift in Sources */,
 				75B0E22C25B918A60021B3C9 /* Tile.swift in Sources */,

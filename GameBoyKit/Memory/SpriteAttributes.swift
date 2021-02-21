@@ -91,6 +91,15 @@ public extension SpriteAttributes.Flags {
     var backgroundPriority: SpriteAttributes.BackgroundPriority {
         SpriteAttributes.BackgroundPriority(rawValue: (rawValue >> 7) & 0x01)!
     }
+
+    func getBankNumber(for system: GameBoy.System) -> VRAM.BankNumber {
+        switch system {
+        case .dmg:
+            return .zero
+        case .cgb:
+            return tileVRAMBankNumber
+        }
+    }
 }
 
 extension SpriteAttributes {

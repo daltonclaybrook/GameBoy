@@ -52,23 +52,30 @@ extension PPU {
     }
 
     func getTiles(for sprite: SpriteAttributes, dataRange: LCDControl.TileDataRange) -> [Tile] {
-        getTileNumbers(for: sprite).map(dataRange.getTile(for:))
+        let spriteFlags = sprite.flags
+        let bankNumber = spriteFlags.getBankNumber(for: system)
+        return getTileNumbers(for: sprite).map { tileNumber in
+            let dataAddress = dataRange.getTileDataAddress(for: tileNumber)
+            return Tile(
+                dataAddress: dataAddress,
+                bankNumber: bankNumber,
+                isXFlipped: spriteFlags.isXFlipped,
+                isYFlipped: spriteFlags.isYFlipped
+            )
+        }
     }
 
     func getColorBytes(for sprite: SpriteAttributes, tile: Tile) -> [Byte] {
         var colorBytes: [Byte] = []
         let vramView = vram.currentView
         let paletteView = io.palettes.currentView
-        let spriteFlags = sprite.flags
 
         (UInt8(0)..<8).forEach { yOffset in
             (UInt8(0)..<8).forEach { xOffset in
                 let colorNumber = tile.getColorNumber(
                     vramView: vramView,
                     xOffset: xOffset,
-                    xFlipped: spriteFlags.isXFlipped,
-                    yOffset: yOffset,
-                    yFlipped: spriteFlags.isYFlipped
+                    yOffset: yOffset
                 )
                 if colorNumber == 0 {
                     // Color number 0 is transparent in sprites

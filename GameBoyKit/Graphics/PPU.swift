@@ -39,9 +39,9 @@ public final class PPU {
     let io: IO
     let vram: VRAM
     let oam: OAM
+    let system: GameBoy.System
 
     private let renderer: Renderer
-    private let system: GameBoy.System
     private let vBlankDuration: Cycles
     private let cyclesPerLine: Cycles
     private var isDisplayEnabled = false
@@ -226,7 +226,13 @@ public final class PPU {
         for screenX in 0..<UInt8(ScreenConstants.width) {
             let mapX = screenX &+ context.scrollX
             let pixelXInTile = mapX % 8 // tile width in pixels
-            let tile = getTile(in: map, tileRange: tiles, vramView: context.vramView, pixelX: UInt16(mapX), pixelY: UInt16(lineInMap))
+            let (tile, attributes) = getTileAndAttributes(
+                in: map,
+                tileRange: tiles,
+                vramView: context.vramView,
+                pixelX: UInt16(mapX),
+                pixelY: UInt16(lineInMap)
+            )
             let pixelColorNumber = tile.getColorNumber(vramView: context.vramView, xOffset: pixelXInTile, yOffset: pixelYInTile)
 
             let pixelColor = context.paletteView.getColor(for: pixelColorNumber, in: .monochromeBackgroundAndWindow)
@@ -260,7 +266,13 @@ public final class PPU {
         for screenX in windowX..<screenWidth {
             let xOffsetInWindow = screenX - windowX
             let xOffsetInTile = xOffsetInWindow % 8
-            let tile = getTile(in: mapRange, tileRange: tileRange, vramView: context.vramView, pixelX: UInt16(xOffsetInWindow), pixelY: UInt16(yOffsetInWindow))
+            let (tile, attributes) = getTileAndAttributes(
+                in: mapRange,
+                tileRange: tileRange,
+                vramView: context.vramView,
+                pixelX: UInt16(xOffsetInWindow),
+                pixelY: UInt16(yOffsetInWindow)
+            )
             let colorNumber = tile.getColorNumber(vramView: context.vramView, xOffset: xOffsetInTile, yOffset: yOffsetInTile)
             let pixelColor = context.paletteView.getColor(for: colorNumber, in: .monochromeBackgroundAndWindow)
             pixels[Int(screenX)] = .window(pixelColor, colorNumber: colorNumber)
@@ -286,6 +298,7 @@ public final class PPU {
             }
 
             let spriteFlags = sprite.flags
+            let tileBankNumber = spriteFlags.getBankNumber(for: system)
             for xOffsetInSprite in 0..<objectSize.width {
                 let xPositionInScreen = xRange.lowerBound + Int16(xOffsetInSprite)
                 guard screenXRange.contains(xPositionInScreen) else { continue }
@@ -293,13 +306,12 @@ public final class PPU {
                 let yOffsetInSprite = UInt8(lineRange.lowerBound.distance(to: Int16(context.line)))
                 let yOffsetInTile = yOffsetInSprite % 8
                 let tileNumber = sprite.getTileNumber(yOffsetInSprite: yOffsetInSprite, objectSize: objectSize)
-                let tile = context.lcdControl.tileDataRangeForObjects.getTile(for: tileNumber)
+                let tileDataAddress = context.lcdControl.tileDataRangeForObjects.getTileDataAddress(for: tileNumber)
+                let tile = Tile(dataAddress: tileDataAddress, bankNumber: tileBankNumber, isXFlipped: spriteFlags.isXFlipped, isYFlipped: spriteFlags.isYFlipped)
                 let pixelColorNumber = tile.getColorNumber(
                     vramView: context.vramView,
                     xOffset: xOffsetInSprite,
-                    xFlipped: spriteFlags.isXFlipped,
-                    yOffset: yOffsetInTile,
-                    yFlipped: spriteFlags.isYFlipped
+                    yOffset: yOffsetInTile
                 )
                 guard pixelColorNumber != 0 else {
                     // Sprite color number 0 is always transparent
@@ -325,13 +337,27 @@ public final class PPU {
         }
     }
 
-    private func getTile(in mapRange: LCDControl.TileMapDisplayRange, tileRange: LCDControl.TileDataRange, vramView: VRAMView, pixelX: UInt16, pixelY: UInt16) -> Tile {
+    private func getTileAndAttributes(
+        in mapRange: LCDControl.TileMapDisplayRange,
+        tileRange: LCDControl.TileDataRange,
+        vramView: VRAMView,
+        pixelX: UInt16,
+        pixelY: UInt16
+    ) -> (Tile, BGMapTileAttributes) {
         let tileX = pixelX / 8
         let tileY = pixelY / 8
         let tileOffsetInMap = tileY * Constants.mapWidthInTiles + tileX
-        let tileAddressInMap = mapRange.mapDataRange.lowerBound + tileOffsetInMap
+        let tileAddressInMap = mapRange.addressRange.lowerBound + tileOffsetInMap
         let tileNumber = vramView.read(address: tileAddressInMap)
-        return tileRange.getTile(for: tileNumber)
+        let tileDataAddress = tileRange.getTileDataAddress(for: tileNumber)
+        let attributes = vramView.getAttributesForTileAddressInMap(tileAddressInMap)
+        let tile = Tile(
+            dataAddress: tileDataAddress,
+            bankNumber: attributes.tileVRAMBankNumber,
+            isXFlipped: attributes.isXFlipped,
+            isYFlipped: attributes.isYFlipped
+        )
+        return (tile, attributes)
     }
 
     private func replaceDataInPixelBuffer(forLine line: Int, with pixels: [PixelInfo]) {

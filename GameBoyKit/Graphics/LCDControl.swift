@@ -72,12 +72,12 @@ extension LCDControl {
 }
 
 extension LCDControl.TileMapDisplayRange {
-    var mapDataRange: ClosedRange<Address> {
+    var addressRange: ClosedRange<Address> {
         switch self {
         case .low:
-            return (0x9800...0x9bff)
+            return 0x9800...0x9bff
         case .high:
-            return (0x9c00...0x9fff)
+            return 0x9c00...0x9fff
         }
     }
 }
@@ -92,18 +92,16 @@ extension LCDControl.TileDataRange {
         }
     }
 
-    func getTile(for number: TileNumber) -> Tile {
-        let address: Address
+    func getTileDataAddress(for number: TileNumber) -> Address {
         switch self {
         case .low:
-            address = 0x8000 + Address(number) * 0x10 // each tile is 0x10 (16) bytes
+            return 0x8000 + Address(number) * 0x10 // each tile is 0x10 (16) bytes
         case .high:
             // Provided index is converted to a signed int so values over 127 result
             // in a negative offset from 0x9000
             let offset = Int16(Int8(bitPattern: number)) * 0x10
-            address = (0x9000 as Address).signedAdd(value: offset)
+            return (0x9000 as Address).signedAdd(value: offset)
         }
-        return Tile(address: address)
     }
 }
 

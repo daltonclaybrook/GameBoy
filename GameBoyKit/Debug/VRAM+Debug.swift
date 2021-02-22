@@ -61,6 +61,7 @@ extension VRAM {
         let width = 32 * tileSize
         let height = 32 * tileSize
         let paletteView = io.palettes.currentView
+        let vramView = currentView
 
         var bytes = [Byte]()
         for pixelIndex in (0..<(width * height)) {
@@ -77,9 +78,10 @@ extension VRAM {
             let bgTileAddress = Address(0x9800 + bgTileIndex)
             let tileNumber = read(address: bgTileAddress)
             let tileAddress = 0x8000 + Address(tileNumber) * 0x10
+            let attributes = vramView.getAttributesForTileAddressInMap(tileAddress)
 
             let pixelColorNumber = getPixelColorNumber(tileAddress: tileAddress, xOffsetInTile: UInt16(pixelXInTile), yOffsetInTile: UInt16(pixelYInTile))
-            let pixelColor = paletteView.getColor(number: pixelColorNumber, kind: .backgroundAndWindow, paletteIndex: 0)
+            let pixelColor = paletteView.getColor(number: pixelColorNumber, attributes: attributes)
 
             bytes.append(contentsOf: pixelColor.rgbaBytes)
         }

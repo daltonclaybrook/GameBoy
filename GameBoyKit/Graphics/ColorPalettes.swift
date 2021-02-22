@@ -134,7 +134,24 @@ public struct PaletteView {
     let colorBGAndWindowPalettes: [PaletteType]
     let colorObjectPalettes: [PaletteType]
 
-    public func getColor(number: ColorNumber, kind: TileKind, paletteIndex: Int) -> Color {
+    public func getColor(number: ColorNumber, attributes: BGMapTileAttributes) -> Color {
+        getColor(number: number, kind: .backgroundAndWindow, paletteIndex: Int(attributes.backgroundPaletteNumber))
+    }
+
+    public func getColor(number: ColorNumber, attributes: SpriteAttributes) -> Color {
+        let paletteNumber: UInt8
+        switch system {
+        case .dmg:
+            paletteNumber = attributes.flags.monochromePaletteNumber
+        case .cgb:
+            paletteNumber = attributes.flags.cgbPaletteNumber
+        }
+        return getColor(number: number, kind: .sprite, paletteIndex: Int(paletteNumber))
+    }
+
+    // MARK: - Helpers
+
+    private func getColor(number: ColorNumber, kind: TileKind, paletteIndex: Int) -> Color {
         precondition(number < 4)
         precondition(paletteIndex >= 0)
 
@@ -151,20 +168,5 @@ public struct PaletteView {
             assert(paletteIndex < 8)
             return colorObjectPalettes[paletteIndex].getColor(for: number)
         }
-    }
-
-    public func getColor(number: ColorNumber, attributes: BGMapTileAttributes) -> Color {
-        getColor(number: number, kind: .backgroundAndWindow, paletteIndex: Int(attributes.backgroundPaletteNumber))
-    }
-
-    public func getColor(number: ColorNumber, attributes: SpriteAttributes) -> Color {
-        let paletteNumber: UInt8
-        switch system {
-        case .dmg:
-            paletteNumber = attributes.flags.monochromePaletteNumber
-        case .cgb:
-            paletteNumber = attributes.flags.cgbPaletteNumber
-        }
-        return getColor(number: number, kind: .sprite, paletteIndex: Int(paletteNumber))
     }
 }

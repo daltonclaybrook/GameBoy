@@ -85,13 +85,13 @@ public struct VRAMView {
     let system: GameBoy.System
     let bytes: [Byte]
 
-    public func read(address: Address) -> Byte {
-        bytes.read(address: address, in: .VRAM)
+    public func read(address: Address, in bank: VRAM.BankNumber) -> Byte {
+        bytes.read(address: address, in: bank)
     }
 
-    public func readWord(address: Address) -> Word {
-        let little = read(address: address)
-        let big = read(address: address + 1)
+    public func readWord(address: Address, in bank: VRAM.BankNumber) -> Word {
+        let little = read(address: address, in: bank)
+        let big = read(address: address + 1, in: bank)
         return (UInt16(big) << 8) | UInt16(little)
     }
 

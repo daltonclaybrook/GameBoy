@@ -10,12 +10,6 @@ public struct Color {
 }
 
 public final class ColorPalettes {
-    public enum Palette {
-        case monochromeBackgroundAndWindow
-        case monochromeObject0
-        case monochromeObject1
-    }
-
     public struct Registers {
         public static let monochromeBGAndWindowData: Address = 0xff47
         public static let monochromeObject0Data: Address = 0xff48
@@ -34,22 +28,30 @@ public final class ColorPalettes {
     /// the `PaletteView` type is thread safe.
     public var currentView: PaletteView {
         PaletteView(
+            system: system,
             monochromeBGAndWindowPalette: monochromeBGAndWindowPalette,
-            monochromeObject0Palette: monochromeObject0Palette,
-            monochromeObject1Palette: monochromeObject1Palette
+            monochromeObjectPalettes: [
+                monochromeObject0Palette,
+                monochromeObject1Palette
+            ],
+            colorBGAndWindowPalettes: colorBGAndWindowPalettes,
+            colorObjectPalettes: colorObjectPalettes
         )
     }
 
+    private let system: GameBoy.System
     private var monochromeBGAndWindowPalette = MonochromePalette()
     private var monochromeObject0Palette = MonochromePalette()
     private var monochromeObject1Palette = MonochromePalette()
 
     private var backgroundColorPaletteIndex = PaletteIndexAndIncrement(rawValue: 0x00)
     private var objectColorPaletteIndex = PaletteIndexAndIncrement(rawValue: 0x00)
-    private var colorBGAndWindowData = [ColorPalette](repeating: .init(), count: 8)
-    private var colorObjectData = [ColorPalette](repeating: .init(), count: 8)
+    private var colorBGAndWindowPalettes = [ColorPalette](repeating: .init(), count: 8)
+    private var colorObjectPalettes = [ColorPalette](repeating: .init(), count: 8)
 
-    public init() {}
+    public init(system: GameBoy.System) {
+        self.system = system
+    }
 
     public func read(address: Address) -> Byte {
         switch address {
@@ -62,11 +64,11 @@ public final class ColorPalettes {
         case Registers.backgroundColorPaletteIndex:
             return backgroundColorPaletteIndex.rawValue
         case Registers.backgroundColorPaletteData where colorPaletteMemoryIsAccessible:
-            return readColorPaletteData(colorBGAndWindowData, index: backgroundColorPaletteIndex)
+            return readColorPaletteData(colorBGAndWindowPalettes, index: backgroundColorPaletteIndex)
         case Registers.objectColorPaletteIndex:
             return objectColorPaletteIndex.rawValue
         case Registers.objectColorPaletteData where colorPaletteMemoryIsAccessible:
-            return readColorPaletteData(colorObjectData, index: objectColorPaletteIndex)
+            return readColorPaletteData(colorObjectPalettes, index: objectColorPaletteIndex)
         case Registers.backgroundColorPaletteData, Registers.objectColorPaletteData:
             // color palette memory is not current accessible
             return 0xff
@@ -86,11 +88,11 @@ public final class ColorPalettes {
         case Registers.backgroundColorPaletteIndex:
             backgroundColorPaletteIndex.rawValue = byte
         case Registers.backgroundColorPaletteData where colorPaletteMemoryIsAccessible:
-            return writeColorPaletteData(&colorBGAndWindowData, byte: byte, indexAndIncrement: &backgroundColorPaletteIndex)
+            return writeColorPaletteData(&colorBGAndWindowPalettes, byte: byte, indexAndIncrement: &backgroundColorPaletteIndex)
         case Registers.objectColorPaletteIndex:
             objectColorPaletteIndex.rawValue = byte
         case Registers.objectColorPaletteData where colorPaletteMemoryIsAccessible:
-            return writeColorPaletteData(&colorObjectData, byte: byte, indexAndIncrement: &objectColorPaletteIndex)
+            return writeColorPaletteData(&colorObjectPalettes, byte: byte, indexAndIncrement: &objectColorPaletteIndex)
         case Registers.backgroundColorPaletteData, Registers.objectColorPaletteData:
             // color palette memory is not current accessible
             break
@@ -101,18 +103,18 @@ public final class ColorPalettes {
 
     // MARK: - Helpers
 
-    private func readColorPaletteData(_ data: [ColorPalette], index: PaletteIndexAndIncrement) -> Byte {
+    private func readColorPaletteData(_ palettes: [ColorPalette], index: PaletteIndexAndIncrement) -> Byte {
         let index = index.index
         let paletteIndex = Int(index) / 8
         let offsetInPalette = Int(index) % 8
-        return data[paletteIndex].getByte(atOffset: offsetInPalette)
+        return palettes[paletteIndex].getByte(atOffset: offsetInPalette)
     }
 
-    private func writeColorPaletteData(_ data: inout [ColorPalette], byte: Byte, indexAndIncrement: inout PaletteIndexAndIncrement) {
+    private func writeColorPaletteData(_ palettes: inout [ColorPalette], byte: Byte, indexAndIncrement: inout PaletteIndexAndIncrement) {
         let index = indexAndIncrement.index
         let paletteIndex = Int(index) / 8
         let offsetInPalette = Int(index) % 8
-        data[paletteIndex].setByte(byte, atOffset: offsetInPalette)
+        palettes[paletteIndex].setByte(byte, atOffset: offsetInPalette)
         if indexAndIncrement.autoIncrementOnWrite {
             indexAndIncrement.incrementIndex()
         }
@@ -121,25 +123,48 @@ public final class ColorPalettes {
 
 /// A view into the current state of palette data. This type is thread safe.
 public struct PaletteView {
-    let monochromeBGAndWindowPalette: MonochromePalette
-    let monochromeObject0Palette: MonochromePalette
-    let monochromeObject1Palette: MonochromePalette
-
-    public func getColor(for number: ColorNumber, in palette: ColorPalettes.Palette) -> Color {
-        let paletteType = getPalette(for: palette)
-        return paletteType.getColor(for: number)
+    public enum TileKind {
+        case backgroundAndWindow
+        case sprite
     }
 
-    // MARK: - Helpers
+    let system: GameBoy.System
+    let monochromeBGAndWindowPalette: PaletteType
+    let monochromeObjectPalettes: [PaletteType]
+    let colorBGAndWindowPalettes: [PaletteType]
+    let colorObjectPalettes: [PaletteType]
 
-    private func getPalette(for palette: ColorPalettes.Palette) -> PaletteType {
-        switch palette {
-        case .monochromeBackgroundAndWindow:
-            return monochromeBGAndWindowPalette
-        case .monochromeObject0:
-            return monochromeObject0Palette
-        case .monochromeObject1:
-            return monochromeObject1Palette
+    public func getColor(number: ColorNumber, kind: TileKind, paletteIndex: Int) -> Color {
+        precondition(number < 4)
+        precondition(paletteIndex >= 0)
+
+        switch (system, kind) {
+        case (.dmg, .backgroundAndWindow):
+            return monochromeBGAndWindowPalette.getColor(for: number)
+        case (.dmg, .sprite):
+            assert(paletteIndex < 2)
+            return monochromeObjectPalettes[paletteIndex].getColor(for: number)
+        case (.cgb, .backgroundAndWindow):
+            assert(paletteIndex < 8)
+            return colorBGAndWindowPalettes[paletteIndex].getColor(for: number)
+        case (.cgb, .sprite):
+            assert(paletteIndex < 8)
+            return colorObjectPalettes[paletteIndex].getColor(for: number)
         }
+    }
+
+    public func getColor(number: ColorNumber, attributes: BGMapTileAttributes) -> Color {
+        getColor(number: number, kind: .backgroundAndWindow, paletteIndex: Int(attributes.backgroundPaletteNumber))
+    }
+
+    public func getColor(number: ColorNumber, attributes: SpriteAttributes) -> Color {
+        let paletteNumber: UInt8
+        switch system {
+        case .dmg:
+            paletteNumber = attributes.flags.monochromePaletteNumber
+        case .cgb:
+            paletteNumber = attributes.flags.cgbPaletteNumber
+        }
+        return getColor(number: number, kind: .sprite, paletteIndex: Int(paletteNumber))
     }
 }

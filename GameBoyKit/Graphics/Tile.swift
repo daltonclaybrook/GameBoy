@@ -1,18 +1,18 @@
 typealias TileNumber = UInt8
 
-struct Tile {
+public struct Tile {
     /// The address of the tile in VRAM tile data. On CGB, this alone is not enough info to get the
     /// tile data because it may be stored in either bank zero or one.
-    let dataAddress: Address
+    public let dataAddress: Address
     /// The bank number of the to get tile data from. On DMG, this is always zero. It may be zero or
     /// one on CGB.
-    let bankNumber: VRAM.BankNumber
+    public let bankNumber: VRAM.BankNumber
     /// Whether the tile is flipped horizontally. This can be informed by the sprite attributes or the BG
     /// map attributes.
-    let isXFlipped: Bool
+    public let isXFlipped: Bool
     /// Whether the tile is flipped vertically. This can be informed by the sprite attributes or the BG
     /// map attributes.
-    let isYFlipped: Bool
+    public let isYFlipped: Bool
 }
 
 extension Tile {
@@ -28,7 +28,7 @@ extension Tile {
     // MARK: - Helpers
 
     private func getColorNumber(vramView: VRAMView, preFlippedXOffset: UInt8, preFlippedYOffset: UInt8) -> ColorNumber {
-        let pixelWord = vramView.readWord(address: dataAddress + Address(preFlippedYOffset) * 2)
+        let pixelWord = vramView.readWord(address: dataAddress + Address(preFlippedYOffset) * 2, in: bankNumber)
 
         // Example:
         // xOffset == 2

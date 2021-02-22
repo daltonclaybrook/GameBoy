@@ -235,7 +235,7 @@ public final class PPU {
             )
             let pixelColorNumber = tile.getColorNumber(vramView: context.vramView, xOffset: pixelXInTile, yOffset: pixelYInTile)
 
-            let pixelColor = context.paletteView.getColor(for: pixelColorNumber, in: .monochromeBackgroundAndWindow)
+            let pixelColor = context.paletteView.getColor(number: pixelColorNumber, attributes: attributes)
             pixels[Int(screenX)] = .background(pixelColor, colorNumber: pixelColorNumber)
         }
     }
@@ -274,7 +274,7 @@ public final class PPU {
                 pixelY: UInt16(yOffsetInWindow)
             )
             let colorNumber = tile.getColorNumber(vramView: context.vramView, xOffset: xOffsetInTile, yOffset: yOffsetInTile)
-            let pixelColor = context.paletteView.getColor(for: colorNumber, in: .monochromeBackgroundAndWindow)
+            let pixelColor = context.paletteView.getColor(number: colorNumber, attributes: attributes)
             pixels[Int(screenX)] = .window(pixelColor, colorNumber: colorNumber)
         }
     }
@@ -307,7 +307,12 @@ public final class PPU {
                 let yOffsetInTile = yOffsetInSprite % 8
                 let tileNumber = sprite.getTileNumber(yOffsetInSprite: yOffsetInSprite, objectSize: objectSize)
                 let tileDataAddress = context.lcdControl.tileDataRangeForObjects.getTileDataAddress(for: tileNumber)
-                let tile = Tile(dataAddress: tileDataAddress, bankNumber: tileBankNumber, isXFlipped: spriteFlags.isXFlipped, isYFlipped: spriteFlags.isYFlipped)
+                let tile = Tile(
+                    dataAddress: tileDataAddress,
+                    bankNumber: tileBankNumber,
+                    isXFlipped: spriteFlags.isXFlipped,
+                    isYFlipped: spriteFlags.isYFlipped
+                )
                 let pixelColorNumber = tile.getColorNumber(
                     vramView: context.vramView,
                     xOffset: xOffsetInSprite,
@@ -318,7 +323,7 @@ public final class PPU {
                     continue
                 }
 
-                let pixelColor = context.paletteView.getColor(for: pixelColorNumber, in: sprite.monochromePalette)
+                let pixelColor = context.paletteView.getColor(number: pixelColorNumber, attributes: sprite)
                 mergeSpritePixel(color: pixelColor, priority: spriteFlags.backgroundPriority, atIndex: Int(xPositionInScreen), with: &pixels)
             }
         }
@@ -348,7 +353,8 @@ public final class PPU {
         let tileY = pixelY / 8
         let tileOffsetInMap = tileY * Constants.mapWidthInTiles + tileX
         let tileAddressInMap = mapRange.addressRange.lowerBound + tileOffsetInMap
-        let tileNumber = vramView.read(address: tileAddressInMap)
+        // This value always comes from bank zero because only bank zero contains tile maps
+        let tileNumber = vramView.read(address: tileAddressInMap, in: .zero)
         let tileDataAddress = tileRange.getTileDataAddress(for: tileNumber)
         let attributes = vramView.getAttributesForTileAddressInMap(tileAddressInMap)
         let tile = Tile(

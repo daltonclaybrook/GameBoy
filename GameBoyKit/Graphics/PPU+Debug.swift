@@ -81,7 +81,7 @@ extension PPU {
                     // Color number 0 is transparent in sprites
                     colorBytes.append(contentsOf: Color.white.rgbaBytes)
                 } else {
-                    let color = paletteView.getColor(for: colorNumber, in: sprite.monochromePalette)
+                    let color = paletteView.getColor(number: colorNumber, attributes: sprite)
                     colorBytes.append(contentsOf: color.rgbaBytes)
                 }
             }

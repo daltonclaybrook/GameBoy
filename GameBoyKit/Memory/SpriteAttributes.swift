@@ -103,17 +103,6 @@ public extension SpriteAttributes.Flags {
 }
 
 extension SpriteAttributes {
-    var monochromePalette: ColorPalettes.Palette {
-        switch flags.monochromePaletteNumber {
-        case 0:
-            return .monochromeObject0
-        case 1:
-            return .monochromeObject1
-        default:
-            fatalError("Palette number is invalid")
-        }
-    }
-
     var largeTopAndBottomTileNumbers: [UInt8] {
         let tileNumbers = [
             tileNumber & 0xfe,

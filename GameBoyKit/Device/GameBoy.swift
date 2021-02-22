@@ -38,9 +38,9 @@ public final class GameBoy {
     private let io: IO
     private let wram: WRAM
     private let vram: VRAM
+    private let palettes: ColorPalettes
 
     private let hram = HRAM()
-    private let palettes = ColorPalettes()
     private let apu = APU()
     private var cartridge: CartridgeType?
 
@@ -51,6 +51,7 @@ public final class GameBoy {
         oam = OAM()
         wram = WRAM(system: system)
         vram = VRAM(system: system)
+        palettes = ColorPalettes(system: system)
         io = IO(palettes: palettes, oam: oam, apu: apu, timer: timer, wram: wram)
         ppu = PPU(renderer: renderer, system: system, io: io, vram: vram, oam: oam)
         mmu = MMU(vram: vram, wram: wram, oam: oam, io: io, hram: hram)

@@ -12,7 +12,6 @@ public final class IO: MemoryAddressable {
         public static let dmaTransfer: Address = 0xff46
         public static let windowY: Address = 0xff4a
         public static let windowX: Address = 0xff4b
-        public static let vramBank: Address = 0xff4f
     }
 
     public let palettes: ColorPalettes
@@ -21,18 +20,26 @@ public final class IO: MemoryAddressable {
     public var interruptFlags: Interrupts = []
     public var lcdControl = LCDControl(rawValue: 0)
     public var lcdStatus = LCDStatus(rawValue: 0)
+
+    public private(set) var scrollY: UInt8 = 0
+    public private(set) var scrollX: UInt8 = 0
     public var lcdYCoordinate: UInt8 = 0
+    public private(set) var lcdYCoordinateCompare: UInt8 = 0
+    public private(set) var windowY: UInt8 = 0
+    public private(set) var windowX: UInt8 = 0
 
     private let oam: OAM
     private let apu: APU
     private let timer: Timer
+    private let vram: VRAM
     private let wram: WRAM
 
-    public init(palettes: ColorPalettes, oam: OAM, apu: APU, timer: Timer, wram: WRAM) {
+    public init(palettes: ColorPalettes, oam: OAM, apu: APU, timer: Timer, vram: VRAM, wram: WRAM) {
         self.palettes = palettes
         self.oam = oam
         self.apu = apu
         self.timer = timer
+        self.vram = vram
         self.wram = wram
         timer.delegate = self
         joypad.delegate = self
@@ -52,11 +59,23 @@ public final class IO: MemoryAddressable {
             return lcdControl.rawValue
         case Registers.lcdStatus:
             return lcdStatus.rawValue
+        case Registers.scrollY:
+            return scrollY
+        case Registers.scrollX:
+            return scrollX
         case Registers.lcdYCoordinate:
             return lcdYCoordinate
-//        case palette.monochromeAddressRange, palette.colorAddressRange:
-        case palettes.monochromeAddressRange:
+        case Registers.lcdYCoordinateCompare:
+            return lcdYCoordinateCompare
+        case ColorPalettes.Registers.monochromeAddressRange,
+             ColorPalettes.Registers.colorAddressRange:
             return palettes.read(address: address)
+        case Registers.windowY:
+            return windowY
+        case Registers.windowX:
+            return windowX
+        case VRAM.Constants.bankSelectAddress:
+            return vram.read(address: address)
         case WRAM.Constants.bankSelectAddress:
             return wram.read(address: address)
         default:
@@ -79,45 +98,31 @@ public final class IO: MemoryAddressable {
             lcdControl = LCDControl(rawValue: byte)
         case Registers.lcdStatus:
             lcdStatus = LCDStatus(rawValue: byte)
+        case Registers.scrollY:
+            scrollY = byte
+        case Registers.scrollX:
+            scrollX = byte
         case Registers.lcdYCoordinate:
             lcdYCoordinate = byte
-//        case palette.monochromeAddressRange, palette.colorAddressRange:
-        case palettes.monochromeAddressRange:
+        case Registers.lcdYCoordinateCompare:
+            lcdYCoordinateCompare = byte
+        case ColorPalettes.Registers.monochromeAddressRange,
+             ColorPalettes.Registers.colorAddressRange:
             palettes.write(byte: byte, to: address)
         case Registers.dmaTransfer:
             oam.startDMATransfer(source: byte)
+        case Registers.windowY:
+            windowY = byte
+        case Registers.windowX:
+            windowX = byte
+        case VRAM.Constants.bankSelectAddress:
+            vram.write(byte: byte, to: address)
         case WRAM.Constants.bankSelectAddress:
             wram.write(byte: byte, to: address)
         default:
             print("Attempting to write to unsupported I/O address: \(address.hexString)")
             break
         }
-    }
-}
-
-extension IO {
-    var scrollY: UInt8 {
-        read(address: Registers.scrollY)
-    }
-
-    var scrollX: UInt8 {
-        read(address: Registers.scrollX)
-    }
-
-    var lcdYCoordinateCompare: UInt8 {
-        read(address: Registers.lcdYCoordinateCompare)
-    }
-
-    var windowY: UInt8 {
-        read(address: Registers.windowY)
-    }
-
-    var windowX: UInt8 {
-        read(address: Registers.windowX)
-    }
-
-    var vramBank: UInt8 {
-        read(address: Registers.vramBank) & 0x01
     }
 }
 

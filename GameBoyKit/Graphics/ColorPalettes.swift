@@ -18,9 +18,12 @@ public final class ColorPalettes {
         public static let backgroundColorPaletteData: Address = 0xff69
         public static let objectColorPaletteIndex: Address = 0xff6a
         public static let objectColorPaletteData: Address = 0xff6b
+
+        // Palette address ranges
+        public static let monochromeAddressRange: ClosedRange<Address> = 0xff47...0xff49
+        public static let colorAddressRange: ClosedRange<Address> = 0xff68...0xff6b
     }
 
-    public let monochromeAddressRange: ClosedRange<Address> = 0xff47...0xff49
     public var colorPaletteMemoryIsAccessible = true
 
     /// Clients use this view to access colors from palette memory

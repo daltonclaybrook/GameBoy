@@ -147,6 +147,7 @@ public final class PPU {
             oam.isBeingReadByPPU = false
             vram.isBeingReadByPPU = false
             io.palettes.colorPaletteMemoryIsAccessible = true
+            vram.dmaUtility?.didTransitionToHBlankMode()
         case .verticalBlank:
             renderPixelBuffer()
             io.interruptFlags.insert(.vBlank)

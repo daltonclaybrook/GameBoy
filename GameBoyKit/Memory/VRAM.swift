@@ -22,6 +22,8 @@ public final class VRAM: MemoryAddressable {
     /// default value.
     var isBeingReadByPPU: Bool = false
     private(set) var bytes: [Byte]
+    /// This is only instantiated on the Game Boy Color
+    public let dmaUtility: VRAMDMAUtility?
 
     private let system: GameBoy.System
     private var currentBankNumber: BankNumber = .zero
@@ -29,6 +31,13 @@ public final class VRAM: MemoryAddressable {
     public init(system: GameBoy.System) {
         self.system = system
         self.bytes = [Byte](repeating: 0, count: Int(Constants.bankSize) * BankNumber.allCases.count)
+
+        switch system {
+        case .dmg:
+            self.dmaUtility = nil
+        case .cgb:
+            self.dmaUtility = VRAMDMAUtility()
+        }
     }
 
     public func write(byte: Byte, to address: Address) {

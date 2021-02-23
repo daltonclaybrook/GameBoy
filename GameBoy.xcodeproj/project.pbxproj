@@ -251,6 +251,8 @@
 		75E8E19425E2C8780015DBDC /* bootrom.gbc in Resources */ = {isa = PBXBuildFile; fileRef = 75E8E19225E2C8780015DBDC /* bootrom.gbc */; };
 		75E8E19E25E303010015DBDC /* PaletteType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75E8E19D25E303010015DBDC /* PaletteType.swift */; };
 		75E8E19F25E303010015DBDC /* PaletteType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75E8E19D25E303010015DBDC /* PaletteType.swift */; };
+		75E8E1BC25E34C870015DBDC /* VRAMDMAUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75E8E1BB25E34C870015DBDC /* VRAMDMAUtility.swift */; };
+		75E8E1BD25E34C870015DBDC /* VRAMDMAUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75E8E1BB25E34C870015DBDC /* VRAMDMAUtility.swift */; };
 		75ED9D0625C61B4600DBC61B /* SoundControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75ED9D0525C61B4600DBC61B /* SoundControl.swift */; };
 		75ED9D0725C61B4600DBC61B /* SoundControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75ED9D0525C61B4600DBC61B /* SoundControl.swift */; };
 		75EE74AD25B14C070030D57D /* MockCPUContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75EE74AC25B14C070030D57D /* MockCPUContext.swift */; };
@@ -486,6 +488,7 @@
 		75E8E18B25E1DD6E0015DBDC /* PaletteIndexAndIncrement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaletteIndexAndIncrement.swift; sourceTree = "<group>"; };
 		75E8E19225E2C8780015DBDC /* bootrom.gbc */ = {isa = PBXFileReference; lastKnownFileType = file; path = bootrom.gbc; sourceTree = "<group>"; };
 		75E8E19D25E303010015DBDC /* PaletteType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaletteType.swift; sourceTree = "<group>"; };
+		75E8E1BB25E34C870015DBDC /* VRAMDMAUtility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VRAMDMAUtility.swift; sourceTree = "<group>"; };
 		75ED9D0525C61B4600DBC61B /* SoundControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundControl.swift; sourceTree = "<group>"; };
 		75EE74AC25B14C070030D57D /* MockCPUContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockCPUContext.swift; sourceTree = "<group>"; };
 		75F14CB425CB74B6006ECE2B /* WavePattern.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WavePattern.swift; sourceTree = "<group>"; };
@@ -807,6 +810,7 @@
 				75E8E18B25E1DD6E0015DBDC /* PaletteIndexAndIncrement.swift */,
 				75E8E19D25E303010015DBDC /* PaletteType.swift */,
 				75B3AD55229E13B700A03C5A /* PPU.swift */,
+				75E8E1BB25E34C870015DBDC /* VRAMDMAUtility.swift */,
 				75B0E22425B915AC0021B3C9 /* PPU+Debug.swift */,
 				757F38C322B0731E00BBB570 /* Renderer.swift */,
 				75B0E22B25B918A60021B3C9 /* Tile.swift */,
@@ -1327,6 +1331,7 @@
 				75B1F64E25BE65EA001BEA37 /* CartridgeHeader.swift in Sources */,
 				75875A5925C0EF8E005D8059 /* MBC5.swift in Sources */,
 				757F38FB22B1C69000BBB570 /* AAPLShaders.metal in Sources */,
+				75E8E1BD25E34C870015DBDC /* VRAMDMAUtility.swift in Sources */,
 				75B1F5CD25BCC9D9001BEA37 /* RTC.swift in Sources */,
 				75A84F7F25CA59F900C353FA /* ChannelFactory.swift in Sources */,
 				75B1F64725BE64E4001BEA37 /* RAMSize.swift in Sources */,
@@ -1435,6 +1440,7 @@
 				75BD98C222A41DDC00CFFB68 /* ColorPalettes.swift in Sources */,
 				75B1F64D25BE65EA001BEA37 /* CartridgeHeader.swift in Sources */,
 				75875A5825C0EF8E005D8059 /* MBC5.swift in Sources */,
+				75E8E1BC25E34C870015DBDC /* VRAMDMAUtility.swift in Sources */,
 				7590E7C425AACEC6005E1280 /* CartridgeFactory.swift in Sources */,
 				75B1F5CC25BCC9D9001BEA37 /* RTC.swift in Sources */,
 				75A84F7E25CA59F900C353FA /* ChannelFactory.swift in Sources */,

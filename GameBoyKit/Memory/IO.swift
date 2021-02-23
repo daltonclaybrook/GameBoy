@@ -12,6 +12,7 @@ public final class IO: MemoryAddressable {
         public static let dmaTransfer: Address = 0xff46
         public static let windowY: Address = 0xff4a
         public static let windowX: Address = 0xff4b
+        public static let vramDMARange: ClosedRange<Address> = 0xff51...0xff55
     }
 
     public let palettes: ColorPalettes
@@ -78,6 +79,8 @@ public final class IO: MemoryAddressable {
             return vram.read(address: address)
         case WRAM.Constants.bankSelectAddress:
             return wram.read(address: address)
+        case Registers.vramDMARange:
+            return vram.dmaUtility?.read(address: address) ?? 0xff
         default:
             print("Attempting to read from unsupported I/O address: \(address.hexString)")
             return 0xff
@@ -119,6 +122,8 @@ public final class IO: MemoryAddressable {
             vram.write(byte: byte, to: address)
         case WRAM.Constants.bankSelectAddress:
             wram.write(byte: byte, to: address)
+        case Registers.vramDMARange:
+            vram.dmaUtility?.write(byte: byte, to: address)
         default:
             print("Attempting to write to unsupported I/O address: \(address.hexString)")
             break

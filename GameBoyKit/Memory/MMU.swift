@@ -20,6 +20,7 @@ public final class MMU: MemoryAddressable {
         self.oam = oam
         self.io = io
         self.hram = hram
+        self.vram.dmaUtility?.memory = self
     }
 
     public func load(cartridge: CartridgeType) {

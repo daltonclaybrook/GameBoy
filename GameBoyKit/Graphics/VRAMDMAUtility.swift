@@ -1,3 +1,4 @@
+/// Utility used to initiate VRAM DMA transfers on the Game Boy Color
 public final class VRAMDMAUtility: MemoryAddressable {
     private struct Registers {
         static let sourceHigh: Address = 0xff51

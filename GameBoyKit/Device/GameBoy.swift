@@ -45,6 +45,10 @@ public final class GameBoy {
     private let apu = APU()
     private var cartridge: CartridgeType?
 
+    private var emulationSteppers: [EmulationStepType] {
+        [oam, ppu, apu, timer]
+    }
+
     public init(system: System, renderer: Renderer, delegateQueue: DispatchQueue = .main) {
         self.system = system
         timer = Timer()
@@ -139,13 +143,13 @@ public final class GameBoy {
     private func emulateCycle() {
         clock.tickCycle()
         let speedMode = speed.currentMode
+        let cycles = clock.cycles
 
-        // emulate components
-        oam.emulate(speedMode: speedMode)
-        ppu.emulate(speedMode: speedMode)
-        apu.emulate(speedMode: speedMode)
-        // emulate timer
-        timer.emulate(speedMode: speedMode)
+        emulationSteppers.forEach { stepper in
+            if stepper.shouldEmulateStep(cycles: cycles, speedMode: speedMode) {
+                stepper.emulateStep()
+            }
+        }
     }
 
     private func processInterruptIfNecessary() {
@@ -198,5 +202,28 @@ extension GameBoy: CPUContext {
 
     public func stopAndSwitchSpeedsIfNecessary() {
         clock.switchSpeedsIfNecessary()
+    }
+}
+
+private extension EmulationStepType {
+    func shouldEmulateStep(cycles: Cycles, speedMode: SystemSpeed.Mode) -> Bool {
+        let modulo = speedMode.getEmulateStepModulo(for: stepRate)
+        return cycles % modulo == 0
+    }
+}
+
+private extension SystemSpeed.Mode {
+    func getEmulateStepModulo(for rate: StepRate) -> Cycles {
+        switch (self, rate) {
+        case (.normal, _):
+            // Call step on every cycle
+            return 1
+        case (.double, .matchSpeedMode):
+            // Call step on every cycle, including in double speed
+            return 1
+        case (.double, .alwaysNormalSpeed):
+            // Call step half as frequently while in double speed mode
+            return 2
+        }
     }
 }

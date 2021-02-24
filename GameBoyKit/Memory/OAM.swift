@@ -1,4 +1,5 @@
-public final class OAM: MemoryAddressable {
+public final class OAM: MemoryAddressable, EmulationStepType {
+    public let stepRate: StepRate = .matchSpeedMode
     public weak var mmu: MMU?
     var isBeingReadByPPU = false
     private(set) var oamBytes = [Byte](repeating: 0, count: MemoryMap.OAM.count)
@@ -47,7 +48,7 @@ public final class OAM: MemoryAddressable {
         requestedSource = source
     }
 
-    public func emulate(speedMode: SystemSpeed.Mode) {
+    public func emulateStep() {
         let mmu = getMMU()
         if let startedSource = startedSource {
             emulateTransferActive(mmu: mmu, source: startedSource)

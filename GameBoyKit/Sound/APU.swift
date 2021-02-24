@@ -1,7 +1,7 @@
 import AVFoundation
 
 /// Audio processing unit for the Game Boy
-public final class APU: MemoryAddressable {
+public final class APU: MemoryAddressable, EmulationStepType {
     struct Registers {
         fileprivate static let channel1Range: ClosedRange<Address> = 0xff10...0xff14
         fileprivate static let channel2Range: ClosedRange<Address> = 0xff15...0xff19
@@ -16,6 +16,8 @@ public final class APU: MemoryAddressable {
             wavePatternRange
         }
     }
+
+    public let stepRate: StepRate = .alwaysNormalSpeed
 
     private var mCycles: Cycles = 0
     /// Measured in Hz
@@ -116,7 +118,7 @@ public final class APU: MemoryAddressable {
     }
 
     /// Called once per m-cycle
-    func emulate(speedMode: SystemSpeed.Mode) {
+    public func emulateStep() {
         mCycles += 1
         emulateAudioUnitsIfNecessary()
         createNewSamplesIfNecessary()

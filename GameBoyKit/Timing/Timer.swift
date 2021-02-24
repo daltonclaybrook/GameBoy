@@ -2,13 +2,15 @@ public protocol TimerDelegate: AnyObject {
     func timer(_ timer: Timer, didRequest interrupt: Interrupts)
 }
 
-public final class Timer: MemoryAddressable {
+public final class Timer: MemoryAddressable, EmulationStepType {
     public struct Registers {
         public static let divider: Address = 0xff04
         public static let counter: Address = 0xff05
         public static let modulo: Address = 0xff06
         public static let control: Address = 0xff07
     }
+
+    public let stepRate: StepRate = .matchSpeedMode
 
     weak var delegate: TimerDelegate?
     private let dividerIncrementRate: Cycles = 64
@@ -56,7 +58,7 @@ public final class Timer: MemoryAddressable {
         }
     }
 
-    public func emulate(speedMode: SystemSpeed.Mode) {
+    public func emulateStep() {
         dividerIntermediate += 1
         if dividerIntermediate == dividerIncrementRate {
             divider &+= 1

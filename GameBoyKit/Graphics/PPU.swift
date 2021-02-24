@@ -13,7 +13,7 @@ private struct LineDrawingContext {
 }
 
 /// The pixel processing unit
-public final class PPU {
+public final class PPU: EmulationStepType {
     /// Represents information about a pixel that might be rendered to the
     /// screen or might be overridden by another pixel based on priority.
     fileprivate enum PixelInfo {
@@ -35,6 +35,8 @@ public final class PPU {
         label: "com.daltonclaybrook.GameBoy.PPU",
         qos: .userInteractive
     )
+
+    public let stepRate: StepRate = .alwaysNormalSpeed
 
     let io: IO
     let vram: VRAM
@@ -67,7 +69,7 @@ public final class PPU {
     }
 
     /// Called once per machine cycle
-    func emulate(speedMode: SystemSpeed.Mode) {
+    public func emulateStep() {
         guard io.lcdControl.displayEnabled else {
             disableDisplayIfNecessary()
             return

@@ -56,7 +56,7 @@ public final class Timer: MemoryAddressable {
         }
     }
 
-    public func emulate() {
+    public func emulate(speedMode: SystemSpeed.Mode) {
         dividerIntermediate += 1
         if dividerIntermediate == dividerIncrementRate {
             divider &+= 1

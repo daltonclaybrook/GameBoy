@@ -67,7 +67,7 @@ public final class PPU {
     }
 
     /// Called once per machine cycle
-    func emulate() {
+    func emulate(speedMode: SystemSpeed.Mode) {
         guard io.lcdControl.displayEnabled else {
             disableDisplayIfNecessary()
             return

@@ -47,7 +47,7 @@ public final class OAM: MemoryAddressable {
         requestedSource = source
     }
 
-    public func emulate() {
+    public func emulate(speedMode: SystemSpeed.Mode) {
         let mmu = getMMU()
         if let startedSource = startedSource {
             emulateTransferActive(mmu: mmu, source: startedSource)

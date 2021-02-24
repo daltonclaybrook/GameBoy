@@ -41,4 +41,16 @@ public final class SystemSpeed: MemoryAddressable {
             return (currentMode.rawValue << 7) | preparedBit
         }
     }
+
+    public func toggleSpeedMode() {
+        precondition(isPreparedToSwitchModes, "Cannot toggle the speed mode unless prepared")
+        defer { isPreparedToSwitchModes = false }
+
+        switch currentMode {
+        case .normal:
+            currentMode = .double
+        case .double:
+            currentMode = .normal
+        }
+    }
 }

@@ -9,8 +9,8 @@ public protocol CPUContext {
     func writeCycle(byte: Byte, to address: Address)
     /// Advance the system clock by one M-cycle
     func tickCycle()
-    /// Stop CPU execution, possibly to change speeds on CGB
-    func stopAndChangeSpeedIfNecessary()
+    /// Stop CPU execution, possibly to switch speeds on CGB
+    func stopAndSwitchSpeedsIfNecessary()
 }
 
 extension CPUContext {

@@ -498,7 +498,7 @@ extension CPU {
     }
 
     func stop(context: CPUContext) {
-        context.stopAndChangeSpeedIfNecessary()
+        context.stopAndSwitchSpeedsIfNecessary()
     }
 
     func halt(context: CPUContext) {

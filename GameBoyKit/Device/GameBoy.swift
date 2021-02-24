@@ -47,13 +47,13 @@ public final class GameBoy {
 
     public init(system: System, renderer: Renderer, delegateQueue: DispatchQueue = .main) {
         self.system = system
-        clock = Clock(queue: queue)
         timer = Timer()
         oam = OAM()
         wram = WRAM(system: system)
         vram = VRAM(system: system)
         palettes = ColorPalettes(system: system)
         speed = SystemSpeed(system: system)
+        clock = Clock(systemSpeed: speed, queue: queue)
         io = IO(palettes: palettes, oam: oam, apu: apu, timer: timer, vram: vram, wram: wram, speed: speed)
         ppu = PPU(renderer: renderer, system: system, io: io, vram: vram, oam: oam)
         mmu = MMU(vram: vram, wram: wram, oam: oam, io: io, hram: hram)
@@ -138,12 +138,14 @@ public final class GameBoy {
     /// function necessitating a cycle, such as a jump.
     private func emulateCycle() {
         clock.tickCycle()
+        let speedMode = speed.currentMode
+
         // emulate components
-        oam.emulate()
-        ppu.emulate()
-        apu.emulate()
+        oam.emulate(speedMode: speedMode)
+        ppu.emulate(speedMode: speedMode)
+        apu.emulate(speedMode: speedMode)
         // emulate timer
-        timer.emulate()
+        timer.emulate(speedMode: speedMode)
     }
 
     private func processInterruptIfNecessary() {
@@ -194,7 +196,7 @@ extension GameBoy: CPUContext {
         emulateCycle()
     }
 
-    public func stopAndChangeSpeedIfNecessary() {
-        // todo: implement
+    public func stopAndSwitchSpeedsIfNecessary() {
+        clock.switchSpeedsIfNecessary()
     }
 }

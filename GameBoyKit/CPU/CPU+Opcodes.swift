@@ -39,7 +39,7 @@ extension CPU {
 
     // 0x1n
     public static let range1nOpcodes: [Opcode] = [
-        Opcode(mnemonic: "STOP") { cpu, _ in cpu.stop() },
+        Opcode(mnemonic: "STOP") { cpu, ctx in cpu.stop(context: ctx) },
         Opcode(mnemonic: "LD DE, nn") { cpu, ctx in cpu.loadOperand(into: &cpu.de, context: ctx) },
         Opcode(mnemonic: "LD (DE), A") { cpu, ctx in cpu.load(value: cpu.a, into: cpu.de, context: ctx) },
         Opcode(mnemonic: "INC DE") { cpu, ctx in cpu.increment(pair: &cpu.de, context: ctx) },

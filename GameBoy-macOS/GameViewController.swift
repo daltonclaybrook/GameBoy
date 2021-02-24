@@ -38,7 +38,7 @@ class GameViewController: NSViewController {
 
     override func viewWillDisappear() {
         super.viewWillDisappear()
-        gameBoy?.stop()
+        gameBoy?.shutdown()
     }
 
     func loadCartridge(_ cartridgeInfo: CartridgeInfo) {

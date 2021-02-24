@@ -12,6 +12,7 @@ public final class IO: MemoryAddressable {
         public static let dmaTransfer: Address = 0xff46
         public static let windowY: Address = 0xff4a
         public static let windowX: Address = 0xff4b
+        public static let speedSwitch: Address = 0xff4d
         public static let vramDMARange: ClosedRange<Address> = 0xff51...0xff55
     }
 
@@ -34,14 +35,16 @@ public final class IO: MemoryAddressable {
     private let timer: Timer
     private let vram: VRAM
     private let wram: WRAM
+    private let speed: SystemSpeed
 
-    public init(palettes: ColorPalettes, oam: OAM, apu: APU, timer: Timer, vram: VRAM, wram: WRAM) {
+    public init(palettes: ColorPalettes, oam: OAM, apu: APU, timer: Timer, vram: VRAM, wram: WRAM, speed: SystemSpeed) {
         self.palettes = palettes
         self.oam = oam
         self.apu = apu
         self.timer = timer
         self.vram = vram
         self.wram = wram
+        self.speed = speed
         timer.delegate = self
         joypad.delegate = self
     }
@@ -75,6 +78,8 @@ public final class IO: MemoryAddressable {
             return windowY
         case Registers.windowX:
             return windowX
+        case Registers.speedSwitch:
+            return speed.read(address: address)
         case VRAM.Constants.bankSelectAddress:
             return vram.read(address: address)
         case WRAM.Constants.bankSelectAddress:
@@ -118,6 +123,8 @@ public final class IO: MemoryAddressable {
             windowY = byte
         case Registers.windowX:
             windowX = byte
+        case Registers.speedSwitch:
+            speed.write(byte: byte, to: address)
         case VRAM.Constants.bankSelectAddress:
             vram.write(byte: byte, to: address)
         case WRAM.Constants.bankSelectAddress:

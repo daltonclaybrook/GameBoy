@@ -39,6 +39,7 @@ public final class GameBoy {
     private let wram: WRAM
     private let vram: VRAM
     private let palettes: ColorPalettes
+    private let speed: SystemSpeed
 
     private let hram = HRAM()
     private let apu = APU()
@@ -52,7 +53,8 @@ public final class GameBoy {
         wram = WRAM(system: system)
         vram = VRAM(system: system)
         palettes = ColorPalettes(system: system)
-        io = IO(palettes: palettes, oam: oam, apu: apu, timer: timer, vram: vram, wram: wram)
+        speed = SystemSpeed(system: system)
+        io = IO(palettes: palettes, oam: oam, apu: apu, timer: timer, vram: vram, wram: wram, speed: speed)
         ppu = PPU(renderer: renderer, system: system, io: io, vram: vram, oam: oam)
         mmu = MMU(vram: vram, wram: wram, oam: oam, io: io, hram: hram)
         oam.mmu = mmu
@@ -79,7 +81,7 @@ public final class GameBoy {
         }
     }
 
-    public func stop() {
+    public func shutdown() {
         // This might be called as the owner of GameBoy is being torn down,
         // so we use `queue.sync` to make sure the clock is stopped before
         // that happens.
@@ -190,5 +192,9 @@ extension GameBoy: CPUContext {
 
     public func tickCycle() {
         emulateCycle()
+    }
+
+    public func stopAndChangeSpeedIfNecessary() {
+        // todo: implement
     }
 }

@@ -55,7 +55,7 @@ public final class SquareSampleProvider: SampleProviding {
 
     private struct MemoKey: Hashable {
         let frequency: Float
-        let dutyCycle: Float
+        let duty: WaveDuty
     }
 
     private static var harmonicsCache = Cache<MemoKey, [Float]>()
@@ -63,12 +63,13 @@ public final class SquareSampleProvider: SampleProviding {
     /// Producing signals using this method eliminates audible artifacts. More info
     /// here: https://www.nayuki.io/page/band-limited-square-waves
     private func calculateBandLimitedHarmonics(forFrequency frequency: Float) -> [Float] {
-        let dutyCycle = channel.waveDuty.percent
-        let key = MemoKey(frequency: frequency, dutyCycle: dutyCycle)
+        let duty = channel.waveDuty
+        let key = MemoKey(frequency: frequency, duty: duty)
         if let harmonics = Self.harmonicsCache.value(forKey: key) {
             return harmonics
         }
 
+        let dutyCycle = duty.percent
         let harmonicsCount = Int(sampleRate / (frequency * 2))
         var harmonics: [Float] = []
         harmonics.reserveCapacity(harmonicsCount + 1)
@@ -85,8 +86,10 @@ public final class SquareSampleProvider: SampleProviding {
     }
 
     private func getSignal(fromHarmonics harmonics: [Float], currentPhase: Float) -> Float {
-        (1..<harmonics.count).reduce(harmonics[0]) { result, index in
-            result + cos(Float(index) * currentPhase) * harmonics[index]
+        var result = harmonics[0]
+        for index in 1..<harmonics.count {
+            result += cos(Float(index) * currentPhase) * harmonics[index]
         }
+        return result
     }
 }

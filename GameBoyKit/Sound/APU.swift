@@ -38,10 +38,7 @@ public final class APU: MemoryAddressable, EmulationStepType {
     private let channel2Driver: ChannelDriver
     private let channel3Driver: ChannelDriver
     private let channel4Driver: ChannelDriver
-
-    private var allDrivers: [ChannelDriver] {
-        [channel1Driver, channel2Driver, channel3Driver, channel4Driver]
-    }
+    private let allDrivers: [ChannelDriver]
 
     init() {
         let mainMixer = audioEngine.mainMixerNode
@@ -61,6 +58,10 @@ public final class APU: MemoryAddressable, EmulationStepType {
         channel2Driver = factory.makeChannel2()
         channel3Driver = factory.makeChannel3(wavePattern: wavePattern)
         channel4Driver = factory.makeChannel4()
+
+        allDrivers = [channel1Driver, channel2Driver, channel3Driver, channel4Driver]
+//        allDrivers = [channel1Driver, channel2Driver]
+
         control.delegate = self
         setupAudioEngine(mainMixer: mainMixer, output: output, outputFormat: outputFormat)
     }
@@ -153,7 +154,7 @@ public final class APU: MemoryAddressable, EmulationStepType {
         let tickSweep = mCycles % (Clock.machineSpeed / 128) == 0
         let tickVolumeEnvelope = mCycles % (Clock.machineSpeed / 64) == 0
 
-        allDrivers.forEach { driver in
+        for driver in allDrivers {
             if tickLengthCounter {
                 driver.lengthCounterUnit?.clockTick()
             }

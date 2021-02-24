@@ -44,10 +44,7 @@ public final class GameBoy {
     private let hram = HRAM()
     private let apu = APU()
     private var cartridge: CartridgeType?
-
-    private var emulationSteppers: [EmulationStepType] {
-        [oam, ppu, apu, timer]
-    }
+    private let emulationSteppers: [EmulationStepType]
 
     public init(system: System, renderer: Renderer, delegateQueue: DispatchQueue = .main) {
         self.system = system
@@ -63,6 +60,7 @@ public final class GameBoy {
         mmu = MMU(vram: vram, wram: wram, oam: oam, io: io, hram: hram)
         oam.mmu = mmu
         cpu = CPU()
+        emulationSteppers = [oam, ppu, apu, timer]
         self.delegateQueue = delegateQueue
     }
 
@@ -143,11 +141,20 @@ public final class GameBoy {
     private func emulateCycle() {
         clock.tickCycle()
         let speedMode = speed.currentMode
-        let cycles = clock.cycles
 
-        emulationSteppers.forEach { stepper in
-            if stepper.shouldEmulateStep(cycles: cycles, speedMode: speedMode) {
+        for stepper in emulationSteppers {
+            switch (speedMode, stepper.stepRate) {
+            case (.normal, _):
+                // Call step on every cycle
                 stepper.emulateStep()
+            case (.double, .matchSpeedMode):
+                // Call step on every cycle, including in double speed
+                stepper.emulateStep()
+            case (.double, .alwaysNormalSpeed) where clock.cycles % 2 == 0:
+                // Call step half as frequently while in double speed mode
+                stepper.emulateStep()
+            default:
+                break
             }
         }
     }
@@ -202,28 +209,5 @@ extension GameBoy: CPUContext {
 
     public func stopAndSwitchSpeedsIfNecessary() {
         clock.switchSpeedsIfNecessary()
-    }
-}
-
-private extension EmulationStepType {
-    func shouldEmulateStep(cycles: Cycles, speedMode: SystemSpeed.Mode) -> Bool {
-        let modulo = speedMode.getEmulateStepModulo(for: stepRate)
-        return cycles % modulo == 0
-    }
-}
-
-private extension SystemSpeed.Mode {
-    func getEmulateStepModulo(for rate: StepRate) -> Cycles {
-        switch (self, rate) {
-        case (.normal, _):
-            // Call step on every cycle
-            return 1
-        case (.double, .matchSpeedMode):
-            // Call step on every cycle, including in double speed
-            return 1
-        case (.double, .alwaysNormalSpeed):
-            // Call step half as frequently while in double speed mode
-            return 2
-        }
     }
 }

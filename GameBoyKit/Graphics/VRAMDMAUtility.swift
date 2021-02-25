@@ -25,8 +25,8 @@ public final class VRAMDMAUtility: MemoryAddressable {
     /// Only H-blank transfers cause this to be changed to `true` because general purpose transfers
     /// run synchronously.
     private var isHBlankTransferActive = false
-    private var bytesAlreadyTransferred: UInt16 = 0
-    private var bytesRemainingToBeTransferred: UInt16 = 0
+    /// This holds the lower 7 bits of the length register. This is not the length in bytes.
+    private var hdmaLengthRegister: Byte = 0
 
     public func write(byte: Byte, to address: Address) {
         switch address {
@@ -44,9 +44,7 @@ public final class VRAMDMAUtility: MemoryAddressable {
                 // Stop the transfer
                 isHBlankTransferActive = false
             } else {
-                let lengthBits = byte & 0x7f
-                let transferLength = UInt16(lengthBits + 1) * 0x10
-                startTransfer(mode: mode, length: transferLength)
+                startTransfer(mode: mode, hdmaLength: byte & 0x7f)
             }
         default:
             fatalError("Invalid address: \(address.hexString)")
@@ -66,7 +64,7 @@ public final class VRAMDMAUtility: MemoryAddressable {
         case Registers.lengthModeStart:
             // 7th bit 0 is active, 1 inactive
             let isActiveBit: Byte = isHBlankTransferActive ? 0x00 : 0x80
-            let blocksRemaining = bytesRemainingToBeTransferred == 0 ? 0x7f : Byte(bytesRemainingToBeTransferred / 0x10 - 1)
+            let blocksRemaining = hdmaLengthRegister == 0 ? 0x7f : hdmaLengthRegister
             // If a transfer has finished, this should return `0xff`
             return isActiveBit | blocksRemaining
         default:
@@ -79,18 +77,23 @@ public final class VRAMDMAUtility: MemoryAddressable {
         guard isHBlankTransferActive else { return }
         // Transfer `0x10` bytes each H-blank
         transferNextBytes(count: 0x10)
+        if hdmaLengthRegister > 0 {
+            hdmaLengthRegister -= 1
+        } else {
+            isHBlankTransferActive = false
+        }
     }
 
     // MARK: - Helpers
 
-    private func startTransfer(mode: TransferMode, length: UInt16) {
-        bytesAlreadyTransferred = 0
-        bytesRemainingToBeTransferred = length
-
+    private func startTransfer(mode: TransferMode, hdmaLength: Byte) {
         switch mode {
         case .generalPurpose:
-            transferNextBytes(count: length)
+            let lengthInBytes = UInt16(hdmaLength + 1) * 0x10
+            transferNextBytes(count: lengthInBytes)
+            hdmaLengthRegister = 0
         case .hBlank:
+            hdmaLengthRegister = hdmaLength
             isHBlankTransferActive = true
         }
     }
@@ -101,24 +104,25 @@ public final class VRAMDMAUtility: MemoryAddressable {
         }
 
         // Lower four bits of source register are ignored
-        let adjustedSource = sourceRegister & 0xfff0
+        var source = sourceRegister & 0xfff0
         // Only bits 4-12 are used, the rest are ignored, and a base address of 0x8000 is added
-        let adjustedDestination = (destinationRegister & 0x1ff0) + MemoryMap.VRAM.lowerBound
+        var destination = (destinationRegister & 0x1ff0) + MemoryMap.VRAM.lowerBound
 
         // Transfer up to `count` bytes
         for _ in 0..<count {
-            let nextDestination = adjustedDestination + bytesAlreadyTransferred
-            guard MemoryMap.VRAM.contains(nextDestination) && bytesRemainingToBeTransferred > 0 else {
+            guard MemoryMap.VRAM.contains(destination) else {
                 // end transfer prematurely if the next destination is outside of VRAM
                 isHBlankTransferActive = false
-                return
+                break
             }
 
-            let nextSource = adjustedSource + bytesAlreadyTransferred
-            let byteToTransfer = memory.read(address: nextSource)
-            memory.write(byte: byteToTransfer, to: nextDestination)
-            bytesAlreadyTransferred += 1
-            bytesRemainingToBeTransferred -= 1
+            let byteToTransfer = memory.read(address: source)
+            memory.write(byte: byteToTransfer, to: destination)
+            source += 1
+            destination += 1
         }
+
+        sourceRegister = source
+        destinationRegister = destination & 0xfff0
     }
 }

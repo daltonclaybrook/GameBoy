@@ -4,7 +4,7 @@ public struct CartridgeInfo {
 }
 
 public struct CartridgeFactory {
-    private struct Registers {
+    public struct Registers {
         static let titleRange: ClosedRange<Address> = 0x0134...0x0143
         static let cartridgeType: Address = 0x0147
         static let romSize: Address = 0x0148

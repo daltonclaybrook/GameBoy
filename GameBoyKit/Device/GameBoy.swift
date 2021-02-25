@@ -40,6 +40,7 @@ public final class GameBoy {
     private let vram: VRAM
     private let palettes: ColorPalettes
     private let speed: SystemSpeed
+    private let bootROM: BootROM?
 
     private let hram = HRAM()
     private let apu = APU()
@@ -55,20 +56,31 @@ public final class GameBoy {
         palettes = ColorPalettes(system: system)
         speed = SystemSpeed(system: system)
         clock = Clock(systemSpeed: speed, queue: queue)
-        io = IO(palettes: palettes, oam: oam, apu: apu, timer: timer, vram: vram, wram: wram, speed: speed)
+        bootROM = try! BootROM(system: self.system)
+        io = IO(
+            palettes: palettes,
+            oam: oam,
+            apu: apu,
+            timer: timer,
+            vram: vram,
+            wram: wram,
+            speed: speed,
+            bootROM: bootROM
+        )
         ppu = PPU(renderer: renderer, system: system, io: io, vram: vram, oam: oam)
         mmu = MMU(vram: vram, wram: wram, oam: oam, io: io, hram: hram)
         oam.mmu = mmu
         cpu = CPU()
         emulationSteppers = [oam, ppu, apu, timer]
         self.delegateQueue = delegateQueue
+        bootROM?.delegate = self
     }
 
     public func load(cartridgeInfo: CartridgeInfo) {
         queue.async {
             self.cartridge = cartridgeInfo.cartridge
             self.mmu.load(cartridge: cartridgeInfo.cartridge)
-            self.mmu.mask = try! BootROM(system: self.system)
+            self.mmu.mask = self.bootROM
 //            self.bootstrap()
         }
     }
@@ -96,8 +108,6 @@ public final class GameBoy {
     // MARK: - Helpers
 
     private func fetchAndExecuteNextInstruction() {
-        finishBootRomIfNecessary()
-
         let previousQueuedEnableInterrupts = cpu.queuedEnableInterrupts
 
         if !cpu.isHalted {
@@ -120,9 +130,7 @@ public final class GameBoy {
         processInterruptIfNecessary()
     }
 
-    private func finishBootRomIfNecessary() {
-        guard mmu.mask != nil && cpu.pc == 0x100 else { return }
-
+    private func disableBootROM() {
         // Boot ROM execution has finished. By setting the MMU mask to nil,
         // we are effectively unloading the boot ROM and making 0x00...0xff
         // accessible on the cartridge ROM.
@@ -209,5 +217,11 @@ extension GameBoy: CPUContext {
 
     public func stopAndSwitchSpeedsIfNecessary() {
         clock.switchSpeedsIfNecessary()
+    }
+}
+
+extension GameBoy: BootRomDelegate {
+    public func bootROMShouldBeDisabled(_ bootRom: BootROM) {
+        disableBootROM()
     }
 }

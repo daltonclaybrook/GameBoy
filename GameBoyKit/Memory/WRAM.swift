@@ -28,8 +28,8 @@ public final class WRAM: MemoryAddressable {
         case Constants.lowerRange:
             return bytes.read(address: address, in: Constants.lowerRange)
         case Constants.upperRange:
-            let adjustedAddress = UInt32(address - Constants.lowerRange.lowerBound)
-            let byteOffset = UInt32(currentBankNumber) * Constants.bankSize + adjustedAddress
+            let offsetInBank = UInt32(address - Constants.upperRange.lowerBound)
+            let byteOffset = UInt32(currentBankNumber) * Constants.bankSize + offsetInBank
             return bytes.read(address: byteOffset)
         case Constants.bankSelectAddress:
             return currentBankNumber
@@ -43,8 +43,8 @@ public final class WRAM: MemoryAddressable {
         case Constants.lowerRange:
             bytes.write(byte: byte, to: address, in: Constants.lowerRange)
         case Constants.upperRange:
-            let adjustedAddress = UInt32(address - Constants.lowerRange.lowerBound)
-            let byteOffset = UInt32(currentBankNumber) * Constants.bankSize + adjustedAddress
+            let offsetInBank = UInt32(address - Constants.upperRange.lowerBound)
+            let byteOffset = UInt32(currentBankNumber) * Constants.bankSize + offsetInBank
             bytes.write(byte: byte, to: byteOffset)
         case Constants.bankSelectAddress:
             switch system {

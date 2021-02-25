@@ -1,3 +1,3 @@
 public protocol MemoryMasking: MemoryAddressable {
-    var maskRange: ClosedRange<Address> { get }
+    func isAddressMasked(_ address: Address) -> Bool
 }

@@ -48,10 +48,10 @@ private func createAudioRenderBlock(provider: AudioDataProvider) -> AVAudioSourc
 
             // Set the same value on left and right
             assert(buffers.count == 2, "There should only be two buffers representing left and right channels")
-            for (buffer, sample) in zip(buffers, [nextSample.left, nextSample.right]) {
-                let bufferPointer = UnsafeMutableBufferPointer<Float>(buffer)
-                bufferPointer[frame] = Float(sample)
-            }
+            let leftBufferPointer = UnsafeMutableBufferPointer<Float>(buffers[0])
+            leftBufferPointer[frame] = nextSample.left
+            let rightBufferPointer = UnsafeMutableBufferPointer<Float>(buffers[1])
+            rightBufferPointer[frame] = nextSample.right
         }
         return noErr
     }

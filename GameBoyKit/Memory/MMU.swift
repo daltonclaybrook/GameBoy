@@ -33,7 +33,7 @@ public final class MMU: MemoryAddressable {
 
     /// Passing true for `privileged` allows reading from the MMU even during a DMA transfer
     public func read(address: Address, privileged: Bool) -> Byte {
-        if let mask = mask, mask.maskRange.contains(address) {
+        if let mask = mask, mask.isAddressMasked(address) {
             return mask.read(address: address)
         }
 
@@ -76,7 +76,7 @@ public final class MMU: MemoryAddressable {
 
     /// Passing true for `privileged` allows writing to the MMU even during a DMA transfer
     public func write(byte: Byte, to address: Address, privileged: Bool) {
-        if let mask = mask, mask.maskRange.contains(address) {
+        if let mask = mask, mask.isAddressMasked(address) {
             mask.write(byte: byte, to: address)
             return
         }

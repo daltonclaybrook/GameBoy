@@ -13,6 +13,7 @@ public final class IO: MemoryAddressable {
         public static let windowY: Address = 0xff4a
         public static let windowX: Address = 0xff4b
         public static let speedSwitch: Address = 0xff4d
+        public static let disableBootRom: Address = 0xff50
         public static let vramDMARange: ClosedRange<Address> = 0xff51...0xff55
     }
 
@@ -36,8 +37,9 @@ public final class IO: MemoryAddressable {
     private let vram: VRAM
     private let wram: WRAM
     private let speed: SystemSpeed
+    private let bootROM: BootROM?
 
-    public init(palettes: ColorPalettes, oam: OAM, apu: APU, timer: Timer, vram: VRAM, wram: WRAM, speed: SystemSpeed) {
+    public init(palettes: ColorPalettes, oam: OAM, apu: APU, timer: Timer, vram: VRAM, wram: WRAM, speed: SystemSpeed, bootROM: BootROM?) {
         self.palettes = palettes
         self.oam = oam
         self.apu = apu
@@ -45,6 +47,7 @@ public final class IO: MemoryAddressable {
         self.vram = vram
         self.wram = wram
         self.speed = speed
+        self.bootROM = bootROM
         timer.delegate = self
         joypad.delegate = self
     }
@@ -80,6 +83,8 @@ public final class IO: MemoryAddressable {
             return windowX
         case Registers.speedSwitch:
             return speed.read(address: address)
+        case Registers.disableBootRom:
+            return bootROM?.read(address: address) ?? 0xff
         case VRAM.Constants.bankSelectAddress:
             return vram.read(address: address)
         case WRAM.Constants.bankSelectAddress:
@@ -125,6 +130,8 @@ public final class IO: MemoryAddressable {
             windowX = byte
         case Registers.speedSwitch:
             speed.write(byte: byte, to: address)
+        case Registers.disableBootRom:
+            bootROM?.write(byte: byte, to: address)
         case VRAM.Constants.bankSelectAddress:
             vram.write(byte: byte, to: address)
         case WRAM.Constants.bankSelectAddress:

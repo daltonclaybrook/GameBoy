@@ -1,24 +1,42 @@
 import Foundation
 
+public protocol BootRomDelegate: AnyObject {
+    func bootROMShouldBeDisabled(_ bootRom: BootROM)
+}
+
 /// Represents the original Game Boy boot ROM, or BIOS.
 /// In the future, this might be more extensible to support
 /// boot ROMs from multiple different kinds of systems such
 /// as the Game Boy Color.
 public final class BootROM: MemoryMasking {
-    public let maskRange: ClosedRange<Address> = 0x00...0xff
+    public weak var delegate: BootRomDelegate?
 
     private let bytes: [Byte]
+    private let disableRegister: Address = 0xff50
+    private let byteRange: ClosedRange<Address>
 
     public init(bytes: [Byte]) {
         self.bytes = bytes
+        let upperBound = Address(bytes.count) - 1
+        self.byteRange = 0x00...upperBound
+    }
+
+    /// Returns true if the byte range of the boot ROM contains the address and the address
+    /// isn't part of the cartridge header
+    public func isAddressMasked(_ address: Address) -> Bool {
+        byteRange.contains(address) &&
+            !CartridgeFactory.Registers.fullHeaderRange.contains(address)
     }
 
     public func write(byte: Byte, to address: Address) {
-        // no-op
+        if address == disableRegister && byte != 0 {
+            delegate?.bootROMShouldBeDisabled(self)
+        }
     }
 
     public func read(address: Address) -> Byte {
-        bytes.read(address: address)
+        guard address != disableRegister else { return 0xff }
+        return bytes.read(address: address)
     }
 }
 

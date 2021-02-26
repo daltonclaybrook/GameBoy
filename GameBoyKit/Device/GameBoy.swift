@@ -50,7 +50,7 @@ public final class GameBoy {
     public init(system: System, renderer: Renderer, delegateQueue: DispatchQueue = .main) {
         self.system = system
         timer = Timer()
-        oam = OAM()
+        oam = OAM(system: system)
         wram = WRAM(system: system)
         vram = VRAM(system: system)
         palettes = ColorPalettes(system: system)

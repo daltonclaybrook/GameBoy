@@ -7,15 +7,20 @@ public final class OAM: MemoryAddressable, EmulationStepType {
     /// Clients use this view to access sprites from OAM memory at a discrete point
     /// in time. Unlike the `OAM` class, `OAMView` is thread safe.
     public var currentView: OAMView {
-        OAMView(oamBytes: oamBytes)
+        OAMView(system: system, oamBytes: oamBytes)
     }
 
     private let dmaTransferDuration: Cycles = 160
+    private let system: GameBoy.System
 
     private var cyclesSinceStartOfTransfer: Cycles = 0
     private var requestedSource: Byte?
     private var startingSource: Byte?
     private var startedSource: Byte?
+
+    public init(system: GameBoy.System) {
+        self.system = system
+    }
 
     public func read(address: Address) -> Byte {
         read(address: address, privileged: false)
@@ -102,6 +107,7 @@ public final class OAM: MemoryAddressable, EmulationStepType {
 }
 
 public struct OAMView {
+    let system: GameBoy.System
     let oamBytes: [Byte]
 
     private let totalSpriteCount = 40
@@ -124,9 +130,14 @@ public struct OAMView {
             }
         }
 
-        // This sorting is only done on non-color Game Boy. CGB uses the order in OAM.
-        return sprites.sorted { left, right in
-            left.position.x < right.position.x
+        switch system {
+        case .dmg:
+            // This sorting is only done on non-color Game Boy. CGB uses the order in OAM.
+            return sprites.sorted { left, right in
+                left.position.x < right.position.x
+            }
+        case .cgb:
+            return sprites
         }
     }
 

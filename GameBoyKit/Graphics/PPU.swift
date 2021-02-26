@@ -204,12 +204,10 @@ public final class PPU: EmulationStepType {
     private func queueDrawScreenLine(with context: LineDrawingContext) {
         var linePixels = [PixelInfo](repeating: .blank, count: ScreenConstants.width)
 
-        if context.lcdControl.backgroundAndWindowDisplayPriority {
-            updatePixelsWithBackground(with: context, pixels: &linePixels)
+        updatePixelsWithBackground(with: context, pixels: &linePixels)
 
-            if context.lcdControl.windowDisplayEnabled {
-                updatePixelsWithWindow(context: context, pixels: &linePixels)
-            }
+        if context.lcdControl.windowDisplayEnabled {
+            updatePixelsWithWindow(context: context, pixels: &linePixels)
         }
 
         if context.lcdControl.objectDisplayEnabled {
@@ -221,6 +219,11 @@ public final class PPU: EmulationStepType {
 
     /// Update the provided array of pixels with pixels for the background
     private func updatePixelsWithBackground(with context: LineDrawingContext, pixels: inout [PixelInfo]) {
+        guard system == .cgb || context.lcdControl.backgroundAndWindowDisplayPriority else {
+            // Don't draw BG if priority is false on DMG
+            return
+        }
+
         let map = context.lcdControl.backgroundTileMapDisplay
         let tiles = context.lcdControl.selectedTileDataRangeForBackgroundAndWindow
         let lineInMap = context.scrollY &+ context.line
@@ -244,6 +247,11 @@ public final class PPU: EmulationStepType {
     }
 
     private func updatePixelsWithWindow(context: LineDrawingContext, pixels: inout [PixelInfo]) {
+        guard system == .cgb || context.lcdControl.backgroundAndWindowDisplayPriority else {
+            // Don't draw window if priority is false on DMG
+            return
+        }
+
         guard context.windowY <= context.line else {
             // This line is above where the window is rendered
             return
@@ -327,18 +335,21 @@ public final class PPU: EmulationStepType {
                 }
 
                 let pixelColor = context.paletteView.getColor(number: pixelColorNumber, attributes: sprite)
-                mergeSpritePixel(color: pixelColor, priority: spriteFlags.backgroundPriority, atIndex: Int(xPositionInScreen), with: &pixels)
+                mergeSpritePixel(color: pixelColor, priority: spriteFlags.backgroundPriority, atIndex: Int(xPositionInScreen), with: &pixels, context: context)
             }
         }
     }
 
-    private func mergeSpritePixel(color: Color, priority: SpriteAttributes.BackgroundPriority, atIndex: Int, with pixels: inout [PixelInfo]) {
+    private func mergeSpritePixel(color: Color, priority: SpriteAttributes.BackgroundPriority, atIndex: Int, with pixels: inout [PixelInfo], context: LineDrawingContext) {
         let existing = pixels[atIndex]
         switch existing {
         case .background(_, let colorNumber, let mapPriority),
              .window(_, let colorNumber, let mapPriority):
-            // BG color number 0 is always behind the sprite
-            if colorNumber == 0 || (priority == .aboveBackground && mapPriority == .useOAM) {
+            if !context.lcdControl.backgroundAndWindowDisplayPriority {
+                // If this priority is false, the sprite is displayed regardless of priority
+                pixels[atIndex] = .sprite(color)
+            } else if colorNumber == 0 || (priority == .aboveBackground && mapPriority == .useOAM) {
+                // BG color number 0 is always behind the sprite
                 pixels[atIndex] = .sprite(color)
             }
         case .blank, .sprite:

@@ -63,9 +63,16 @@ extension LCDControl {
         rawValue & 0x02 != 0
     }
 
-    /// Monochrome Game Boy: When false, both background and window become blank (white),
+    /// This register has different meanings depending on DBG or CGB.
+    ///
+    /// DMG: When false, both background and window become blank (white),
     /// and the Window Display Bit is ignored in that case. Only Sprites may still be
     /// displayed (if enabled in Bit 1).
+    ///
+    /// CGB: The background and window tiles lose their priority. The priority
+    /// values specified in both the BG attributes map and the OAM attributes
+    /// are not respected, and sprites are always displayed on top of the BG and
+    /// the window.
     var backgroundAndWindowDisplayPriority: Bool {
         rawValue & 0x01 != 0
     }

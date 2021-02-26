@@ -18,8 +18,8 @@ public final class PPU: EmulationStepType {
     /// screen or might be overridden by another pixel based on priority.
     fileprivate enum PixelInfo {
         case blank
-        case background(Color, colorNumber: ColorNumber)
-        case window(Color, colorNumber: ColorNumber)
+        case background(Color, colorNumber: ColorNumber, priority: BGMapTileAttributes.Priority)
+        case window(Color, colorNumber: ColorNumber, priority: BGMapTileAttributes.Priority)
         case sprite(Color)
     }
 
@@ -239,7 +239,7 @@ public final class PPU: EmulationStepType {
             let pixelColorNumber = tile.getColorNumber(vramView: context.vramView, xOffset: pixelXInTile, yOffset: pixelYInTile)
 
             let pixelColor = context.paletteView.getColor(number: pixelColorNumber, attributes: attributes)
-            pixels[Int(screenX)] = .background(pixelColor, colorNumber: pixelColorNumber)
+            pixels[Int(screenX)] = .background(pixelColor, colorNumber: pixelColorNumber, priority: attributes.priority)
         }
     }
 
@@ -278,7 +278,7 @@ public final class PPU: EmulationStepType {
             )
             let colorNumber = tile.getColorNumber(vramView: context.vramView, xOffset: xOffsetInTile, yOffset: yOffsetInTile)
             let pixelColor = context.paletteView.getColor(number: colorNumber, attributes: attributes)
-            pixels[Int(screenX)] = .window(pixelColor, colorNumber: colorNumber)
+            pixels[Int(screenX)] = .window(pixelColor, colorNumber: colorNumber, priority: attributes.priority)
         }
     }
 
@@ -335,9 +335,10 @@ public final class PPU: EmulationStepType {
     private func mergeSpritePixel(color: Color, priority: SpriteAttributes.BackgroundPriority, atIndex: Int, with pixels: inout [PixelInfo]) {
         let existing = pixels[atIndex]
         switch existing {
-        case .background(_, let colorNumber), .window(_, let colorNumber):
+        case .background(_, let colorNumber, let mapPriority),
+             .window(_, let colorNumber, let mapPriority):
             // BG color number 0 is always behind the sprite
-            if colorNumber == 0 || priority == .aboveBackground {
+            if colorNumber == 0 || (priority == .aboveBackground && mapPriority == .useOAM) {
                 pixels[atIndex] = .sprite(color)
             }
         case .blank, .sprite:
@@ -410,8 +411,8 @@ extension PPU.PixelInfo {
         switch self {
         case .blank:
             return .white
-        case .background(let color, _),
-             .window(let color, _),
+        case .background(let color, _, _),
+             .window(let color, _, _),
              .sprite(let color):
             return color
         }

@@ -27,12 +27,13 @@ extension VRAM {
         try? data.write(to: dataURL)
     }
 
-    func debugTilesetImage(io: IO) -> CGImage? {
+    public func debugTilesetImage(io: IO) -> CGImage? {
         let tilesWide: UInt16 = 16
         let tilesTall: UInt16 = 24
         let tileSize: UInt16 = 8
         let width = tilesWide * tileSize
         let height = tilesTall * tileSize
+        let vramView = currentView
 
         var bytes = [Byte]()
         for pixelIndex in (0..<(width * height)) {
@@ -47,8 +48,9 @@ extension VRAM {
 
             let tileNumber = tileY * tilesWide + tileX
             let tileAddress = 0x8000 + tileNumber * 0x10 // each tile is 0x10 bytes
+            let tile = Tile(dataAddress: tileAddress, bankNumber: .zero, isXFlipped: false, isYFlipped: false)
 
-            let pixelColorNumber = getPixelColorNumber(tileAddress: tileAddress, xOffsetInTile: pixelXInTile, yOffsetInTile: pixelYInTile)
+            let pixelColorNumber = tile.getColorNumber(vramView: vramView, xOffset: UInt8(pixelXInTile), yOffset: UInt8(pixelYInTile))
             let grayValue = 255 - pixelColorNumber * 85
             bytes.append(contentsOf: [grayValue, grayValue, grayValue, .max])
         }
@@ -56,7 +58,7 @@ extension VRAM {
         return getImageFromRGBA(bytes: bytes, width: Int(width), height: Int(height))
     }
 
-    func debugTileMapImage(io: IO) -> CGImage? {
+    public func debugTileMapImage(io: IO) -> CGImage? {
         let tileSize = 8
         let width = 32 * tileSize
         let height = 32 * tileSize
@@ -77,10 +79,11 @@ extension VRAM {
             let bgTileIndex = tileY * 32 + tileX
             let bgTileAddress = Address(0x9800 + bgTileIndex)
             let tileNumber = read(address: bgTileAddress)
-            let tileAddress = 0x8000 + Address(tileNumber) * 0x10
-            let attributes = vramView.getAttributesForTileAddressInMap(tileAddress)
+            let tileDataAddress = 0x8000 + Address(tileNumber) * 0x10
+            let attributes = vramView.getAttributesForTileAddressInMap(bgTileAddress)
 
-            let pixelColorNumber = getPixelColorNumber(tileAddress: tileAddress, xOffsetInTile: UInt16(pixelXInTile), yOffsetInTile: UInt16(pixelYInTile))
+            let tile = Tile(dataAddress: tileDataAddress, bankNumber: attributes.tileVRAMBankNumber, isXFlipped: attributes.isXFlipped, isYFlipped: attributes.isYFlipped)
+            let pixelColorNumber = tile.getColorNumber(vramView: vramView, xOffset: UInt8(pixelXInTile), yOffset: UInt8(pixelYInTile))
             let pixelColor = paletteView.getColor(number: pixelColorNumber, attributes: attributes)
 
             bytes.append(contentsOf: pixelColor.rgbaBytes)
@@ -108,13 +111,5 @@ extension VRAM {
         } else {
             return nil
         }
-    }
-
-    private func getPixelColorNumber(tileAddress: Address, xOffsetInTile: UInt16, yOffsetInTile: UInt16) -> UInt8 {
-        let pixelWord = readWord(address: tileAddress + yOffsetInTile * 2)
-        let lowShift = 7 - xOffsetInTile
-        let highShift = lowShift + 8 - 1
-        let pixelColorNumber = (pixelWord >> highShift) & 0x02 | (pixelWord >> lowShift) & 0x01
-        return UInt8(pixelColorNumber)
     }
 }

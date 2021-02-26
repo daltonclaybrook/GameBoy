@@ -28,6 +28,9 @@ public final class GameBoy {
     }
 
     public let ppu: PPU
+    public let vram: VRAM
+    public let io: IO
+
     let cpu: CPU
     let mmu: MMU
     let system: System
@@ -35,13 +38,10 @@ public final class GameBoy {
     private let clock: Clock
     private let timer: Timer
     private let oam: OAM
-    private let io: IO
     private let wram: WRAM
-    private let vram: VRAM
     private let palettes: ColorPalettes
     private let speed: SystemSpeed
     private let bootROM: BootROM?
-
     private let hram = HRAM()
     private let apu = APU()
     private var cartridge: CartridgeType?

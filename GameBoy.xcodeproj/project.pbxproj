@@ -243,6 +243,8 @@
 		75D0E54322B26E670049BF6D /* cpu_instrs.gb in Resources */ = {isa = PBXBuildFile; fileRef = 75D0E54122B26E670049BF6D /* cpu_instrs.gb */; };
 		75D0E54B22B30C7A0049BF6D /* VRAM+Debug.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75D0E54A22B30C790049BF6D /* VRAM+Debug.swift */; };
 		75D0E54C22B32DFE0049BF6D /* VRAM+Debug.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75D0E54A22B30C790049BF6D /* VRAM+Debug.swift */; };
+		75DF621725E7E61900F63ECD /* cgb-acid2.gbc in Resources */ = {isa = PBXBuildFile; fileRef = 75DF621625E7E61900F63ECD /* cgb-acid2.gbc */; };
+		75DF621825E7E61900F63ECD /* cgb-acid2.gbc in Resources */ = {isa = PBXBuildFile; fileRef = 75DF621625E7E61900F63ECD /* cgb-acid2.gbc */; };
 		75E0E3FC25C2653D00AFE57E /* APU.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75E0E3FB25C2653D00AFE57E /* APU.swift */; };
 		75E0E3FD25C2653D00AFE57E /* APU.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75E0E3FB25C2653D00AFE57E /* APU.swift */; };
 		75E85C6F25AE8C9300DD9A9F /* CPUContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75E85C6E25AE8C9300DD9A9F /* CPUContext.swift */; };
@@ -488,6 +490,7 @@
 		75D0E53E22B1C9CB0049BF6D /* HRAM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HRAM.swift; sourceTree = "<group>"; };
 		75D0E54122B26E670049BF6D /* cpu_instrs.gb */ = {isa = PBXFileReference; lastKnownFileType = file; path = cpu_instrs.gb; sourceTree = "<group>"; };
 		75D0E54A22B30C790049BF6D /* VRAM+Debug.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "VRAM+Debug.swift"; sourceTree = "<group>"; };
+		75DF621625E7E61900F63ECD /* cgb-acid2.gbc */ = {isa = PBXFileReference; lastKnownFileType = file; path = "cgb-acid2.gbc"; sourceTree = "<group>"; };
 		75E0E3FB25C2653D00AFE57E /* APU.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APU.swift; sourceTree = "<group>"; };
 		75E85C6E25AE8C9300DD9A9F /* CPUContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CPUContext.swift; sourceTree = "<group>"; };
 		75E8E17D25E19D120015DBDC /* BGMapTileAttributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BGMapTileAttributes.swift; sourceTree = "<group>"; };
@@ -906,6 +909,7 @@
 				7590E7CE25AB8FF0005E1280 /* pokemon-yellow.gbc */,
 				7573111325BF08A6001530DC /* pokemon-pinball.gbc */,
 				757F38D222B1BAC800BBB570 /* tetris.gb */,
+				75DF621625E7E61900F63ECD /* cgb-acid2.gbc */,
 				75D0E54122B26E670049BF6D /* cpu_instrs.gb */,
 				758D865A22B6D86900C28791 /* reimp.gbc */,
 				758D865122B69FE200C28791 /* hello_old.gbc */,
@@ -1167,6 +1171,7 @@
 				758D865322B69FE200C28791 /* hello_old.gbc in Resources */,
 				757F38DF22B1BBA800BBB570 /* Assets.xcassets in Resources */,
 				758D867A22B6E82900C28791 /* 06-ld r,r.gb in Resources */,
+				75DF621825E7E61900F63ECD /* cgb-acid2.gbc in Resources */,
 				758D867822B6E82900C28791 /* 10-bit ops.gb in Resources */,
 				758D866C22B6E82900C28791 /* 07-jr,jp,call,ret,rst.gb in Resources */,
 				758D867622B6E82900C28791 /* 04-op r,imm.gb in Resources */,
@@ -1252,6 +1257,7 @@
 				757F38D322B1BAC800BBB570 /* tetris.gb in Resources */,
 				75FDE25625B4D7BB00C2A5FB /* oam_dma_restart.gb in Resources */,
 				754FAC9A25DAF98B00760B4F /* zelda.gbc in Resources */,
+				75DF621725E7E61900F63ECD /* cgb-acid2.gbc in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -70,12 +70,20 @@ class GameViewController: NSViewController {
         return try CartridgeFactory.makeCartridge(romBytes: [Byte](fileData), externalRAMBytes: nil)
     }
 
-    private func generateAndSaveOAMImage() {
-        guard let image = gameBoy?.ppu.generateDebugOAMImage(scale: 10) else {
-            fatalError("Game Boy was nil")
-        }
+    private func generateAndSaveDebugImages() {
+        guard let gameBoy = gameBoy else { return }
+        let oamImage = gameBoy.ppu.generateDebugOAMImage(scale: 10)
+        let tilesetImage = gameBoy.vram.debugTilesetImage(io: gameBoy.io)!
+        let tileMapImage = gameBoy.vram.debugTileMapImage(io: gameBoy.io)!
+
+        saveImage(image: oamImage, name: "oam")
+        saveImage(image: tilesetImage, name: "tileset")
+        saveImage(image: tileMapImage, name: "tilemap")
+    }
+
+    private func saveImage(image: CGImage, name: String) {
         let timestamp = Int(Date().timeIntervalSince1970)
-        let filePath = NSString(string: "~/Desktop/oam-\(timestamp).png").expandingTildeInPath
+        let filePath = NSString(string: "~/Desktop/\(name)-\(timestamp).png").expandingTildeInPath
         let url = URL(fileURLWithPath: filePath)
         print("Saving image to: \(url.path)")
         guard let destination = CGImageDestinationCreateWithURL(url as CFURL, kUTTypePNG, 1, nil) else {
@@ -93,7 +101,7 @@ extension GameViewController: GameWindowControllerDelegate {
     func windowController(_ controller: GameWindowController, keyCodePressed keyCode: UInt16) {
         if keyCode == 31 {
             // Save OAM to disk when the "O" button is pressed
-            generateAndSaveOAMImage()
+            generateAndSaveDebugImages()
         }
 
         guard let key = Joypad.Key(keyCode: keyCode) else { return }

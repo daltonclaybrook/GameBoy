@@ -106,7 +106,7 @@ public final class VRAMDMAUtility: MemoryAddressable {
         // Lower four bits of source register are ignored
         var source = sourceRegister & 0xfff0
         // Only bits 4-12 are used, the rest are ignored, and a base address of 0x8000 is added
-        var destination = (destinationRegister & 0x1ff0) + MemoryMap.VRAM.lowerBound
+        var destination = (destinationRegister & 0x1ff0) | 0x8000
 
         // Transfer up to `count` bytes
         for _ in 0..<count {

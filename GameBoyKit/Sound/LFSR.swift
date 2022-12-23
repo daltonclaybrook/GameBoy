@@ -24,14 +24,13 @@ public final class LFSR {
     }
 
     public func shift() {
-        // XOR the first two bits
-        let xorResult = (register & 1) ^ ((register >> 1) & 1)
+        let mask: UInt16 = widthMode == .short ? 0x4040 : 0x4000
+        let highBit = (register & 1) ^ ((register >> 1) & 1) == 1
         register >>= 1
-        // Store the result in the high bit, which is bit 14 (15-bit register)
-        register |= xorResult << 14
-        if widthMode == .short {
-            // also stored in bit 6 when width mode == 1
-            register |= xorResult << 6
+        if highBit {
+            register |= mask
+        } else {
+            register &= ~mask
         }
     }
 }

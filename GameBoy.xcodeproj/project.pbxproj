@@ -713,6 +713,7 @@
 				75B3AD06229DEEA500A03C5A /* Products */,
 			);
 			sourceTree = "<group>";
+			usesTabs = 0;
 		};
 		75B3AD06229DEEA500A03C5A /* Products */ = {
 			isa = PBXGroup;

@@ -34,10 +34,10 @@ public final class APU: MemoryAddressable, EmulationStepType {
     private let sourceNodeProvider = SourceNodeProvider()
     private let audioEngine = AVAudioEngine()
 
-    private let channel1Driver: ChannelDriver
-    private let channel2Driver: ChannelDriver
-    private let channel3Driver: ChannelDriver
-    private let channel4Driver: ChannelDriver
+    private let square1Driver: ChannelDriver
+    private let square2Driver: ChannelDriver
+    private let waveDriver: ChannelDriver
+    private let noiseDriver: ChannelDriver
     private let allDrivers: [ChannelDriver]
 
     init() {
@@ -54,13 +54,13 @@ public final class APU: MemoryAddressable, EmulationStepType {
         cyclesPerSample = Clock.machineSpeed / sampleRate
         cyclesPerSamplePeriod = UInt64((Double(Clock.machineSpeed) / Double(samplePeriod)).rounded(.up))
 
-        channel1Driver = factory.makeChannel1()
-        channel2Driver = factory.makeChannel2()
-        channel3Driver = factory.makeChannel3(wavePattern: wavePattern)
-        channel4Driver = factory.makeChannel4()
+        square1Driver = factory.makeChannel1()
+        square2Driver = factory.makeChannel2()
+        waveDriver = factory.makeChannel3(wavePattern: wavePattern)
+        noiseDriver = factory.makeChannel4()
 
-        allDrivers = [channel1Driver, channel2Driver, channel3Driver, channel4Driver]
-//        allDrivers = [channel1Driver, channel2Driver]
+        allDrivers = [square1Driver, square2Driver, waveDriver, noiseDriver]
+//        allDrivers = [noiseDriver]
 
         control.delegate = self
         setupAudioEngine(mainMixer: mainMixer, output: output, outputFormat: outputFormat)
@@ -69,13 +69,13 @@ public final class APU: MemoryAddressable, EmulationStepType {
     public func write(byte: Byte, to address: Address) {
         switch address {
         case Registers.channel1Range:
-            channel1Driver.channel.write(byte: byte, to: address)
+            square1Driver.channel.write(byte: byte, to: address)
         case Registers.channel2Range:
-            channel2Driver.channel.write(byte: byte, to: address)
+            square2Driver.channel.write(byte: byte, to: address)
         case Registers.channel3Range:
-            channel3Driver.channel.write(byte: byte, to: address)
+            waveDriver.channel.write(byte: byte, to: address)
         case Registers.channel4Range:
-            channel4Driver.channel.write(byte: byte, to: address)
+            noiseDriver.channel.write(byte: byte, to: address)
         case Registers.controlRange:
             control.write(byte: byte, to: address)
         case Registers.wavePatternRange:
@@ -88,13 +88,13 @@ public final class APU: MemoryAddressable, EmulationStepType {
     public func read(address: Address) -> Byte {
         switch address {
         case Registers.channel1Range:
-            return channel1Driver.channel.read(address: address)
+            return square1Driver.channel.read(address: address)
         case Registers.channel2Range:
-            return channel2Driver.channel.read(address: address)
+            return square2Driver.channel.read(address: address)
         case Registers.channel3Range:
-            return channel3Driver.channel.read(address: address)
+            return waveDriver.channel.read(address: address)
         case Registers.channel4Range:
-            return channel4Driver.channel.read(address: address)
+            return noiseDriver.channel.read(address: address)
         case Registers.controlRange:
             return control.read(address: address)
         case Registers.wavePatternRange:
